@@ -7,14 +7,14 @@ import {
   Stack,
   Heading,
   Flex,
-  // Menu,
-  // MenuItem,
-  // MenuList,
-  // MenuButton,
-  // IconButton,
+  Menu,
+  MenuItem,
+  MenuList,
+  MenuButton,
+  IconButton,
   useColorModeValue
 } from '@chakra-ui/react'
-// import { HamburgerIcon } from '@chakra-ui/icons'
+import { HamburgerIcon } from '@chakra-ui/icons'
 
 const LinkItem = ({ href, path, children }) => {
   const active = path === href
@@ -68,7 +68,39 @@ const Navbar = props => {
           <LinkItem href="/works" path={path}>
             Works
           </LinkItem>
+          <LinkItem href="/posts" path={path}>
+            Posts
+          </LinkItem>
+          <LinkItem href="https://github.com/elithrade" path={path}>
+            GitHub
+          </LinkItem>
         </Stack>
+        <Box flex={1} align="right">
+          <Box ml={2} display={{ base: 'inline-block', md: 'none' }}>
+            <Menu>
+              <MenuButton
+                as={IconButton}
+                icon={<HamburgerIcon />}
+                variant="outline"
+                aria-label="Options"
+              />
+              <MenuList>
+                <MenuItem as={Link} href="/">
+                  About
+                </MenuItem>
+                <MenuItem as={Link} href="/works">
+                  Works
+                </MenuItem>
+                <MenuItem as={Link} href="/posts">
+                  Posts
+                </MenuItem>
+                <MenuItem as={Link} href="https://github.com/elithrade">
+                  GitHub
+                </MenuItem>
+              </MenuList>
+            </Menu>
+          </Box>
+        </Box>
       </Container>
     </Box>
   )

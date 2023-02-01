@@ -4,7 +4,7 @@ import Layout from '../components/layouts/main'
 export default function Website({ Component, pageProps, router }) {
   return (
     <ChakraProvider>
-      <Layout route={router}>
+      <Layout router={router}>
         <Component {...pageProps} key={router.route} />
       </Layout>
     </ChakraProvider>

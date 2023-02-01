@@ -1,6 +1,6 @@
 import { Container, Box, Heading } from '@chakra-ui/react'
 
-export default function Page() {
+const Page = () => {
   return (
     <Container>
       <Box borderRadius="lg" bg="red" p={3} mb={6} align="center">
@@ -20,3 +20,5 @@ export default function Page() {
     </Container>
   )
 }
+
+export default Page

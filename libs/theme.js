@@ -17,9 +17,9 @@ const components = {
         fontSize: 20,
         textUnderlineOffset: 6,
         textDecorationColor: '#525252',
-        textDeorationThickness: 4,
+        textDecorationThickness: 4,
         marginTop: 3,
-        marginButtom: 4
+        marginBottom: 4
       }
     }
   },
@@ -36,7 +36,7 @@ const fonts = {
 }
 
 const colors = {
-  glassTeal: '#88ccca'
+  grassTeal: '#88ccca'
 }
 
 const config = {
@@ -44,12 +44,5 @@ const config = {
   useSystemColorMode: true
 }
 
-const theme = extendTheme({
-  config,
-  styles,
-  components,
-  colors,
-  fonts
-})
-
+const theme = extendTheme({ config, styles, components, fonts, colors })
 export default theme

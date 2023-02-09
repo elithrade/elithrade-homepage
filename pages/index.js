@@ -1,11 +1,18 @@
+import NextLink from 'next/link'
 import {
   Container,
   Box,
   Heading,
+  Link,
   Image,
   useColorModeValue
 } from '@chakra-ui/react'
 import Section from '../components/section'
+import Paragraph from '../components/Paragraph'
+
+const getExperienceYears = () => {
+  return new Date().getFullYear() - 2006
+}
 
 const Page = () => {
   return (
@@ -51,7 +58,22 @@ const Page = () => {
         <Heading as="h3" variant="section-title">
           Work
         </Heading>
-        <p>Paragrah</p>
+        <Paragraph>
+          Bin is currently a Senior Software Engineer at&nbsp;
+          <Link
+            as={NextLink}
+            href="https://rac.com.au"
+            passHref
+            target="_blank"
+          >
+            RACWA
+          </Link>
+          ,&nbsp;with {getExperienceYears()} years experience in developing
+          innovative solutions. Loves Vim, Linux, AWS, .NET Core and open source
+          software. Enjoys to customize all of the development environment.
+          Interested in devising a simple yet efficient method for challenging
+          tasks, and learning new technologies and tools constantly.
+        </Paragraph>
       </Section>
     </Container>
   )

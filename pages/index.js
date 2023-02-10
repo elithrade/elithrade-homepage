@@ -9,6 +9,7 @@ import {
 } from '@chakra-ui/react'
 import Section from '../components/section'
 import Paragraph from '../components/Paragraph'
+import { BioSection, BioYear } from '../components/bio'
 
 const getExperienceYears = () => {
   return new Date().getFullYear() - 2006
@@ -74,6 +75,24 @@ const Page = () => {
           Interested in devising a simple yet efficient method for challenging
           tasks, and learning new technologies and tools constantly.
         </Paragraph>
+      </Section>
+      <Section delay={0.2}>
+        <Heading as="h3" variant="section-title">
+          Bio
+        </Heading>
+        <BioSection>
+          <BioYear>2002 - 2006</BioYear>
+          Completed Bachelor of Engineering degree in Software Engineering with
+          Honours at The University of New South Wales.
+        </BioSection>
+        <BioSection>
+          <BioYear>2006 - 2022</BioYear>
+          Senior Innovation Engineer at Fugro Marine Australia.
+        </BioSection>
+        <BioSection>
+          <BioYear>2022 - present</BioYear>
+          Senior Software Engineer at RACWA.
+        </BioSection>
       </Section>
     </Container>
   )

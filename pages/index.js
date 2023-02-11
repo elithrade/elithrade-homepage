@@ -25,7 +25,7 @@ const Page = () => {
         mb={6}
         align="center"
       >
-        Hello, I&apos;m a senior software engineer based in Perth, Australia!
+        Hello, I&apos;m a full stack developer based in Perth, Australia!
       </Box>
       <Box display={{ md: 'flex' }}>
         <Box flexGrow={1}>
@@ -83,7 +83,15 @@ const Page = () => {
         <BioSection>
           <BioYear>2002 - 2006</BioYear>
           Completed Bachelor of Engineering degree in Software Engineering with
-          Honours at The University of New South Wales.
+          Honours at&nbsp;
+          <Link
+            as={NextLink}
+            href="https://unsw.edu.au"
+            passHref
+            target="_blank"
+          >
+            The University of New South Wales.
+          </Link>
         </BioSection>
         <BioSection>
           <BioYear>2006 - 2022</BioYear>
@@ -93,6 +101,11 @@ const Page = () => {
           <BioYear>2022 - present</BioYear>
           Senior Software Engineer at RACWA.
         </BioSection>
+      </Section>
+      <Section delay={0.3}>
+        <Heading as="h3" variant="section-title">
+          Technical Skills
+        </Heading>
       </Section>
     </Container>
   )

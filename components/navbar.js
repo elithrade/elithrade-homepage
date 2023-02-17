@@ -16,8 +16,9 @@ import {
 import { HamburgerIcon } from '@chakra-ui/icons'
 import ThemeToggleButton from './theme-toggle-button'
 import { NextLink } from 'next/link'
+import { IoLogoGithub } from 'react-icons/io5'
 
-const LinkItem = ({ href, path, children }) => {
+const LinkItem = ({ href, path, children, isExternal, ...props }) => {
   const active = path === href
   const inactiveColor = useColorModeValue('gray200', 'whiteAlpha.900')
   return (
@@ -27,6 +28,8 @@ const LinkItem = ({ href, path, children }) => {
       p={2}
       bg={active ? 'grassTeal' : undefined}
       color={active ? '#202023' : inactiveColor}
+      isExternal={isExternal}
+      {...props}
     >
       {children}
     </Link>
@@ -73,7 +76,15 @@ const Navbar = props => {
           <LinkItem href="/posts" path={path}>
             Posts
           </LinkItem>
-          <LinkItem href="https://github.com/elithrade" path={path}>
+          <LinkItem
+            href="https://github.com/elithrade"
+            display="inline-flex"
+            alignItems="center"
+            style={{ gap: 4 }}
+            path={path}
+            isExternal={true}
+          >
+            <IoLogoGithub />
             GitHub
           </LinkItem>
         </Stack>

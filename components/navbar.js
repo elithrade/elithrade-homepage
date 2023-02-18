@@ -70,12 +70,6 @@ const Navbar = props => {
           flexGrow={1}
           mt={{ base: 4, nmd: 0 }}
         >
-          <LinkItem href="/works" path={path}>
-            Works
-          </LinkItem>
-          <LinkItem href="/posts" path={path}>
-            Posts
-          </LinkItem>
           <LinkItem
             href="https://github.com/elithrade"
             display="inline-flex"
@@ -101,12 +95,6 @@ const Navbar = props => {
               <MenuList>
                 <MenuItem as={Link} href="/">
                   About
-                </MenuItem>
-                <MenuItem as={Link} href="/works">
-                  Works
-                </MenuItem>
-                <MenuItem as={Link} href="/posts">
-                  Posts
                 </MenuItem>
                 <MenuItem as={Link} href="https://github.com/elithrade">
                   GitHub

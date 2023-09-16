@@ -109,6 +109,7 @@ const Page = () => {
           <Heading as="h3" variant="section-title">
             Technical Skills
           </Heading>
+          <Paragraph>Coming soon...</Paragraph>
         </Section>
       </Container>
     </Layout>

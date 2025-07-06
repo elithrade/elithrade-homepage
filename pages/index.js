@@ -11,6 +11,7 @@ import Layout from '../components/layouts/article'
 import Section from '../components/section'
 import Paragraph from '../components/Paragraph'
 import { BioSection, BioYear } from '../components/bio'
+import { Category, CategorySection } from '../components/category'
 
 const getExperienceYears = () => {
   return new Date().getFullYear() - 2006
@@ -19,7 +20,7 @@ const getExperienceYears = () => {
 const Page = () => {
   return (
     <Layout>
-      <Container>
+      <Container maxW="constainer.lg" p={0}>
         <Box
           borderRadius="lg"
           bg={useColorModeValue('whiteAlpha.500', 'whiteAlpha.200')}
@@ -34,10 +35,7 @@ const Page = () => {
             <Heading as="h2" variant="page-title">
               Bin Hu
             </Heading>
-            <p>
-              Your time is limited, so don&apos;t waste it living someone
-              else&apos;s life.
-            </p>
+            <p>Be the change that you want to see in the world.</p>
           </Box>
           <Box
             flexShrink={0}
@@ -62,21 +60,20 @@ const Page = () => {
             Work
           </Heading>
           <Paragraph>
-            Bin is currently a Senior Software Engineer at&nbsp;
-            <Link
-              as={NextLink}
-              href="https://rac.com.au"
-              passHref
-              target="_blank"
-            >
-              RACWA
-            </Link>
-            ,&nbsp;with {getExperienceYears()} years experience in developing
-            innovative solutions. Loves Vim, Linux, AWS, .NET Core and open
-            source software. Enjoys to customize all of the development
-            environment. Interested in devising a simple yet efficient method
-            for challenging tasks, and learning new technologies and tools
-            constantly.
+            Senior Software Engineer with over {getExperienceYears()} years of
+            hands‑on experience across full‑stack development, cloud
+            infrastructure, and system integration. I specialize in building
+            robust, scalable applications and automating deployment pipelines
+            using modern DevOps tools and practices. A long‑time Vim enthusiast,
+            I enjoy working in terminal‑based environments and continuously
+            refine my toolchain to boost efficiency and focus.
+          </Paragraph>
+          <Paragraph>
+            I’m passionate about solving complex technical challenges and
+            constantly exploring new technologies and development techniques.
+            While my primary focus remains software engineering, I’m
+            increasingly contributing to architectural discussions and system
+            design, aiming to grow into broader technical leadership over time
           </Paragraph>
         </Section>
         <Section delay={0.2}>
@@ -98,18 +95,73 @@ const Page = () => {
           </BioSection>
           <BioSection>
             <BioYear>2006 - 2022</BioYear>
-            Senior Innovation Engineer at Fugro Marine Australia.
+            Senior Innovation Engineer at&nbsp;
+            <Link
+              as={NextLink}
+              href="https://www.fugro.com"
+              passHref
+              target="_blank"
+            >
+              Fugro
+            </Link>
           </BioSection>
           <BioSection>
             <BioYear>2022 - present</BioYear>
-            Senior Software Engineer at RACWA.
+            Senior Software Engineer at&nbsp;
+            <Link
+              as={NextLink}
+              href="https://rac.com.au"
+              passHref
+              target="_blank"
+            >
+              RACWA
+            </Link>
           </BioSection>
         </Section>
         <Section delay={0.3}>
           <Heading as="h3" variant="section-title">
             Technical Skills
           </Heading>
-          <Paragraph>Coming soon...</Paragraph>
+          <CategorySection>
+            <Category>Backend</Category>
+            GraphQL, Express, REST API, Serverless, EntityFramework, SQL,
+            Non‑SQL (DynamoDB)
+          </CategorySection>
+          <CategorySection>
+            <Category>Frontend</Category>
+            Next.js, React, Material UI, CSS
+          </CategorySection>
+          <CategorySection>
+            <Category>DevOps</Category>
+            GitHub Actions, AWS CDK, Docker, Terraform, Jenkins
+          </CategorySection>
+          <CategorySection>
+            <Category>Programming Languages</Category>
+            C#, TypeScript, Python, Go, Rust, C, Julia
+          </CategorySection>
+          <CategorySection>
+            <Category>Cloud - Azure</Category>
+            App Service, Container Apps, Functions, App Gateway, App Insights,
+            APIM, AD (Entra ID)
+          </CategorySection>
+          <CategorySection>
+            <Category>Cloud - AWS</Category>
+            EC2, S3, RDS, Lambda, API Gateway, CloudFront, Elemental, DynamoDB,
+            ECR, ECS, Fargate
+          </CategorySection>
+          <CategorySection>
+            <Category>Tools</Category>
+            Git, Neovim/Vim, Visual Studio, VSCode, Unity Editor
+          </CategorySection>
+          <CategorySection>
+            <Category>Methodology</Category>
+            Agile, Object‑Oriented/Functional Programming, CI/CD, Unit testing
+            for all languages
+          </CategorySection>
+          <CategorySection>
+            <Category>Languages</Category>
+            English, Mandarin
+          </CategorySection>
         </Section>
       </Container>
     </Layout>

@@ -20,7 +20,7 @@ const getExperienceYears = () => {
 const Page = () => {
   return (
     <Layout>
-      <Container maxW="constainer.lg" p={0}>
+      <Container maxW="container.lg">
         <Box
           borderRadius="lg"
           bg={useColorModeValue('whiteAlpha.500', 'whiteAlpha.200')}

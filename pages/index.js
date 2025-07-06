@@ -35,7 +35,7 @@ const Page = () => {
             <Heading as="h2" variant="page-title">
               Bin Hu
             </Heading>
-            <p>Be the change that you want to see in the world.</p>
+            <p>"Be the change that you want to see in the world."</p>
           </Box>
           <Box
             flexShrink={0}
@@ -57,11 +57,11 @@ const Page = () => {
         </Box>
         <Section delay={0.1}>
           <Heading as="h3" variant="section-title">
-            Work
+            Me
           </Heading>
           <Paragraph>
-            Senior Software Engineer with over {getExperienceYears()} years of
-            hands‑on experience across full‑stack development, cloud
+            I am a Senior Software Engineer with over {getExperienceYears()}{' '}
+            years of hands‑on experience across full‑stack development, cloud
             infrastructure, and system integration. I specialize in building
             robust, scalable applications and automating deployment pipelines
             using modern DevOps tools and practices. A long‑time Vim enthusiast,

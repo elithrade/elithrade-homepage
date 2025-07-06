@@ -35,7 +35,7 @@ const Page = () => {
             <Heading as="h2" variant="page-title">
               Bin Hu
             </Heading>
-            <p>"Be the change that you want to see in the world."</p>
+            <p>&quot;Be the change that you want to see in the world.&quot;</p>
           </Box>
           <Box
             flexShrink={0}

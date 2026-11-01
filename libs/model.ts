@@ -1,13 +1,19 @@
+import type { Group, Mesh, Scene } from 'three'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 
+export type ModelOptions = {
+  receiveShadow: boolean
+  castShadow: boolean
+}
+
 export function loadGLTFModel(
-  scene,
-  glbPath,
-  options = {
+  scene: Scene,
+  glbPath: string,
+  options: ModelOptions = {
     receiveShadow: true,
     castShadow: true
   }
-) {
+): Promise<Group> {
   const { receiveShadow, castShadow } = options
 
   return new Promise((resolve, reject) => {
@@ -25,7 +31,7 @@ export function loadGLTFModel(
         scene.add(obj)
 
         obj.traverse(function (child) {
-          if (child.isMesh) {
+          if ((child as Mesh).isMesh) {
             child.castShadow = castShadow
             child.receiveShadow = receiveShadow
           }

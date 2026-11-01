@@ -1,15 +1,20 @@
 import { test as base, expect } from '@playwright/test'
 
+type Fixtures = {
+  allowedErrors: RegExp[]
+  pageErrors: string[]
+}
+
 // Every test fails if the page throws an uncaught error or logs a console
 // error, so each spec doubles as a smoke test for runtime regressions.
 // Specs that expect a particular error can allow it with
 // `test.use({ allowedErrors: [/pattern/] })`.
-export const test = base.extend({
+export const test = base.extend<Fixtures>({
   allowedErrors: [[], { option: true }],
   pageErrors: [
     async ({ page, allowedErrors }, use) => {
-      const errors = []
-      const record = text => {
+      const errors: string[] = []
+      const record = (text: string) => {
         if (!allowedErrors.some(re => re.test(text))) errors.push(text)
       }
       page.on('pageerror', err => record(`pageerror: ${err.message}`))

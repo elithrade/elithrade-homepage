@@ -1,10 +1,11 @@
+import type { Page } from '@playwright/test'
 import { test, expect } from './fixtures'
 
-const currentMode = page =>
+const currentMode = (page: Page) =>
   page
     .locator('body')
     .getAttribute('class')
-    .then(cls => (cls.includes('chakra-ui-dark') ? 'dark' : 'light'))
+    .then(cls => (cls?.includes('chakra-ui-dark') ? 'dark' : 'light'))
 
 test('toggles colour mode and remembers it after reload', async ({ page }) => {
   await page.goto('/')

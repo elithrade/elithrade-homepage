@@ -7,7 +7,7 @@ MotionGlobalConfig.skipAnimations = true
 
 // jsdom has no matchMedia; Chakra uses it for `useSystemColorMode`.
 if (!window.matchMedia) {
-  window.matchMedia = query => ({
+  window.matchMedia = (query: string): MediaQueryList => ({
     matches: false,
     media: query,
     onchange: null,

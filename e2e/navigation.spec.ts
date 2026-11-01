@@ -24,7 +24,7 @@ test.describe('unknown routes', () => {
 
   test('return the 404 page', async ({ page }) => {
     const res = await page.goto('/does-not-exist')
-    expect(res.status()).toBe(404)
+    expect(res?.status()).toBe(404)
     await expect(page.getByText('This page could not be found')).toBeVisible()
   })
 })

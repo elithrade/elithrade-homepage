@@ -1,10 +1,17 @@
+import type { ReactNode } from 'react'
+import type { NextRouter } from 'next/router'
 import Head from 'next/head'
 import { Box, Container } from '@chakra-ui/react'
 import Navbar from '../navbar'
 import NoSsr from '../no-ssr'
 import VoxelDog from '../voxel-dog'
 
-export default function Main({ children, router }) {
+type MainProps = {
+  children?: ReactNode
+  router: NextRouter
+}
+
+export default function Main({ children, router }: MainProps) {
   return (
     <Box as="main" pb={8}>
       <Head>

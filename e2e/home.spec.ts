@@ -30,7 +30,9 @@ test.describe('home page', () => {
     const img = page.getByAltText('Profile image')
     await expect(img).toBeVisible()
     await expect
-      .poll(() => img.evaluate(el => el.complete && el.naturalWidth))
+      .poll(() =>
+        img.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth)
+      )
       .toBeGreaterThan(0)
   })
 

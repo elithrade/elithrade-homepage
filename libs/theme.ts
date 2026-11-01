@@ -1,8 +1,8 @@
-import { extendTheme } from '@chakra-ui/react'
-import { mode } from '@chakra-ui/theme-tools'
+import { extendTheme, type ThemeConfig } from '@chakra-ui/react'
+import { mode, type StyleFunctionProps } from '@chakra-ui/theme-tools'
 
 const styles = {
-  global: props => ({
+  global: (props: StyleFunctionProps) => ({
     body: {
       bg: mode('#f0e7db', '#202023')(props)
     }
@@ -24,7 +24,7 @@ const components = {
     }
   },
   Link: {
-    baseStyle: props => ({
+    baseStyle: (props: StyleFunctionProps) => ({
       color: mode('#3d7aed', '#ff63c3')(props),
       textUnderlineOffset: 3
     })
@@ -39,7 +39,7 @@ const colors = {
   grassTeal: '#88ccca'
 }
 
-const config = {
+const config: ThemeConfig = {
   // The initial mode you'd like your app to start with when
   // user visit the page for first time (or after storage reset).
   // Can be one of dark, light or system. Default is light.

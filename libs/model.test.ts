@@ -23,7 +23,7 @@ function makeModel() {
   return { root, meshes: [topMesh, nestedMesh], marker }
 }
 
-function loaderSucceedsWith(model) {
+function loaderSucceedsWith(model: Group) {
   load.mockImplementation((_path, onLoad) => onLoad({ scene: model }))
 }
 

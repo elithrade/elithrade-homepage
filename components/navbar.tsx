@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import Logo from './logo'
 import {
   Container,
@@ -11,19 +12,34 @@ import {
   MenuList,
   MenuButton,
   IconButton,
-  useColorModeValue
+  useColorModeValue,
+  type BoxProps,
+  type LinkProps
 } from '@chakra-ui/react'
 import { HamburgerIcon } from '@chakra-ui/icons'
 import ThemeToggleButton from './theme-toggle-button'
-import { NextLink } from 'next/link'
 import { IoLogoGithub } from 'react-icons/io5'
 
-const LinkItem = ({ href, path, children, isExternal, ...props }) => {
+type LinkItemProps = LinkProps & {
+  href: string
+  path: string
+  children: ReactNode
+}
+
+// The JS version imported a non-existent named export `{ NextLink }` from
+// 'next/link' and passed it as `as`, which was undefined, so Chakra rendered a
+// plain <a>. Rendering Link without `as` produces the same markup.
+const LinkItem = ({
+  href,
+  path,
+  children,
+  isExternal,
+  ...props
+}: LinkItemProps) => {
   const active = path === href
   const inactiveColor = useColorModeValue('gray200', 'whiteAlpha.900')
   return (
     <Link
-      as={NextLink}
       href={href}
       p={2}
       bg={active ? 'grassTeal' : undefined}
@@ -36,7 +52,11 @@ const LinkItem = ({ href, path, children, isExternal, ...props }) => {
   )
 }
 
-const Navbar = props => {
+type NavbarProps = BoxProps & {
+  path: string
+}
+
+const Navbar = (props: NavbarProps) => {
   const { path } = props
 
   return (

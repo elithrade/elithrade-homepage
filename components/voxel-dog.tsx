@@ -4,13 +4,13 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { loadGLTFModel } from '../libs/model'
 import { DogSpinner, DogContainer } from './voxel-dog-loader'
 
-function easeOutCirc(x) {
+function easeOutCirc(x: number) {
   return Math.sqrt(1 - Math.pow(x - 1, 4))
 }
 
 const VoxelDog = () => {
-  const refContainer = useRef()
-  const refRenderer = useRef()
+  const refContainer = useRef<HTMLDivElement>(null)
+  const refRenderer = useRef<THREE.WebGLRenderer | null>(null)
 
   const [loading, setLoading] = useState(true)
 
@@ -85,7 +85,7 @@ const VoxelDog = () => {
         setLoading(false)
       })
 
-      let req = null
+      let req: number | null = null
       let frame = 0
 
       const animate = () => {
@@ -111,7 +111,7 @@ const VoxelDog = () => {
       }
 
       return () => {
-        cancelAnimationFrame(req)
+        if (req !== null) cancelAnimationFrame(req)
         renderer.domElement.remove()
         renderer.dispose()
       }

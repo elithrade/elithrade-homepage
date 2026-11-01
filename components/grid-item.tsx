@@ -69,7 +69,7 @@ export const WorkGridItem = ({
 export const GridItemStyle = () => (
   <Global
     styles={`
-    .grid-itemthumbnail {
+    .grid-item-thumbnail {
       border-radius: 12px;
     }
   `}

@@ -9,7 +9,7 @@ describe('Home page', () => {
   })
 
   it('renders the intro and every section', () => {
-    renderWithTheme(<Page />)
+    renderWithTheme(<Page buildYear={2026} />)
 
     expect(
       screen.getByText(/full stack developer based in Perth, Australia/)
@@ -28,7 +28,7 @@ describe('Home page', () => {
     vi.useFakeTimers({ toFake: ['Date'] })
     vi.setSystemTime(new Date('2030-06-15T00:00:00Z'))
 
-    renderWithTheme(<Page />)
+    renderWithTheme(<Page buildYear={2026} />)
 
     expect(screen.getByText(/with over 24 years of hands/)).toBeInTheDocument()
   })
@@ -38,7 +38,7 @@ describe('Home page', () => {
     ['Fugro', 'https://www.fugro.com'],
     ['RACWA', 'https://rac.com.au']
   ])('links "%s" to %s in a new tab', (name, href) => {
-    renderWithTheme(<Page />)
+    renderWithTheme(<Page buildYear={2026} />)
 
     const link = screen.getByRole('link', { name })
     expect(link).toHaveAttribute('href', href)

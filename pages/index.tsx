@@ -1,3 +1,5 @@
+import { useSyncExternalStore } from 'react'
+import type { InferGetStaticPropsType } from 'next'
 import NextLink from 'next/link'
 import {
   Container,
@@ -13,11 +15,27 @@ import Paragraph from '../components/Paragraph'
 import { BioSection, BioYear } from '../components/bio'
 import { Category, CategorySection } from '../components/category'
 
-const getExperienceYears = () => {
-  return new Date().getFullYear() - 2006
-}
+const CAREER_START_YEAR = 2006
 
-const Page = () => {
+const currentYear = () => new Date().getFullYear()
+const subscribeToYear = () => () => {}
+
+// This page is prerendered at build time, so its HTML holds the build year.
+// Hydrate with that same year (the server snapshot), then React re-renders
+// with the visitor's current year. Computing the year during render instead
+// causes a hydration mismatch once a new year starts without a rebuild.
+const useCurrentYear = (buildYear: number) =>
+  useSyncExternalStore(subscribeToYear, currentYear, () => buildYear)
+
+export const getStaticProps = () => ({
+  props: { buildYear: currentYear() }
+})
+
+type PageProps = InferGetStaticPropsType<typeof getStaticProps>
+
+const Page = ({ buildYear }: PageProps) => {
+  const experienceYears = useCurrentYear(buildYear) - CAREER_START_YEAR
+
   return (
     <Layout>
       <Container maxW="container.lg">
@@ -32,9 +50,7 @@ const Page = () => {
         </Box>
         <Box display={{ md: 'flex' }}>
           <Box flexGrow={1}>
-            <Heading as="h2" variant="page-title">
-              Bin Hu
-            </Heading>
+            <Heading as="h2">Bin Hu</Heading>
             <p>&quot;Be the change that you want to see in the world.&quot;</p>
           </Box>
           <Box
@@ -60,8 +76,8 @@ const Page = () => {
             Me
           </Heading>
           <Paragraph>
-            I am a Senior Software Engineer with over {getExperienceYears()}{' '}
-            years of hands‑on experience across full‑stack development, cloud
+            I am a Senior Software Engineer with over {experienceYears} years of
+            hands‑on experience across full‑stack development, cloud
             infrastructure, and system integration. I specialize in building
             robust, scalable applications and automating deployment pipelines
             using modern DevOps tools and practices. A long‑time Vim enthusiast,

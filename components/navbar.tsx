@@ -39,7 +39,6 @@ const LinkItem = ({
   ...props
 }: LinkItemProps) => {
   const active = isActive(path, href)
-  const inactiveColor = useColorModeValue('gray.800', 'whiteAlpha.900')
   return (
     <Link
       // Internal links use next/link for client-side navigation, which also
@@ -47,8 +46,11 @@ const LinkItem = ({
       as={isExternal ? undefined : NextLink}
       href={href}
       p={2}
-      bg={active ? 'grassTeal' : undefined}
-      color={active ? '#202023' : inactiveColor}
+      borderRadius="md"
+      aria-current={active ? 'page' : undefined}
+      // The active link uses the accent, which matches the theme toggle.
+      bg={active ? 'accent-solid' : undefined}
+      color={active ? 'on-accent' : 'chakra-body-text'}
       isExternal={isExternal}
       {...props}
     >

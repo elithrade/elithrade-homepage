@@ -44,11 +44,13 @@ describe('Navbar', () => {
     const works = screen.getByRole('link', { name: 'Works', hidden: true })
     expect(works).toHaveAttribute('href', '/works')
     expect(works).not.toHaveAttribute('target')
-    // Active links get a grassTeal background with #202023 text. jsdom can't
-    // resolve the background's CSS variable, so check the literal text
-    // colour; e2e checks the rendered background.
-    const colour = getComputedStyle(works).color
-    expect(colour === 'rgb(32, 32, 35)').toBe(highlighted)
+    // jsdom can't resolve the theme's colour variables, so check
+    // aria-current here; e2e checks the rendered colours.
+    if (highlighted) {
+      expect(works).toHaveAttribute('aria-current', 'page')
+    } else {
+      expect(works).not.toHaveAttribute('aria-current')
+    }
   })
 
   it('includes the theme toggle', () => {

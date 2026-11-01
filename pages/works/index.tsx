@@ -16,7 +16,7 @@ const Works = () => {
             <Heading as="h4" variant="section-title">
               {organisation.name}
             </Heading>
-            <Text fontSize={14} mb={4} mt={-2}>
+            <Text fontSize={14} color="text-muted" mb={4} mt={-2}>
               {organisation.role} · {organisation.period}
             </Text>
             <SimpleGrid columns={[1, 1, 2]} gap={6}>

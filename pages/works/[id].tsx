@@ -47,10 +47,10 @@ const WorkPage = ({ work }: WorkPageProps) => (
         {work.title}
       </Heading>
       <Box mb={4}>
-        <Badge colorScheme="teal" mr={2}>
+        <Badge bg="tag-bg" color="tag-fg" mr={2}>
           {work.organisation.name}
         </Badge>
-        <Text as="span" fontSize={14}>
+        <Text as="span" fontSize={14} color="text-muted">
           {work.organisation.period}
         </Text>
       </Box>

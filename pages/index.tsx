@@ -50,9 +50,7 @@ const Page = ({ buildYear }: PageProps) => {
         </Box>
         <Box display={{ md: 'flex' }}>
           <Box flexGrow={1}>
-            <Heading as="h2" variant="page-title">
-              Bin Hu
-            </Heading>
+            <Heading as="h2">Bin Hu</Heading>
             <p>&quot;Be the change that you want to see in the world.&quot;</p>
           </Box>
           <Box

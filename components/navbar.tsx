@@ -37,7 +37,7 @@ const LinkItem = ({
   ...props
 }: LinkItemProps) => {
   const active = path === href
-  const inactiveColor = useColorModeValue('gray200', 'whiteAlpha.900')
+  const inactiveColor = useColorModeValue('gray.800', 'whiteAlpha.900')
   return (
     <Link
       href={href}
@@ -88,7 +88,7 @@ const Navbar = (props: NavbarProps) => {
           width={{ base: 'full', md: 'auto' }}
           alignItems="center"
           flexGrow={1}
-          mt={{ base: 4, nmd: 0 }}
+          mt={{ base: 4, md: 0 }}
         >
           <LinkItem
             href="https://github.com/elithrade"

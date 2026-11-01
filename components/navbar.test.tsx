@@ -34,6 +34,25 @@ describe('Navbar', () => {
     )
   })
 
+  it.each([
+    ['/', false],
+    ['/works', true],
+    ['/works/rov-video-streaming', true]
+  ])('on %s, the Works link is highlighted: %s', (path, highlighted) => {
+    renderWithTheme(<Navbar path={path} />)
+
+    const works = screen.getByRole('link', { name: 'Works', hidden: true })
+    expect(works).toHaveAttribute('href', '/works')
+    expect(works).not.toHaveAttribute('target')
+    // jsdom can't resolve the theme's colour variables, so check
+    // aria-current here; e2e checks the rendered colours.
+    if (highlighted) {
+      expect(works).toHaveAttribute('aria-current', 'page')
+    } else {
+      expect(works).not.toHaveAttribute('aria-current')
+    }
+  })
+
   it('includes the theme toggle', () => {
     renderWithTheme(<Navbar path="/" />)
 
@@ -42,7 +61,7 @@ describe('Navbar', () => {
     ).toBeInTheDocument()
   })
 
-  it('opens the mobile menu with About and GitHub entries', async () => {
+  it('opens the mobile menu with About, Works and GitHub entries', async () => {
     const user = userEvent.setup()
     renderWithTheme(<Navbar path="/" />)
 
@@ -52,6 +71,9 @@ describe('Navbar', () => {
     expect(
       within(menu).getByRole('menuitem', { name: 'About' })
     ).toHaveAttribute('href', '/')
+    expect(
+      within(menu).getByRole('menuitem', { name: 'Works' })
+    ).toHaveAttribute('href', '/works')
     expect(
       within(menu).getByRole('menuitem', { name: 'GitHub' })
     ).toHaveAttribute('href', GITHUB_URL)

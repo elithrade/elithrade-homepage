@@ -1,14 +1,7 @@
 import { useSyncExternalStore } from 'react'
 import type { InferGetStaticPropsType } from 'next'
 import NextLink from 'next/link'
-import {
-  Container,
-  Box,
-  Heading,
-  Link,
-  Image,
-  useColorModeValue
-} from '@chakra-ui/react'
+import { Container, Box, Heading, Link, Image } from '@chakra-ui/react'
 import Layout from '../components/layouts/article'
 import Section from '../components/section'
 import Paragraph from '../components/Paragraph'
@@ -41,7 +34,9 @@ const Page = ({ buildYear }: PageProps) => {
       <Container maxW="container.lg">
         <Box
           borderRadius="lg"
-          bg={useColorModeValue('whiteAlpha.500', 'whiteAlpha.200')}
+          bg="surface"
+          borderWidth="1px"
+          borderColor="surface-border"
           p={3}
           mb={6}
           align="center"

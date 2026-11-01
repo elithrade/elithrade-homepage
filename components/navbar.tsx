@@ -17,6 +17,7 @@ import {
   type LinkProps
 } from '@chakra-ui/react'
 import { HamburgerIcon } from '@chakra-ui/icons'
+import NextLink from 'next/link'
 import ThemeToggleButton from './theme-toggle-button'
 import { IoLogoGithub } from 'react-icons/io5'
 
@@ -26,9 +27,10 @@ type LinkItemProps = LinkProps & {
   children: ReactNode
 }
 
-// The JS version imported a non-existent named export `{ NextLink }` from
-// 'next/link' and passed it as `as`, which was undefined, so Chakra rendered a
-// plain <a>. Rendering Link without `as` produces the same markup.
+// Highlights the current section: /works is active on /works/<id> too.
+const isActive = (path: string, href: string) =>
+  path === href || (href !== '/' && path.startsWith(`${href}/`))
+
 const LinkItem = ({
   href,
   path,
@@ -36,14 +38,19 @@ const LinkItem = ({
   isExternal,
   ...props
 }: LinkItemProps) => {
-  const active = path === href
-  const inactiveColor = useColorModeValue('gray.800', 'whiteAlpha.900')
+  const active = isActive(path, href)
   return (
     <Link
+      // Internal links use next/link for client-side navigation, which also
+      // lets the page transition animation run.
+      as={isExternal ? undefined : NextLink}
       href={href}
       p={2}
-      bg={active ? 'grassTeal' : undefined}
-      color={active ? '#202023' : inactiveColor}
+      borderRadius="md"
+      aria-current={active ? 'page' : undefined}
+      // The active link uses the accent, which matches the theme toggle.
+      bg={active ? 'accent-solid' : undefined}
+      color={active ? 'on-accent' : 'chakra-body-text'}
       isExternal={isExternal}
       {...props}
     >
@@ -90,6 +97,9 @@ const Navbar = (props: NavbarProps) => {
           flexGrow={1}
           mt={{ base: 4, md: 0 }}
         >
+          <LinkItem href="/works" path={path}>
+            Works
+          </LinkItem>
           <LinkItem
             href="https://github.com/elithrade"
             display="inline-flex"
@@ -113,8 +123,11 @@ const Navbar = (props: NavbarProps) => {
                 aria-label="Options"
               />
               <MenuList>
-                <MenuItem as={Link} href="/">
+                <MenuItem as={NextLink} href="/">
                   About
+                </MenuItem>
+                <MenuItem as={NextLink} href="/works">
+                  Works
                 </MenuItem>
                 <MenuItem as={Link} href="https://github.com/elithrade">
                   GitHub

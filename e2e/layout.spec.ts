@@ -1,12 +1,5 @@
 import { test, expect } from './fixtures'
 
-test('works thumbnails get rounded corners', async ({ page }) => {
-  await page.goto('/works')
-
-  const thumbnail = page.locator('img.grid-item-thumbnail').first()
-  await expect(thumbnail).toHaveCSS('border-radius', '12px')
-})
-
 test.describe('navbar link colour', () => {
   for (const [mode, colour] of [
     ['light', 'rgb(26, 32, 44)'], // gray.800

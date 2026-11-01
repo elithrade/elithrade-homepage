@@ -16,6 +16,16 @@ test('mobile layout uses the hamburger menu', async ({ page }) => {
     'https://github.com/elithrade'
   )
 
+  await expect(menu.getByRole('menuitem', { name: 'Works' })).toHaveAttribute(
+    'href',
+    '/works'
+  )
+
   await menu.getByRole('menuitem', { name: 'About' }).click()
   await expect(page).toHaveURL('/')
+
+  await page.getByRole('button', { name: 'Options' }).click()
+  await page.getByRole('menu').getByRole('menuitem', { name: 'Works' }).click()
+  await expect(page).toHaveURL('/works')
+  await expect(page.getByRole('heading', { name: 'Works' })).toBeVisible()
 })

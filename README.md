@@ -4,7 +4,7 @@
 [![E2E Test](https://github.com/elithrade/elithrade-homepage/actions/workflows/e2e.yml/badge.svg)](https://github.com/elithrade/elithrade-homepage/actions/workflows/e2e.yml)
 
 Personal homepage of Bin Hu: a small Next.js site with an animated 3D voxel dog,
-light/dark themes, and a bio and skills page.
+light/dark themes, a bio and skills page, and a works page built from the CV.
 
 **Live:** https://mango-pebble-00502641e.3.azurestaticapps.net
 
@@ -53,7 +53,8 @@ e2e/                 Playwright end-to-end tests
 libs/
   model.ts           GLTF loader helper for the voxel dog
   theme.ts           Chakra theme: colours, fonts, colour mode
-pages/               Next.js routes (/ and /works)
+  works.ts           Projects shown on /works, taken from the CV
+pages/               Next.js routes (/, /works and /works/[id])
 public/              Static assets: dog.glb, images
 test/                Test setup, helpers and page tests
 types/               Project-wide type declarations
@@ -100,6 +101,13 @@ use, so it can't be overridden. The risk is accepted because:
 
 It clears once the plugins upgrade `minimatch`; check with `npm audit`.
 
+## Adding a work
+
+Works live in `libs/works.ts`. Add an entry to `works` with a unique,
+URL-safe `id`; the list page groups it under its organisation and
+`/works/<id>` is generated at build time. The unit and e2e tests pick up new
+entries automatically.
+
 ## Testing
 
 ### Unit tests
@@ -121,6 +129,7 @@ The Playwright tests in `e2e/` run in Chromium against a production build
 served with `next start` on port 3100. They cover:
 
 - home page content
+- the works list and every work's detail page
 - the voxel dog loading and rendering
 - the theme toggle, including persistence across reloads
 - navigation and the 404 page

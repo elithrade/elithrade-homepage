@@ -31,7 +31,8 @@ const Layout = ({ children, title }: LayoutProps) => (
     <>
       {title && (
         <Head>
-          <title>{title} - Bin Hu</title>
+          {/* A single string child: React errors on multiple <title> children. */}
+          <title>{`${title} - Bin Hu`}</title>
         </Head>
       )}
       {children}

@@ -10,7 +10,15 @@ const config = [
       ]
     }
   },
-  { ignores: ['.next/**', 'node_modules/**'] }
+  {
+    ignores: [
+      '.next/**',
+      'node_modules/**',
+      'test-results/**',
+      'playwright-report/**',
+      'blob-report/**'
+    ]
+  }
 ]
 
 export default config

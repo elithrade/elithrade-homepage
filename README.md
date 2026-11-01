@@ -72,6 +72,34 @@ types/               Project-wide type declarations
   `Container`. Chakra forwards them to the DOM, and the layout depends on
   them: `align="center"` centres a block's contents.
 
+## Dependencies
+
+`package.json` has an `overrides` block for the ESLint toolchain:
+
+- **ESLint 10 peer ranges.** `eslint-config-next` pulls in
+  `eslint-plugin-react`, `eslint-plugin-jsx-a11y` and `eslint-plugin-import`,
+  whose latest releases declare support only up to ESLint 9. They work with
+  ESLint 10, so the overrides point their `eslint` peer at the project's
+  version (`$eslint`) instead of printing peer warnings. ESLint 9 isn't an
+  option: it's end-of-life and npm flags it as deprecated. Remove these
+  overrides once the plugins declare ESLint 10 support.
+- **minimatch.** ESLint, `@eslint/config-array` and
+  `@typescript-eslint/typescript-estree` are moved to `minimatch` 11, which
+  fixes [GHSA-g3hv-75wg-m249](https://github.com/advisories/GHSA-g3hv-75wg-m249).
+
+### Known audit warning
+
+`npm install` reports 5 moderate vulnerabilities. They're all the same
+advisory: the three plugins above still depend on `minimatch` 3. There's no
+patched 3.x release, and `minimatch` 11 drops the callable API those plugins
+use, so it can't be overridden. The risk is accepted because:
+
+- the packages are dev-only lint tooling and never reach the deployed site
+- the issue is a denial of service through crafted glob patterns, and the only
+  patterns these plugins see come from this repo's lint config
+
+It clears once the plugins upgrade `minimatch`; check with `npm audit`.
+
 ## Testing
 
 ### Unit tests

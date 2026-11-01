@@ -68,7 +68,9 @@ const VoxelDog = () => {
       camera.position.copy(initialCameraPosition)
       camera.lookAt(target)
 
-      const ambientLight = new THREE.AmbientLight(0xcccccc, 1)
+      // three r155+ uses physically-correct lighting; scale by PI to match
+      // the brightness of the old legacy-lights mode.
+      const ambientLight = new THREE.AmbientLight(0xcccccc, Math.PI)
       scene.add(ambientLight)
 
       const controls = new OrbitControls(camera, renderer.domElement)

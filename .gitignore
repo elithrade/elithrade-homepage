@@ -13,3 +13,8 @@ dist
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
+
+# Claude Code: local-only files. Shared project config (.claude/settings.json,
+# commands/, agents/, skills/) can still be committed.
+/.claude/worktrees/
+/.claude/settings.local.json

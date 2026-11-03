@@ -9,7 +9,12 @@ export default function Website({ Component, pageProps, router }: AppProps) {
   return (
     <ChakraProvider theme={theme}>
       <Fonts />
-      <Layout router={router}>
+      <Layout
+        router={router}
+        // The home page passes its quote of the day; the footer credits
+        // ZenQuotes only when the quote really came from there.
+        showQuoteAttribution={pageProps.quote?.source === 'zenquotes'}
+      >
         <AnimatePresence mode="wait" initial={true}>
           <Component {...pageProps} key={router.route} />
         </AnimatePresence>

@@ -44,28 +44,22 @@ describe('Home page', () => {
     expect(screen.getByText(/with over 24 years of hands/)).toBeInTheDocument()
   })
 
-  it('shows the quote of the day with its author and attribution', () => {
+  it('shows the quote of the day with its author', () => {
     renderPage()
 
     expect(
       screen.getByText('“When the time is gone, you can never get it back.”')
     ).toBeInTheDocument()
-    expect(screen.getByText(/— Stephen King/)).toBeInTheDocument()
-    const attribution = screen.getByRole('link', { name: 'ZenQuotes' })
-    expect(attribution).toHaveAttribute('href', 'https://zenquotes.io/')
-    expect(attribution).toHaveAttribute('target', '_blank')
+    expect(screen.getByText('— Stephen King')).toBeInTheDocument()
   })
 
-  it('shows the fallback quote without the ZenQuotes attribution', () => {
+  it('shows the fallback quote', () => {
     renderPage(FALLBACK_QUOTE)
 
     expect(
       screen.getByText('“Be the change that you want to see in the world.”')
     ).toBeInTheDocument()
-    expect(screen.getByText(/— Mahatma Gandhi/)).toBeInTheDocument()
-    expect(
-      screen.queryByRole('link', { name: 'ZenQuotes' })
-    ).not.toBeInTheDocument()
+    expect(screen.getByText('— Mahatma Gandhi')).toBeInTheDocument()
   })
 
   it('links the Download CV button to the published CV', () => {

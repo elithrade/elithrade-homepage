@@ -125,13 +125,15 @@ export const devCorner = defineScene({
       animation: 'idle'
     }
   ],
-  // From the front right, looking into the corner, about 29° above.
+  // From the front right, looking into the corner, about 29° above. Zoomed
+  // in until the room nearly fills the canvas's height: any closer clips the
+  // wall tops and the front floor corner.
   camera: {
     target: [1.45, 0.6, -1.0],
     azimuth: 40,
     height: 11,
     distance: 20,
-    halfWidth: 2.6
+    halfWidth: 2.4
   },
   // Softer than the defaults: the furniture's colours wash out otherwise.
   lights: { ambient: 0.8, sun: 0.75 },

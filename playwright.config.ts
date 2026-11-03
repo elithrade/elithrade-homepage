@@ -23,7 +23,7 @@ export default defineConfig({
       use: {
         ...devices['Desktop Chrome'],
         // Headless Chromium has no GPU; allow the software WebGL renderer so
-        // the three.js arena can render.
+        // the three.js hero scene can render.
         launchOptions: { args: ['--enable-unsafe-swiftshader'] }
       }
     }

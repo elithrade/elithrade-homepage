@@ -17,6 +17,7 @@ type GlbNode = {
 
 type GlbJson = {
   images?: { uri?: string; bufferView?: number }[]
+  animations?: { name?: string }[]
   scenes: { nodes: number[] }[]
   nodes: GlbNode[]
   meshes: { primitives: { attributes: { POSITION: number } }[] }[]
@@ -115,6 +116,16 @@ describe.each(SCENES.map(scene => [scene.name, scene] as const))(
         }
       }
     )
+
+    it('plays only animations its models have', () => {
+      for (const actor of scene.actors ?? []) {
+        if (!actor.animation) continue
+        const json = readGlbJson(join('public', scene.models[actor.model]))
+        expect(json.animations?.map(clip => clip.name)).toContain(
+          actor.animation
+        )
+      }
+    })
   }
 )
 

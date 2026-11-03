@@ -58,7 +58,7 @@ libs/
   works.ts           Projects shown on /works, taken from the CV
 pages/               Next.js routes (/, /works and /works/[id])
 public/              Static assets: 3D models (models/<scene>/), images
-scripts/             One-off generators, e.g. the dev corner's mug model
+scripts/             Model generators: the dev corner's mug, the voxel dog
 test/                Test setup, helpers and page tests
 types/               Project-wide type declarations
 ```
@@ -79,6 +79,18 @@ A pack won't always have the piece you want. The dev corner's coffee mug is
 built in three.js by `scripts/make-mug.mjs` and saved as
 `public/models/dev-corner/mug.glb`; run `node scripts/make-mug.mjs` to
 rebuild it after changing the script.
+
+#### The voxel dog
+
+`libs/scenes/voxel-dog.ts` is a second scene: a voxel dog on a grass island,
+wagging its tail while the camera circles it like a turntable. Set
+`HERO_SCENE` to `voxelDog` to show it instead of the dev corner.
+
+Its models are drawn as text, so they can be changed without a 3D editor.
+`scripts/voxels/dog.txt` and `island.txt` list the voxels layer by layer,
+one letter per voxel, with the format and colours explained at the top of
+each file. After editing one, run `node scripts/make-voxel-models.mjs` to
+rebuild the `.glb` files in `public/models/voxel-dog/`.
 
 ## TypeScript
 

@@ -45,6 +45,10 @@ export type SceneDef<M extends string = string> = {
     // Half the visible width in world units; the visible height follows the
     // canvas's aspect ratio.
     halfWidth: number
+    // Seconds per turn, to keep circling the scene after the intro like a
+    // turntable. Without it the camera rests at `azimuth`, and dragging can
+    // swing it at most 45° either way.
+    turntable?: number
   }
   // Light strengths, relative to the defaults (1 = default).
   lights?: { ambient?: number; sun?: number }

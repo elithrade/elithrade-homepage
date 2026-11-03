@@ -165,13 +165,20 @@ const HeroScene = ({ scene: def }: HeroSceneProps) => {
     sun.shadow.radius = 3
     scene.add(sun, sun.target)
 
-    // Drag to look around, but stay in front of the scene and above it.
+    // Drag to look around, but stay above the scene, and in front of it
+    // unless it turns like a turntable.
     const controls = new OrbitControls(camera, renderer.domElement)
     controls.target.copy(target)
     controls.enablePan = false
-    controls.minAzimuthAngle = azimuth - Math.PI / 4
-    controls.maxAzimuthAngle = azimuth + Math.PI / 4
     controls.maxPolarAngle = Math.PI / 2.4
+    if (view.turntable) {
+      controls.autoRotate = true
+      // OrbitControls turns 2π/60 × speed radians per second.
+      controls.autoRotateSpeed = 60 / view.turntable
+    } else {
+      controls.minAzimuthAngle = azimuth - Math.PI / 4
+      controls.maxAzimuthAngle = azimuth + Math.PI / 4
+    }
 
     const mixers: THREE.AnimationMixer[] = []
     let disposed = false
@@ -200,7 +207,7 @@ const HeroScene = ({ scene: def }: HeroSceneProps) => {
         camera.position.copy(target).add(offset)
         camera.lookAt(target)
       } else {
-        controls.update()
+        controls.update(delta)
       }
 
       renderer.render(scene, camera)

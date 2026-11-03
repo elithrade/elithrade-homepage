@@ -18,9 +18,7 @@ function easeOutCirc(x: number) {
 function place(object: THREE.Object3D, placement: Placement) {
   object.position.set(placement.x, placement.y ?? 0, placement.z)
   object.rotation.y = (placement.turn ?? 0) * DEG
-  const { scale = 1 } = placement
-  if (typeof scale === 'number') object.scale.setScalar(scale)
-  else object.scale.set(...scale)
+  object.scale.setScalar(placement.scale ?? 1)
 }
 
 function enableShadows(object: THREE.Object3D) {
@@ -29,39 +27,6 @@ function enableShadows(object: THREE.Object3D) {
       child.castShadow = true
       child.receiveShadow = true
     }
-  })
-}
-
-// Replace flat, unlit materials with lit ones of the same colour. Converted
-// once per loaded model, before it's copied, so copies share materials.
-function lightUnlitMaterials(root: THREE.Object3D) {
-  const converted = new Map<THREE.Material, THREE.Material>()
-  const convert = (material: THREE.Material) => {
-    const basic = material as THREE.MeshBasicMaterial
-    if (!basic.isMeshBasicMaterial) return material
-    let lit = converted.get(basic)
-    if (!lit) {
-      lit = new THREE.MeshStandardMaterial({
-        name: basic.name,
-        color: basic.color,
-        map: basic.map,
-        transparent: basic.transparent,
-        opacity: basic.opacity,
-        side: basic.side,
-        roughness: 0.85,
-        metalness: 0
-      })
-      converted.set(basic, lit)
-      basic.dispose()
-    }
-    return lit
-  }
-  root.traverse(child => {
-    const mesh = child as THREE.Mesh
-    if (!mesh.isMesh) return
-    mesh.material = Array.isArray(mesh.material)
-      ? mesh.material.map(convert)
-      : convert(mesh.material)
   })
 }
 
@@ -165,13 +130,20 @@ const HeroScene = ({ scene: def }: HeroSceneProps) => {
     sun.shadow.radius = 3
     scene.add(sun, sun.target)
 
-    // Drag to look around, but stay in front of the scene and above it.
+    // Drag to look around, but stay above the scene, and in front of it
+    // unless it turns like a turntable.
     const controls = new OrbitControls(camera, renderer.domElement)
     controls.target.copy(target)
     controls.enablePan = false
-    controls.minAzimuthAngle = azimuth - Math.PI / 4
-    controls.maxAzimuthAngle = azimuth + Math.PI / 4
     controls.maxPolarAngle = Math.PI / 2.4
+    if (view.turntable) {
+      controls.autoRotate = true
+      // OrbitControls turns 2π/60 × speed radians per second.
+      controls.autoRotateSpeed = 60 / view.turntable
+    } else {
+      controls.minAzimuthAngle = azimuth - Math.PI / 4
+      controls.maxAzimuthAngle = azimuth + Math.PI / 4
+    }
 
     const mixers: THREE.AnimationMixer[] = []
     let disposed = false
@@ -200,7 +172,7 @@ const HeroScene = ({ scene: def }: HeroSceneProps) => {
         camera.position.copy(target).add(offset)
         camera.lookAt(target)
       } else {
-        controls.update()
+        controls.update(delta)
       }
 
       renderer.render(scene, camera)
@@ -214,7 +186,6 @@ const HeroScene = ({ scene: def }: HeroSceneProps) => {
         const models = new Map<string, GLTF>()
         results.forEach((result, i) => {
           if (result.status === 'fulfilled') {
-            if (def.lightUnlitMaterials) lightUnlitMaterials(result.value.scene)
             models.set(ids[i], result.value)
           } else {
             console.warn('3D model failed to load', result.reason)

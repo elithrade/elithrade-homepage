@@ -21,7 +21,7 @@ type SceneContainerProps = {
 // screens but stops at SCENE_MAX_WIDTH, so it sets the mood without pulling
 // attention from the content below.
 export const SCENE_ASPECT_RATIO = '640 / 380'
-export const SCENE_MAX_WIDTH = '480px'
+export const SCENE_MAX_WIDTH = '640px'
 
 export const SceneContainer = forwardRef<HTMLDivElement, SceneContainerProps>(
   ({ children }, ref) => (

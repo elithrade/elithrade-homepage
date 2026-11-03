@@ -1,11 +1,18 @@
 import type { Page } from '@playwright/test'
 import { test, expect } from './fixtures'
 import { CV_URL, CV_FILENAME } from '../libs/cv'
+import { palette } from '../libs/theme'
 
-const backgroundOf = (page: Page, name: string, role: 'button' | 'link') =>
-  page
-    .getByRole(role, { name })
-    .evaluate(el => getComputedStyle(el).backgroundColor)
+// '#805ad5' -> 'rgb(128, 90, 213)', the form getComputedStyle reports.
+const rgb = (hex: string) => {
+  const [r, g, b] = [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16))
+  return `rgb(${r}, ${g}, ${b})`
+}
+
+const currentMode = async (page: Page) =>
+  (await page.locator('body').getAttribute('class'))?.includes('chakra-ui-dark')
+    ? 'dark'
+    : 'light'
 
 test.describe('Download CV button', () => {
   test.beforeEach(async ({ page }) => {
@@ -39,24 +46,18 @@ test.describe('Download CV button', () => {
   })
 
   test('matches the theme toggle colour in both modes', async ({ page }) => {
-    // Both buttons animate their background when the mode changes, so read
-    // them together until they agree.
-    const bothColours = async () => [
-      await backgroundOf(page, 'Download CV', 'link'),
-      await backgroundOf(page, 'Toggle theme', 'button')
-    ]
-    const settledColour = async () => {
-      await expect
-        .poll(async () => {
-          const [cv, toggle] = await bothColours()
-          return cv === toggle
-        })
-        .toBe(true)
-      return (await bothColours())[0]
-    }
+    const cv = page.getByRole('link', { name: 'Download CV' })
+    const toggle = page.getByRole('button', { name: 'Toggle theme' })
 
-    const first = await settledColour()
-    await page.getByRole('button', { name: 'Toggle theme' }).click()
-    await expect.poll(settledColour).not.toBe(first)
+    for (let i = 0; i < 2; i++) {
+      // The toggle's colour is the palette's accentSolid in each mode.
+      const accent = rgb(palette[await currentMode(page)].accentSolid)
+      await expect(toggle).toHaveCSS('background-color', accent)
+      await expect(cv).toHaveCSS('background-color', accent)
+
+      const before = await currentMode(page)
+      await toggle.click()
+      await expect.poll(() => currentMode(page)).not.toBe(before)
+    }
   })
 })

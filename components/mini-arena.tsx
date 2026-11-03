@@ -20,10 +20,12 @@ const HALF_WIDTH = 5.9
 // The opening spin around the arena, in seconds.
 const INTRO_SECONDS = 2
 // Where the camera comes to rest: in front of the arena, a little to the
-// left and well above it, like the pack's sample image.
+// left and about 29° above it, like the pack's sample image. Together with
+// the target below, this leaves a similar margin above the tallest piece
+// and below the front floor slabs.
 const REST_AZIMUTH = -0.12 * Math.PI
 const CAMERA_DISTANCE = 20
-const CAMERA_HEIGHT = 14
+const CAMERA_HEIGHT = 11
 
 function easeOutCirc(x: number) {
   return Math.sqrt(1 - Math.pow(x - 1, 4))
@@ -91,7 +93,7 @@ const MiniArena = () => {
     container.appendChild(renderer.domElement)
 
     const scene = new THREE.Scene()
-    const target = new THREE.Vector3(0.5, 1.2, -0.3)
+    const target = new THREE.Vector3(0.5, 1.0, -0.3)
     const restPosition = new THREE.Vector3(
       CAMERA_DISTANCE * Math.sin(REST_AZIMUTH),
       CAMERA_HEIGHT,

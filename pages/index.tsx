@@ -24,19 +24,22 @@ const useCurrentYear = (buildYear: number) =>
 
 // How often Next may regenerate the page in the background (ISR) to pick up
 // ZenQuotes' new quote of the day, which changes at 00:00 UTC. Visitors are
-// always served a cached page; at most one regeneration per window calls
-// ZenQuotes, keeping well inside its rate limit.
-export const QUOTE_REVALIDATE_SECONDS = 60
+// always served a cached page, and only the first request after the window
+// triggers a regeneration, so ZenQuotes is called at most about once an hour.
+// After a failed fetch, retry sooner so the fallback doesn't linger.
+export const QUOTE_REVALIDATE_SECONDS = 60 * 60
+export const FALLBACK_REVALIDATE_SECONDS = 5 * 60
 
-export const getStaticProps = async () => ({
-  props: {
-    buildYear: currentYear(),
-    quote: await fetchQuoteOfTheDay(),
-    // TEMPORARY: lets us see on the PR preview whether ISR regenerates.
-    generatedAt: new Date().toISOString()
-  },
-  revalidate: QUOTE_REVALIDATE_SECONDS
-})
+export const getStaticProps = async () => {
+  const quote = await fetchQuoteOfTheDay()
+  return {
+    props: { buildYear: currentYear(), quote },
+    revalidate:
+      quote.source === 'fallback'
+        ? FALLBACK_REVALIDATE_SECONDS
+        : QUOTE_REVALIDATE_SECONDS
+  }
+}
 
 type PageProps = InferGetStaticPropsType<typeof getStaticProps>
 

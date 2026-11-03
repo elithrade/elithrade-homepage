@@ -12,13 +12,7 @@ const zenQuote: Quote = {
 }
 
 const renderPage = (quote: Quote = zenQuote) =>
-  renderWithTheme(
-    <Page
-      buildYear={2026}
-      quote={quote}
-      generatedAt="2026-11-03T00:00:00.000Z"
-    />
-  )
+  renderWithTheme(<Page buildYear={2026} quote={quote} />)
 
 describe('Home page', () => {
   afterEach(() => {

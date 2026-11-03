@@ -1,13 +1,14 @@
 import { useSyncExternalStore } from 'react'
 import type { InferGetStaticPropsType } from 'next'
 import NextLink from 'next/link'
-import { Container, Box, Heading, Link, Image } from '@chakra-ui/react'
+import { Container, Box, Heading, Link, Image, Text } from '@chakra-ui/react'
 import Layout from '../components/layouts/article'
 import Section from '../components/section'
 import Paragraph from '../components/Paragraph'
 import { BioSection, BioYear } from '../components/bio'
 import { Category, CategorySection } from '../components/category'
 import DownloadCvButton from '../components/download-cv-button'
+import { fetchQuoteOfTheDay } from '../libs/quote'
 
 const CAREER_START_YEAR = 2006
 
@@ -21,13 +22,25 @@ const subscribeToYear = () => () => {}
 const useCurrentYear = (buildYear: number) =>
   useSyncExternalStore(subscribeToYear, currentYear, () => buildYear)
 
-export const getStaticProps = () => ({
-  props: { buildYear: currentYear() }
+// How often Next may regenerate the page in the background (ISR) to pick up
+// ZenQuotes' new quote of the day, which changes at 00:00 UTC. Visitors are
+// always served a cached page; at most one regeneration per window calls
+// ZenQuotes, keeping well inside its rate limit.
+export const QUOTE_REVALIDATE_SECONDS = 60
+
+export const getStaticProps = async () => ({
+  props: {
+    buildYear: currentYear(),
+    quote: await fetchQuoteOfTheDay(),
+    // TEMPORARY: lets us see on the PR preview whether ISR regenerates.
+    generatedAt: new Date().toISOString()
+  },
+  revalidate: QUOTE_REVALIDATE_SECONDS
 })
 
 type PageProps = InferGetStaticPropsType<typeof getStaticProps>
 
-const Page = ({ buildYear }: PageProps) => {
+const Page = ({ buildYear, quote }: PageProps) => {
   const experienceYears = useCurrentYear(buildYear) - CAREER_START_YEAR
 
   return (
@@ -50,7 +63,21 @@ const Page = ({ buildYear }: PageProps) => {
         <Box display={{ md: 'flex' }} mb={{ md: 8 }}>
           <Box flexGrow={1}>
             <Heading as="h2">Bin Hu</Heading>
-            <p>&quot;Be the change that you want to see in the world.&quot;</p>
+            <Box as="figure">
+              <Text as="blockquote">&ldquo;{quote.text}&rdquo;</Text>
+              <Text as="figcaption" fontSize="sm" color="text-muted">
+                &mdash; {quote.author}
+                {quote.source === 'zenquotes' && (
+                  <>
+                    {' · via '}
+                    {/* ZenQuotes' free tier requires this attribution link. */}
+                    <Link href="https://zenquotes.io/" isExternal>
+                      ZenQuotes
+                    </Link>
+                  </>
+                )}
+              </Text>
+            </Box>
             <DownloadCvButton mt={3} />
           </Box>
           <Box

@@ -48,6 +48,7 @@ const Page = ({ buildYear }: PageProps) => {
           <Box flexGrow={1}>
             <Heading as="h2">Bin Hu</Heading>
             <p>&quot;Be the change that you want to see in the world.&quot;</p>
+            <DownloadCvButton mt={3} />
           </Box>
           <Box
             flexShrink={0}
@@ -87,7 +88,6 @@ const Page = ({ buildYear }: PageProps) => {
             increasingly contributing to architectural discussions and system
             design, aiming to grow into broader technical leadership over time
           </Paragraph>
-          <DownloadCvButton />
         </Section>
         <Section delay={0.2}>
           <Heading as="h3" variant="section-title">

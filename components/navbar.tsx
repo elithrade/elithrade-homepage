@@ -16,10 +16,11 @@ import {
   type BoxProps,
   type LinkProps
 } from '@chakra-ui/react'
-import { HamburgerIcon } from '@chakra-ui/icons'
+import { DownloadIcon, HamburgerIcon } from '@chakra-ui/icons'
 import NextLink from 'next/link'
 import ThemeToggleButton from './theme-toggle-button'
 import { IoLogoGithub } from 'react-icons/io5'
+import { CV_URL } from '../libs/cv'
 
 type LinkItemProps = LinkProps & {
   href: string
@@ -42,8 +43,9 @@ const LinkItem = ({
   return (
     <Link
       // Internal links use next/link for client-side navigation, which also
-      // lets the page transition animation run.
-      as={isExternal ? undefined : NextLink}
+      // lets the page transition animation run. Other links (GitHub, the CV)
+      // are plain anchors; isExternal additionally opens them in a new tab.
+      as={href.startsWith('/') ? NextLink : undefined}
       href={href}
       p={2}
       borderRadius="md"
@@ -111,6 +113,18 @@ const Navbar = (props: NavbarProps) => {
             <IoLogoGithub />
             GitHub
           </LinkItem>
+          {/* Same tab: the CV is served as an attachment, so it downloads
+              without leaving the page. */}
+          <LinkItem
+            href={CV_URL}
+            display="inline-flex"
+            alignItems="center"
+            style={{ gap: 4 }}
+            path={path}
+          >
+            <DownloadIcon boxSize={3.5} />
+            CV
+          </LinkItem>
         </Stack>
         <Box flex={1} align="right">
           <ThemeToggleButton />
@@ -131,6 +145,9 @@ const Navbar = (props: NavbarProps) => {
                 </MenuItem>
                 <MenuItem as={Link} href="https://github.com/elithrade">
                   GitHub
+                </MenuItem>
+                <MenuItem as={Link} href={CV_URL}>
+                  Download CV
                 </MenuItem>
               </MenuList>
             </Menu>

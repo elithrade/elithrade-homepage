@@ -45,6 +45,19 @@ test.describe('Download CV button', () => {
     await expect(page).toHaveURL('/')
   })
 
+  test('the navbar CV link downloads it from any page', async ({ page }) => {
+    await page.goto('/works')
+    const link = page.getByRole('link', { name: 'CV', exact: true })
+    await expect(link).toBeVisible()
+
+    const [download] = await Promise.all([
+      page.waitForEvent('download'),
+      link.click()
+    ])
+    expect(download.suggestedFilename()).toBe(CV_FILENAME)
+    await expect(page).toHaveURL('/works')
+  })
+
   test('matches the theme toggle colour in both modes', async ({ page }) => {
     const cv = page.getByRole('link', { name: 'Download CV' })
     const toggle = page.getByRole('button', { name: 'Toggle theme' })

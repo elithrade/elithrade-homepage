@@ -1,4 +1,5 @@
 import { test, expect } from './fixtures'
+import { CV_URL } from '../libs/cv'
 
 test.use({ viewport: { width: 390, height: 844 } })
 
@@ -20,6 +21,9 @@ test('mobile layout uses the hamburger menu', async ({ page }) => {
     'href',
     '/works'
   )
+  await expect(
+    menu.getByRole('menuitem', { name: 'Download CV' })
+  ).toHaveAttribute('href', CV_URL)
 
   await menu.getByRole('menuitem', { name: 'About' }).click()
   await expect(page).toHaveURL('/')

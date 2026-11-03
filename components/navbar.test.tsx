@@ -35,10 +35,15 @@ describe('Navbar', () => {
     )
   })
 
-  it('links to the CV in the same tab', () => {
+  it('has a Download CV button that downloads in the same tab', () => {
     renderWithTheme(<Navbar path="/" />)
 
-    const cv = screen.getByRole('link', { name: 'CV', hidden: true })
+    // The button is display:none at the base breakpoint and jsdom doesn't
+    // evaluate media queries, so its accessible name computes as empty:
+    // match on its text instead.
+    const cv = screen
+      .getAllByRole('link', { hidden: true })
+      .find(el => el.textContent === 'Download CV')
     expect(cv).toHaveAttribute('href', CV_URL)
     // The CV is served as an attachment, so it downloads without leaving
     // the page; a new tab would just flash open and close.

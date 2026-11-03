@@ -9,6 +9,16 @@ const rgb = (hex: string) => {
   return `rgb(${r}, ${g}, ${b})`
 }
 
+// The home page has two: the primary button by the name, and the navbar's.
+const headerButton = (page: Page) =>
+  page
+    .getByRole('heading', { level: 2, name: 'Bin Hu' })
+    .locator('..')
+    .getByRole('link', { name: 'Download CV' })
+
+const navbarButton = (page: Page) =>
+  page.getByRole('navigation').getByRole('link', { name: 'Download CV' })
+
 const currentMode = async (page: Page) =>
   (await page.locator('body').getAttribute('class'))?.includes('chakra-ui-dark')
     ? 'dark'
@@ -32,7 +42,7 @@ test.describe('Download CV button', () => {
   })
 
   test('downloads the CV as Bin-Hu-CV.pdf', async ({ page }) => {
-    const button = page.getByRole('link', { name: 'Download CV' })
+    const button = headerButton(page)
     await expect(button).toBeVisible()
     await expect(button).toHaveAttribute('href', CV_URL)
 
@@ -45,9 +55,9 @@ test.describe('Download CV button', () => {
     await expect(page).toHaveURL('/')
   })
 
-  test('the navbar CV link downloads it from any page', async ({ page }) => {
+  test('the navbar button downloads it from any page', async ({ page }) => {
     await page.goto('/works')
-    const link = page.getByRole('link', { name: 'CV', exact: true })
+    const link = navbarButton(page)
     await expect(link).toBeVisible()
 
     const [download] = await Promise.all([
@@ -59,14 +69,25 @@ test.describe('Download CV button', () => {
   })
 
   test('matches the theme toggle colour in both modes', async ({ page }) => {
-    const cv = page.getByRole('link', { name: 'Download CV' })
+    const cv = headerButton(page)
+    const nav = navbarButton(page)
     const toggle = page.getByRole('button', { name: 'Toggle theme' })
 
     for (let i = 0; i < 2; i++) {
+      const colours = palette[await currentMode(page)]
       // The toggle's colour is the palette's accentSolid in each mode.
-      const accent = rgb(palette[await currentMode(page)].accentSolid)
+      const accent = rgb(colours.accentSolid)
       await expect(toggle).toHaveCSS('background-color', accent)
       await expect(cv).toHaveCSS('background-color', accent)
+
+      // The navbar's outline button uses the accent text colour, and fills
+      // with the toggle's colour on hover.
+      await expect(nav).toHaveCSS('color', rgb(colours.accent))
+      await expect(nav).toHaveCSS('border-top-color', rgb(colours.accent))
+      await nav.hover()
+      await expect(nav).toHaveCSS('background-color', accent)
+      await expect(nav).toHaveCSS('color', rgb(colours.onAccent))
+      await page.mouse.move(0, 400)
 
       const before = await currentMode(page)
       await toggle.click()

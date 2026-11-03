@@ -11,10 +11,9 @@ test.describe('navbar link colour', () => {
       }, mode)
       await page.goto('/')
 
-      await expect(page.getByRole('link', { name: 'GitHub' })).toHaveCSS(
-        'color',
-        colour
-      )
+      await expect(
+        page.getByRole('navigation').getByRole('link', { name: 'GitHub' })
+      ).toHaveCSS('color', colour)
     })
   }
 })

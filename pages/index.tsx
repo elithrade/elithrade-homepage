@@ -7,6 +7,7 @@ import Section from '../components/section'
 import Paragraph from '../components/Paragraph'
 import { BioSection, BioYear } from '../components/bio'
 import { Category, CategorySection } from '../components/category'
+import DownloadCvButton from '../components/download-cv-button'
 
 const CAREER_START_YEAR = 2006
 
@@ -86,6 +87,7 @@ const Page = ({ buildYear }: PageProps) => {
             increasingly contributing to architectural discussions and system
             design, aiming to grow into broader technical leadership over time
           </Paragraph>
+          <DownloadCvButton />
         </Section>
         <Section delay={0.2}>
           <Heading as="h3" variant="section-title">

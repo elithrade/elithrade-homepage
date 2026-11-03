@@ -3,7 +3,7 @@
 [![CI](https://github.com/elithrade/elithrade-homepage/actions/workflows/ci.yml/badge.svg)](https://github.com/elithrade/elithrade-homepage/actions/workflows/ci.yml)
 [![E2E Test](https://github.com/elithrade/elithrade-homepage/actions/workflows/e2e.yml/badge.svg)](https://github.com/elithrade/elithrade-homepage/actions/workflows/e2e.yml)
 
-Personal homepage of Bin Hu: a small Next.js site with an animated 3D voxel dog,
+Personal homepage of Bin Hu: a small Next.js site with three animated 3D cube pets,
 light/dark themes, a bio and skills page, and a works page built from the CV.
 
 **Live:** https://mango-pebble-00502641e.3.azurestaticapps.net
@@ -14,7 +14,8 @@ light/dark themes, a bio and skills page, and a works page built from the CV.
 - [Next.js](https://nextjs.org) 16 (pages router, Turbopack) and React 19
 - [Chakra UI](https://v2.chakra-ui.com) 2 and Emotion for styling and colour mode
 - [framer-motion](https://motion.dev) for page and section transitions
-- [three.js](https://threejs.org) for the voxel dog (`public/dog.glb`)
+- [three.js](https://threejs.org) for the cube pets (`public/models/`), from
+  Kenney's [Cube Pets](https://kenney.nl/assets/cube-pets) pack (CC0)
 - [Vitest](https://vitest.dev) and Testing Library for unit tests
 - [Playwright](https://playwright.dev) for end-to-end tests
 - ESLint 10 (flat config) and Prettier
@@ -47,15 +48,16 @@ devices on your network can reach it too.
 ## Project structure
 
 ```
-components/          UI components (navbar, theme toggle, voxel dog, ...)
+components/          UI components (navbar, theme toggle, cube pets, ...)
   layouts/           Page layouts: main shell and animated article wrapper
 e2e/                 Playwright end-to-end tests
 libs/
-  model.ts           GLTF loader helper for the voxel dog
+  model.ts           GLTF loader helper for the cube pets
+  pets.ts            Which pets stand in the row, and where
   theme.ts           Chakra theme: colours, fonts, colour mode
   works.ts           Projects shown on /works, taken from the CV
 pages/               Next.js routes (/, /works and /works/[id])
-public/              Static assets: dog.glb, images
+public/              Static assets: pet models (models/), images
 test/                Test setup, helpers and page tests
 types/               Project-wide type declarations
 ```
@@ -139,7 +141,7 @@ served with `next start` on port 3100. They cover:
 
 - home page content
 - the works list and every work's detail page
-- the voxel dog loading and rendering
+- the cube pets loading and rendering
 - the theme toggle, including persistence across reloads
 - navigation and the 404 page
 - the mobile menu

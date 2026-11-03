@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { Scene, Group, Mesh, Object3D } from 'three'
+import { Scene, Group, Mesh, Object3D, AnimationClip } from 'three'
 import { loadGLTFModel } from './model'
 
 const { load } = vi.hoisted(() => ({ load: vi.fn() }))
@@ -23,8 +23,10 @@ function makeModel() {
   return { root, meshes: [topMesh, nestedMesh], marker }
 }
 
-function loaderSucceedsWith(model: Group) {
-  load.mockImplementation((_path, onLoad) => onLoad({ scene: model }))
+function loaderSucceedsWith(model: Group, animations: AnimationClip[] = []) {
+  load.mockImplementation((_path, onLoad) =>
+    onLoad({ scene: model, animations })
+  )
 }
 
 describe('loadGLTFModel', () => {
@@ -34,41 +36,40 @@ describe('loadGLTFModel', () => {
 
   it('loads the given path and adds the model to the scene', async () => {
     const { root } = makeModel()
-    loaderSucceedsWith(root)
+    const idle = new AnimationClip('idle', 1, [])
+    loaderSucceedsWith(root, [idle])
     const scene = new Scene()
 
-    const obj = await loadGLTFModel(scene, '/dog.glb', {
+    const { model, animations } = await loadGLTFModel(scene, '/pet.glb', {
       receiveShadow: false,
       castShadow: false
     })
 
     expect(load).toHaveBeenCalledWith(
-      '/dog.glb',
+      '/pet.glb',
       expect.any(Function),
       undefined,
       expect.any(Function)
     )
-    expect(obj).toBe(root)
+    expect(model).toBe(root)
+    expect(animations).toEqual([idle])
     expect(scene.children).toContain(root)
   })
 
-  it('names the model "dog" and moves it to the origin on x/y', async () => {
+  it('leaves positioning to the caller', async () => {
     const { root } = makeModel()
     loaderSucceedsWith(root)
 
-    const obj = await loadGLTFModel(new Scene(), '/dog.glb')
+    const { model } = await loadGLTFModel(new Scene(), '/pet.glb')
 
-    expect(obj.name).toBe('dog')
-    expect(obj.position.x).toBe(0)
-    expect(obj.position.y).toBe(0)
-    expect(obj.position.z).toBe(7)
+    expect(model.position.toArray()).toEqual([5, 6, 7])
   })
 
   it('applies shadow options to the model and every nested mesh', async () => {
     const { root, meshes, marker } = makeModel()
     loaderSucceedsWith(root)
 
-    await loadGLTFModel(new Scene(), '/dog.glb', {
+    await loadGLTFModel(new Scene(), '/pet.glb', {
       receiveShadow: true,
       castShadow: false
     })
@@ -88,7 +89,7 @@ describe('loadGLTFModel', () => {
     const { root, meshes } = makeModel()
     loaderSucceedsWith(root)
 
-    await loadGLTFModel(new Scene(), '/dog.glb')
+    await loadGLTFModel(new Scene(), '/pet.glb')
 
     for (const mesh of meshes) {
       expect(mesh.castShadow).toBe(true)

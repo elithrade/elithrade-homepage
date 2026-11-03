@@ -23,7 +23,7 @@ export default defineConfig({
       use: {
         ...devices['Desktop Chrome'],
         // Headless Chromium has no GPU; allow the software WebGL renderer so
-        // the three.js voxel dog can render.
+        // the three.js cube pets can render.
         launchOptions: { args: ['--enable-unsafe-swiftshader'] }
       }
     }

@@ -4,7 +4,7 @@ import Head from 'next/head'
 import { Box, Container } from '@chakra-ui/react'
 import Navbar from '../navbar'
 import NoSsr from '../no-ssr'
-import VoxelDog from '../voxel-dog'
+import CubePets from '../cube-pets'
 import Footer from '../footer'
 
 type MainProps = {
@@ -29,7 +29,7 @@ export default function Main({
 
       <Container as="main" maxW="container.lg" pt={14}>
         <NoSsr>
-          <VoxelDog />
+          <CubePets />
         </NoSsr>
         {children}
       </Container>

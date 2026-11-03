@@ -60,28 +60,10 @@ const Page = ({ buildYear, quote }: PageProps) => {
         >
           Hello, I&apos;m a full stack developer based in Perth, Australia!
         </Box>
-        {/* On desktop the photo no longer sets the row's height once the
-            button is under the quote, so add room above the first section. (This
-            margin collapses with the section title's top margin.) */}
-        <Box display={{ md: 'flex' }} mb={{ md: 8 }}>
+        <Box display={{ md: 'flex' }}>
           <Box flexGrow={1}>
             <Heading as="h2">Bin Hu</Heading>
-            <Box as="figure">
-              <Text as="blockquote">&ldquo;{quote.text}&rdquo;</Text>
-              <Text as="figcaption" fontSize="sm" color="text-muted">
-                &mdash; {quote.author}
-                {quote.source === 'zenquotes' && (
-                  <>
-                    {' · via '}
-                    {/* ZenQuotes' free tier requires this attribution link. */}
-                    <Link href="https://zenquotes.io/" isExternal>
-                      ZenQuotes
-                    </Link>
-                  </>
-                )}
-              </Text>
-            </Box>
-            <DownloadCvButton mt={3} />
+            <DownloadCvButton mt={2} />
           </Box>
           <Box
             flexShrink={0}
@@ -100,6 +82,29 @@ const Page = ({ buildYear, quote }: PageProps) => {
               alt="Profile image"
             />
           </Box>
+        </Box>
+        {/* The quote of the day, set apart as an epigraph. Its width is capped
+            because long centred lines are hard to read. */}
+        <Box as="figure" textAlign="center" maxW="36rem" mx="auto" mt={6}>
+          <Text
+            as="blockquote"
+            fontStyle="italic"
+            fontSize={{ base: 'md', md: 'lg' }}
+          >
+            &ldquo;{quote.text}&rdquo;
+          </Text>
+          <Text as="figcaption" fontSize="sm" color="text-muted" mt={1}>
+            &mdash; {quote.author}
+            {quote.source === 'zenquotes' && (
+              <Text as="span" fontSize="xs">
+                {' · via '}
+                {/* ZenQuotes' free tier requires this attribution link. */}
+                <Link href="https://zenquotes.io/" isExternal>
+                  ZenQuotes
+                </Link>
+              </Text>
+            )}
+          </Text>
         </Box>
         <Section delay={0.1}>
           <Heading as="h3" variant="section-title">

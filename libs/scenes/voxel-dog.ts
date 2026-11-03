@@ -1,14 +1,15 @@
 // A voxel dog at its desk, on a little grass island: it stands on its hind
 // legs with its front paws on the keyboard, facing a monitor full of code and
-// wagging its tail while the camera circles it like a turntable. The models
-// are built from the text layouts in scripts/voxels/ by
-// scripts/make-voxel-models.mjs: edit a layout, rerun the script, and the
-// scene picks up the new model. One voxel is 0.1 units.
+// wagging its tail, while a bee visits the flowers and the camera circles it
+// all like a turntable. The models are built from the text layouts in
+// scripts/voxels/ by scripts/make-voxel-models.mjs: edit a layout, rerun the
+// script, and the scene picks up the new model. One voxel is 0.1 units.
 import { defineScene } from './types'
 
 export const voxelDog = defineScene({
   name: 'voxel-dog',
   models: {
+    bee: '/models/voxel-dog/bee.glb',
     desk: '/models/voxel-dog/desk.glb',
     dog: '/models/voxel-dog/dog.glb',
     island: '/models/voxel-dog/island.glb'
@@ -20,9 +21,13 @@ export const voxelDog = defineScene({
     // the island.
     { model: 'desk', x: 0, z: -0.425 }
   ],
-  // Turned round to face the screen, close enough that its front paws rest
-  // on the keyboard at the front of the desk.
-  actors: [{ model: 'dog', x: 0, z: 0.375, turn: 180, animation: 'wag' }],
+  actors: [
+    // Turned round to face the screen, close enough that its front paws rest
+    // on the keyboard at the front of the desk.
+    { model: 'dog', x: 0, z: 0.375, turn: 180, animation: 'wag' },
+    // Its flight path, round the island's flowers, is baked into the model.
+    { model: 'bee', x: 0, z: 0, animation: 'fly' }
+  ],
   // Starts side on, so the code shows beside the dog. The monitor sits low
   // enough that the dog's face shows over it from the front.
   camera: {

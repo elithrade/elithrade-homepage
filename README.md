@@ -83,16 +83,18 @@ rebuild it after changing the script.
 #### The voxel dog
 
 `libs/scenes/voxel-dog.ts` is a second scene: a voxel dog at a desk on a
-grass island, standing on its hind legs with its paws on the keyboard,
-facing a monitor full of code and wagging its tail while the camera circles
-it like a turntable. Set `HERO_SCENE` to `voxelDog` to show it
-instead of the dev corner.
+grass island, standing on its hind legs with its paws on the keyboard. It
+faces a monitor full of code and wags its tail, a bee visits the flowers,
+and the camera circles it all like a turntable. Set `HERO_SCENE` to
+`voxelDog` to show it instead of the dev corner.
 
 Its models are drawn as text, so they can be changed without a 3D editor.
-`scripts/voxels/dog.txt`, `desk.txt` and `island.txt` list the voxels layer
-by layer, one letter per voxel, with the format and colours explained at the
-top of each file. After editing one, run `node scripts/make-voxel-models.mjs` to
-rebuild the `.glb` files in `public/models/voxel-dog/`.
+`scripts/voxels/dog.txt`, `desk.txt`, `island.txt` and `bee.txt` list the
+voxels layer by layer, one letter per voxel, with the format and colours
+explained at the top of each file. After editing one, run
+`node scripts/make-voxel-models.mjs` to rebuild the `.glb` files in
+`public/models/voxel-dog/`. The bee's flight path is worked out from the
+flowers in `island.txt`, so it follows them when they move.
 
 ## TypeScript
 

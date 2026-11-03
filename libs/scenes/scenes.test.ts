@@ -69,14 +69,15 @@ function placedCorners(
 ) {
   const angle = (turn * Math.PI) / 180
   const [cos, sin] = [Math.cos(angle), Math.sin(angle)]
+  const [sx, , sz] = typeof scale === 'number' ? [scale, scale, scale] : scale
   return [
     [footprint.minX, footprint.minZ],
     [footprint.minX, footprint.maxZ],
     [footprint.maxX, footprint.minZ],
     [footprint.maxX, footprint.maxZ]
   ].map(([cx, cz]) => ({
-    x: x + scale * (cx * cos + cz * sin),
-    z: z + scale * (-cx * sin + cz * cos)
+    x: x + sx * cx * cos + sz * cz * sin,
+    z: z - sx * cx * sin + sz * cz * cos
   }))
 }
 

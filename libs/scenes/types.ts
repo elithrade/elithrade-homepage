@@ -5,13 +5,14 @@
 // Where a model goes. Positions are in world units (for Kenney packs, one
 // unit is one floor tile), with y up and z towards the viewer. `turn`
 // rotates in degrees, anticlockwise seen from above, about the model's own
-// origin. `scale` resizes models from packs built at a different scale.
+// origin. `scale` resizes models from packs built at a different scale, or
+// per axis ([x, y, z], before turning) to stretch a plain piece to fit.
 export type Placement = {
   x: number
   z: number
   y?: number
   turn?: number
-  scale?: number
+  scale?: number | readonly [number, number, number]
 }
 
 export type Piece<M extends string = string> = Placement & {

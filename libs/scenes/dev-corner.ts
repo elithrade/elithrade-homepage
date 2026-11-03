@@ -70,8 +70,10 @@ export const devCorner = defineScene({
   pieces: [
     ...floor(),
 
-    // Back wall with a window over the desk, and the left wall.
-    { model: 'wall', x: 0, z: -2, y: FLOOR_Y },
+    // Back wall with a window over the desk, and the left wall. The first
+    // back wall piece starts 0.05 further left and is stretched to match,
+    // so it fills the corner where the two walls meet.
+    { model: 'wall', x: -0.05, z: -2, y: FLOOR_Y, scale: [1.05, 1, 1] },
     { model: 'wallWindow', x: 1, z: -2, y: FLOOR_Y },
     { model: 'wall', x: 2, z: -2, y: FLOOR_Y },
     { model: 'wall', x: 0, z: 0, y: FLOOR_Y, turn: 90 },

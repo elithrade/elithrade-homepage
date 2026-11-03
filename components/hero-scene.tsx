@@ -18,7 +18,9 @@ function easeOutCirc(x: number) {
 function place(object: THREE.Object3D, placement: Placement) {
   object.position.set(placement.x, placement.y ?? 0, placement.z)
   object.rotation.y = (placement.turn ?? 0) * DEG
-  object.scale.setScalar(placement.scale ?? 1)
+  const { scale = 1 } = placement
+  if (typeof scale === 'number') object.scale.setScalar(scale)
+  else object.scale.set(...scale)
 }
 
 function enableShadows(object: THREE.Object3D) {

@@ -83,8 +83,9 @@ rebuild it after changing the script.
 #### The voxel dog
 
 `libs/scenes/voxel-dog.ts` is a second scene: a voxel dog at a desk on a
-grass island, facing a monitor full of code and wagging its tail while the
-camera circles it like a turntable. Set `HERO_SCENE` to `voxelDog` to show it
+grass island, standing on its hind legs with its paws on the keyboard,
+facing a monitor full of code and wagging its tail while the camera circles
+it like a turntable. Set `HERO_SCENE` to `voxelDog` to show it
 instead of the dev corner.
 
 Its models are drawn as text, so they can be changed without a 3D editor.

@@ -51,9 +51,9 @@ const PALETTE = {
 const MODELS = [
   {
     name: 'dog',
-    // The tail is its own node, turning about the middle of its lowest voxel,
-    // so the "wag" clip can swing it side to side.
-    parts: { tail: { letters: 'tu', pivot: [4.5, 5.5, 0.5] } },
+    // The tail is its own node, turning where it meets the dog's back, so the
+    // "wag" clip can swing it side to side.
+    parts: { tail: { letters: 'tu', pivot: [4.5, 4.5, 2] } },
     animations: [wag()]
   },
   {
@@ -197,9 +197,9 @@ function voxelMesh(voxels, offset, unlit = false) {
   )
 }
 
-// Swings the tail 25° either way about the dog's length, twice a second.
+// Swings the tail 25° either way about the vertical, twice a second.
 function wag() {
-  const axis = new THREE.Vector3(0, 0, 1)
+  const axis = new THREE.Vector3(0, 1, 0)
   const turn = degrees =>
     new THREE.Quaternion().setFromAxisAngle(axis, (degrees * Math.PI) / 180)
   const keys = [0, 25, 0, -25, 0].map(turn)

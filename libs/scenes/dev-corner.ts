@@ -6,6 +6,8 @@
 // to the right (+x) and back (-z). One floor tile is 1×1 and 0.05 thick, and
 // walls are 1.29 tall. The room spans x 0–3 and z -2–0, with walls along the
 // back and left; floor and walls sit 0.05 low so the floor's top is y = 0.
+// Turned pieces swing about that corner, so leave room behind them: the
+// window frame stands 0.02 proud of the back wall (see ROOM_INTERIOR).
 import { defineScene, type Piece } from './types'
 
 const FURNITURE = [
@@ -32,6 +34,18 @@ const FURNITURE = [
 type Model = (typeof FURNITURE)[number] | 'dog'
 
 const FLOOR_Y = -0.05
+
+// Where furniture may go: inside the walls, and in front of the window
+// (x 1–2) clear of its frame. Checked by the unit tests against each
+// model's real size.
+export const ROOM_INTERIOR = {
+  minX: 0,
+  maxX: 3,
+  minZ: -2,
+  maxZ: 0,
+  window: { minX: 1, maxX: 2, minZ: -1.98 }
+}
+export const STRUCTURE: readonly Model[] = ['floorFull', 'wall', 'wallWindow']
 const DESK_TOP = 0.38
 
 function floor(): Piece<Model>[] {
@@ -64,17 +78,17 @@ export const devCorner = defineScene({
     { model: 'wall', x: 0, z: -1, y: FLOOR_Y, turn: 90 },
 
     // Two desks side by side under the window, a tower PC underneath.
-    { model: 'desk', x: 0.75, z: -1.62 },
-    { model: 'desk', x: 1.47, z: -1.62 },
+    { model: 'desk', x: 0.75, z: -1.6 },
+    { model: 'desk', x: 1.47, z: -1.6 },
     { model: 'speakerSmall', x: 1.93, z: -1.68 },
 
     // On the desk: two monitors, keyboard and mouse, the laptop and a small
     // plant.
     { model: 'computerScreen', x: 1.07, z: -1.86, y: DESK_TOP, turn: -8 },
-    { model: 'computerScreen', x: 1.47, z: -1.9, y: DESK_TOP, turn: 8 },
+    { model: 'computerScreen', x: 1.47, z: -1.8, y: DESK_TOP, turn: 8 },
     { model: 'computerKeyboard', x: 1.31, z: -1.66, y: DESK_TOP },
     { model: 'computerMouse', x: 1.69, z: -1.68, y: DESK_TOP },
-    { model: 'laptop', x: 0.79, z: -1.68, y: DESK_TOP, turn: 18 },
+    { model: 'laptop', x: 0.79, z: -1.62, y: DESK_TOP, turn: 18 },
     { model: 'plantSmall2', x: 2.09, z: -1.72, y: DESK_TOP },
 
     // The desk chair, pulled out a little and facing the desk. Turned half

@@ -44,7 +44,9 @@ const Page = ({ buildYear }: PageProps) => {
         >
           Hello, I&apos;m a full stack developer based in Perth, Australia!
         </Box>
-        <Box display={{ md: 'flex' }}>
+        {/* On desktop the photo no longer sets the row's height once the
+            button is under the quote, so add room above the first section. */}
+        <Box display={{ md: 'flex' }} mb={{ md: 4 }}>
           <Box flexGrow={1}>
             <Heading as="h2">Bin Hu</Heading>
             <p>&quot;Be the change that you want to see in the world.&quot;</p>

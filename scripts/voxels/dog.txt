@@ -6,9 +6,10 @@
 # of the head. In a layer, each row is one step from the tail (first row) to
 # the nose (last row), and each character is one voxel from the dog's right
 # side to its left. A "." is empty; the other letters are colours, listed in
-# PALETTE in the script (B brown, D dark brown, W white, K black, P pink,
-# R red, G gold). Lower-case t and u are the tail, in brown and white: it's a
-# separate part, so it can wag. Every layer must have the same size.
+# PALETTE in the script (B brown, D dark brown, W white, K black: eyes,
+# nose and smile, R red, G gold). Lower-case t and u are the tail, in brown
+# and white: it's a separate part, so it can wag. Every layer must have the
+# same size.
 
 y 0
 .........
@@ -151,8 +152,8 @@ y 11
 .BBBBBBB.
 .BBBBBBB.
 .BBWWWBB.
-..WWWWW..
-....P....
+..WKKKW..
+.........
 
 y 12
 .........
@@ -163,7 +164,7 @@ DBBBBBBBD
 DBBBBBBBD
 .BBBBBBB.
 .BBWWWBB.
-..WWWWW..
+..KWWWK..
 .........
 
 y 13

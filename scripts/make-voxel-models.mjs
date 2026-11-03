@@ -38,7 +38,7 @@ const PALETTE = {
   O: 0xf08fb0, // pink flower
   H: 0xe0c49a, // desk wood
   A: 0x3b4048, // dark grey: monitor, keyboard
-  I: 0xc8cdd4, // keys
+  J: 0x4caf7d, // green keys
   T: 0xc4683f, // plant pot
   S: 0x1d2433, // screen
   X: 0xc678dd, // code: purple

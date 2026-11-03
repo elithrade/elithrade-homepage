@@ -119,7 +119,7 @@ const MiniArena = () => {
     sun.position.set(9, 12, 4)
     sun.target.position.set(0, 0, -0.5)
     sun.castShadow = true
-    sun.shadow.mapSize.set(1024, 1024)
+    sun.shadow.mapSize.set(2048, 2048)
     sun.shadow.camera.left = -8
     sun.shadow.camera.right = 8
     sun.shadow.camera.top = 8

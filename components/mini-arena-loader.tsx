@@ -16,17 +16,18 @@ type ArenaContainerProps = {
   children?: ReactNode
 }
 
-// A wide strip: the arena is much wider than it is deep.
+// The width of the main column, with a fixed aspect ratio so the scene just
+// scales up or down with the page: the camera always shows the same view.
+export const ARENA_ASPECT_RATIO = '640 / 380'
+
 export const ArenaContainer = forwardRef<HTMLDivElement, ArenaContainerProps>(
   ({ children }, ref) => (
     <Box
       ref={ref}
       className="mini-arena"
-      m="auto"
       mb={[2, 4, 6]}
       w="100%"
-      maxW="640px"
-      h={[200, 300, 380]}
+      sx={{ aspectRatio: ARENA_ASPECT_RATIO }}
       position="relative"
     >
       {children}

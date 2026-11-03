@@ -35,6 +35,15 @@ const PALETTE = {
   E: 0xf2ead8, // bone
   F: 0xf5d04a, // yellow flower
   O: 0xf08fb0, // pink flower
+  H: 0xe0c49a, // desk wood
+  A: 0x3b4048, // dark grey: monitor, keyboard
+  I: 0xc8cdd4, // keys
+  T: 0xc4683f, // plant pot
+  S: 0x1d2433, // screen
+  X: 0xc678dd, // code: purple
+  Y: 0x61afef, // code: blue
+  Z: 0xe5c07b, // code: yellow
+  V: 0x98c379, // code: green
   t: 0xc0803f, // tail, brown
   u: 0xf5efe4 // tail, white
 }
@@ -46,6 +55,11 @@ const MODELS = [
     // so the "wag" clip can swing it side to side.
     parts: { tail: { letters: 'tu', pivot: [4.5, 5.5, 0.5] } },
     animations: [wag()]
+  },
+  {
+    name: 'desk',
+    // The screen is unlit, so it glows instead of being shaded.
+    parts: { screen: { letters: 'SXYZV', unlit: true } }
   },
   { name: 'island' }
 ]
@@ -139,7 +153,7 @@ const FACES = [
 
 // One mesh for a set of voxels, with the faces that touch empty space.
 // `offset` is subtracted from every voxel position, in voxels.
-function voxelMesh(voxels, offset) {
+function voxelMesh(voxels, offset, unlit = false) {
   const filled = new Set(voxels.map(({ x, y, z }) => `${x},${y},${z}`))
   const positions = []
   const normals = []
@@ -173,11 +187,13 @@ function voxelMesh(voxels, offset) {
   geometry.setIndex(indices)
   return new THREE.Mesh(
     geometry,
-    new THREE.MeshStandardMaterial({
-      vertexColors: true,
-      roughness: 0.9,
-      metalness: 0
-    })
+    unlit
+      ? new THREE.MeshBasicMaterial({ vertexColors: true })
+      : new THREE.MeshStandardMaterial({
+          vertexColors: true,
+          roughness: 0.9,
+          metalness: 0
+        })
   )
 }
 
@@ -211,10 +227,14 @@ for (const { name, parts = {}, animations = [] } of MODELS) {
   const body = voxelMesh(rest, centre)
   body.name = 'body'
   root.add(body)
-  for (const [partName, { letters, pivot }] of Object.entries(parts)) {
+  // A part without a pivot stays where it is, around the model's centre.
+  for (const [partName, { letters, pivot = centre, unlit }] of Object.entries(
+    parts
+  )) {
     const part = voxelMesh(
       voxels.filter(v => letters.includes(v.letter)),
-      pivot
+      pivot,
+      unlit
     )
     part.name = partName
     part.position.set(...pivot.map((value, i) => (value - centre[i]) * VOXEL))

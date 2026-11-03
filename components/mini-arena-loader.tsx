@@ -1,7 +1,7 @@
 import { forwardRef, type ReactNode } from 'react'
 import { Box, Spinner } from '@chakra-ui/react'
 
-export const PetsSpinner = () => (
+export const ArenaSpinner = () => (
   <Spinner
     size="xl"
     position="absolute"
@@ -12,34 +12,34 @@ export const PetsSpinner = () => (
   />
 )
 
-type PetsContainerProps = {
+type ArenaContainerProps = {
   children?: ReactNode
 }
 
-// A wide strip: the pets stand in a row, so the scene is much wider than tall.
-export const PetsContainer = forwardRef<HTMLDivElement, PetsContainerProps>(
+// A wide strip: the arena is much wider than it is deep.
+export const ArenaContainer = forwardRef<HTMLDivElement, ArenaContainerProps>(
   ({ children }, ref) => (
     <Box
       ref={ref}
-      className="cube-pets"
+      className="mini-arena"
       m="auto"
       mb={[2, 4, 6]}
       w="100%"
       maxW="640px"
-      h={[150, 220, 280]}
+      h={[200, 300, 380]}
       position="relative"
     >
       {children}
     </Box>
   )
 )
-PetsContainer.displayName = 'PetsContainer'
+ArenaContainer.displayName = 'ArenaContainer'
 
 const Loader = () => {
   return (
-    <PetsContainer>
-      <PetsSpinner />
-    </PetsContainer>
+    <ArenaContainer>
+      <ArenaSpinner />
+    </ArenaContainer>
   )
 }
 

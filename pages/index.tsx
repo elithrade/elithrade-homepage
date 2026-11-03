@@ -1,13 +1,14 @@
 import { useSyncExternalStore } from 'react'
 import type { InferGetStaticPropsType } from 'next'
 import NextLink from 'next/link'
-import { Container, Box, Heading, Link, Image } from '@chakra-ui/react'
+import { Container, Box, Heading, Link, Image, Text } from '@chakra-ui/react'
 import Layout from '../components/layouts/article'
 import Section from '../components/section'
 import Paragraph from '../components/Paragraph'
 import { BioSection, BioYear } from '../components/bio'
 import { Category, CategorySection } from '../components/category'
 import DownloadCvButton from '../components/download-cv-button'
+import { fetchQuoteOfTheDay } from '../libs/quote'
 
 const CAREER_START_YEAR = 2006
 
@@ -21,13 +22,28 @@ const subscribeToYear = () => () => {}
 const useCurrentYear = (buildYear: number) =>
   useSyncExternalStore(subscribeToYear, currentYear, () => buildYear)
 
-export const getStaticProps = () => ({
-  props: { buildYear: currentYear() }
-})
+// How often Next may regenerate the page in the background (ISR) to pick up
+// ZenQuotes' new quote of the day, which changes at 00:00 UTC. Visitors are
+// always served a cached page, and only the first request after the window
+// triggers a regeneration, so ZenQuotes is called at most about once an hour.
+// After a failed fetch, retry sooner so the fallback doesn't linger.
+export const QUOTE_REVALIDATE_SECONDS = 60 * 60
+export const FALLBACK_REVALIDATE_SECONDS = 5 * 60
+
+export const getStaticProps = async () => {
+  const quote = await fetchQuoteOfTheDay()
+  return {
+    props: { buildYear: currentYear(), quote },
+    revalidate:
+      quote.source === 'fallback'
+        ? FALLBACK_REVALIDATE_SECONDS
+        : QUOTE_REVALIDATE_SECONDS
+  }
+}
 
 type PageProps = InferGetStaticPropsType<typeof getStaticProps>
 
-const Page = ({ buildYear }: PageProps) => {
+const Page = ({ buildYear, quote }: PageProps) => {
   const experienceYears = useCurrentYear(buildYear) - CAREER_START_YEAR
 
   return (
@@ -44,14 +60,10 @@ const Page = ({ buildYear }: PageProps) => {
         >
           Hello, I&apos;m a full stack developer based in Perth, Australia!
         </Box>
-        {/* On desktop the photo no longer sets the row's height once the
-            button is under the quote, so add room above the first section. (This
-            margin collapses with the section title's top margin.) */}
-        <Box display={{ md: 'flex' }} mb={{ md: 8 }}>
+        <Box display={{ md: 'flex' }}>
           <Box flexGrow={1}>
             <Heading as="h2">Bin Hu</Heading>
-            <p>&quot;Be the change that you want to see in the world.&quot;</p>
-            <DownloadCvButton mt={3} />
+            <DownloadCvButton mt={2} />
           </Box>
           <Box
             flexShrink={0}
@@ -70,6 +82,37 @@ const Page = ({ buildYear }: PageProps) => {
               alt="Profile image"
             />
           </Box>
+        </Box>
+        {/* The quote of the day, set apart as an epigraph. Its width is capped
+            because long centred lines are hard to read. Its bottom margin collapses
+            with the section title's top margin, leaving equal space each side. */}
+        <Box
+          as="figure"
+          textAlign="center"
+          maxW="36rem"
+          mx="auto"
+          mt={6}
+          mb={8}
+        >
+          <Text
+            as="blockquote"
+            fontStyle="italic"
+            fontSize={{ base: 'md', md: 'lg' }}
+          >
+            &ldquo;{quote.text}&rdquo;
+          </Text>
+          <Text as="figcaption" fontSize="sm" color="text-muted" mt={1}>
+            &mdash; {quote.author}
+            {quote.source === 'zenquotes' && (
+              <Text as="span" fontSize="xs">
+                {' · via '}
+                {/* ZenQuotes' free tier requires this attribution link. */}
+                <Link href="https://zenquotes.io/" isExternal>
+                  ZenQuotes
+                </Link>
+              </Text>
+            )}
+          </Text>
         </Box>
         <Section delay={0.1}>
           <Heading as="h3" variant="section-title">

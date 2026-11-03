@@ -15,6 +15,14 @@ test.describe('home page', () => {
     ).toBeVisible()
   })
 
+  test('shows a quote with its author', async ({ page }) => {
+    // The quote comes from ZenQuotes when the page is generated, or is the
+    // fallback if that failed, so check its shape rather than its text.
+    const quote = page.getByRole('figure')
+    await expect(quote.locator('blockquote')).toHaveText(/^“.+”$/)
+    await expect(quote.locator('figcaption')).toHaveText(/^— \S/)
+  })
+
   test('shows every section', async ({ page }) => {
     for (const name of ['Me', 'Bio', 'Technical Skills']) {
       await expect(page.getByRole('heading', { name })).toBeVisible()

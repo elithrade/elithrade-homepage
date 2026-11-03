@@ -59,6 +59,7 @@ libs/
   works.ts           Projects shown on /works, taken from the CV
 pages/               Next.js routes (/, /works and /works/[id])
 public/              Static assets: 3D models (models/<scene>/), images
+scripts/             One-off generators, e.g. the dev corner's mug model
 test/                Test setup, helpers and page tests
 types/               Project-wide type declarations
 ```
@@ -74,6 +75,11 @@ The scene at the top of every page is data, not code. Each file in
 To add models from a Kenney pack, copy its `.glb` files into the scene's
 folder. If a model loads its texture from a separate file, embed it first:
 the unit tests fail on any `.glb` that isn't self-contained.
+
+A pack won't always have the piece you want. The dev corner's coffee mug is
+built in three.js by `scripts/make-mug.mjs` and saved as
+`public/models/dev-corner/mug.glb`; run `node scripts/make-mug.mjs` to
+rebuild it after changing the script.
 
 ## TypeScript
 

@@ -1,6 +1,7 @@
 // A developer's corner: desk, two monitors, a tower under the desk, coffee,
 // books and a dog, built from Kenney's "Furniture Kit" (CC0,
-// https://kenney.nl) with the dog from Kenney's "Cube Pets".
+// https://kenney.nl) with the dog from Kenney's "Cube Pets". The kit has no
+// mug, so that one is made in its style by scripts/make-mug.mjs.
 //
 // Furniture Kit models have their origin at the front-left corner and extend
 // to the right (+x) and back (-z). One floor tile is 1×1 and 0.05 thick, and
@@ -31,7 +32,7 @@ const FURNITURE = [
   'wallWindow'
 ] as const
 
-type Model = (typeof FURNITURE)[number] | 'dog'
+type Model = (typeof FURNITURE)[number] | 'dog' | 'mug'
 
 const FLOOR_Y = -0.05
 
@@ -64,7 +65,8 @@ export const devCorner = defineScene({
     ...(Object.fromEntries(
       FURNITURE.map(model => [model, `/models/dev-corner/${model}.glb`])
     ) as Record<(typeof FURNITURE)[number], string>),
-    dog: '/models/dev-corner/animal-dog.glb'
+    dog: '/models/dev-corner/animal-dog.glb',
+    mug: '/models/dev-corner/mug.glb'
   },
   lightUnlitMaterials: true,
   pieces: [
@@ -84,13 +86,15 @@ export const devCorner = defineScene({
     { model: 'desk', x: 1.47, z: -1.6 },
     { model: 'speakerSmall', x: 1.93, z: -1.68 },
 
-    // On the desk: two monitors, keyboard and mouse, the laptop and a small
-    // plant.
+    // On the desk: two monitors, keyboard and mouse, the laptop, a mug of
+    // coffee (a little large, so it reads at this size; handle side on to
+    // the camera) and a small plant.
     { model: 'computerScreen', x: 1.07, z: -1.86, y: DESK_TOP, turn: -8 },
     { model: 'computerScreen', x: 1.47, z: -1.8, y: DESK_TOP, turn: 8 },
     { model: 'computerKeyboard', x: 1.31, z: -1.66, y: DESK_TOP },
     { model: 'computerMouse', x: 1.69, z: -1.68, y: DESK_TOP },
     { model: 'laptop', x: 0.79, z: -1.62, y: DESK_TOP, turn: 18 },
+    { model: 'mug', x: 1.82, z: -1.64, y: DESK_TOP, turn: 40, scale: 1.4 },
     { model: 'plantSmall2', x: 2.09, z: -1.72, y: DESK_TOP },
 
     // The desk chair, pulled out a little and facing the desk. Turned half
@@ -117,7 +121,7 @@ export const devCorner = defineScene({
       x: 2.05,
       z: -0.55,
       turn: 25,
-      scale: 0.15,
+      scale: 0.22,
       animation: 'idle'
     }
   ],

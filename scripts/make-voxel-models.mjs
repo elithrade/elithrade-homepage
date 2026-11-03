@@ -25,6 +25,7 @@ const PALETTE = {
   B: 0xc0803f, // brown
   D: 0x6b4429, // dark brown
   W: 0xf5efe4, // white
+  C: 0xf0dcb8, // cream
   K: 0x2a211c, // black
   P: 0xe8797f, // pink
   R: 0xc8433a, // red

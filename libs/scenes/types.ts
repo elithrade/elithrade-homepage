@@ -2,17 +2,16 @@
 // and how the camera and sun are set up. components/hero-scene.tsx renders
 // any scene described this way.
 
-// Where a model goes. Positions are in world units (for Kenney packs, one
-// unit is one floor tile), with y up and z towards the viewer. `turn`
-// rotates in degrees, anticlockwise seen from above, about the model's own
-// origin. `scale` resizes models from packs built at a different scale, or
-// per axis ([x, y, z], before turning) to stretch a plain piece to fit.
+// Where a model goes. Positions are in world units, with y up and z towards
+// the viewer. `turn` rotates in degrees, anticlockwise seen from above,
+// about the model's own origin. `scale` resizes a model built at a
+// different scale.
 export type Placement = {
   x: number
   z: number
   y?: number
   turn?: number
-  scale?: number | readonly [number, number, number]
+  scale?: number
 }
 
 export type Piece<M extends string = string> = Placement & {
@@ -31,9 +30,6 @@ export type SceneDef<M extends string = string> = {
   models: Record<M, string>
   pieces: Piece<M>[]
   actors?: Actor<M>[]
-  // Some packs (like Kenney's Furniture Kit) ship flat, unlit colours. This
-  // swaps them for lit materials so the scene gets shading and shadows.
-  lightUnlitMaterials?: boolean
   camera: {
     // The point the camera looks at and orbits around.
     target: [number, number, number]

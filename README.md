@@ -16,8 +16,7 @@ light/dark themes, a bio and skills page, and a works page built from the CV.
 - [framer-motion](https://motion.dev) for page and section transitions
 - [three.js](https://threejs.org) for the 3D hero scene, composed from Kenney's
   CC0 [Furniture Kit](https://kenney.nl/assets/furniture-kit) and
-  [Cube Pets](https://kenney.nl/assets/cube-pets); a
-  [Mini Arena](https://kenney.nl/assets/mini-arena) scene is also available
+  [Cube Pets](https://kenney.nl/assets/cube-pets)
 - [Vitest](https://vitest.dev) and Testing Library for unit tests
 - [Playwright](https://playwright.dev) for end-to-end tests
 - ESLint 10 (flat config) and Prettier

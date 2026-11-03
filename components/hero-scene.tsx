@@ -237,12 +237,6 @@ const HeroScene = ({ scene: def }: HeroSceneProps) => {
           // Skeleton-aware copy, so each actor animates on its own.
           const object = cloneSkinned(gltf.scene)
           place(object, actor)
-          const held = actor.holds && models.get(actor.holds.model)
-          if (actor.holds && held) {
-            const item = held.scene.clone()
-            item.position.set(...actor.holds.offset)
-            object.getObjectByName(actor.holds.bone)?.add(item)
-          }
           enableShadows(object)
           scene.add(object)
 

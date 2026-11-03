@@ -20,14 +20,9 @@ export type Piece<M extends string = string> = Placement & {
 }
 
 // An animated character. `animation` names one of the model's clips, played
-// on a loop; `holds` attaches another model to one of its bones.
+// on a loop.
 export type Actor<M extends string = string> = Piece<M> & {
   animation?: string
-  holds?: {
-    model: M
-    bone: string
-    offset: readonly [number, number, number]
-  }
 }
 
 export type SceneDef<M extends string = string> = {

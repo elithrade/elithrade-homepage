@@ -84,10 +84,7 @@ function placedCorners(
 function usedModels(scene: SceneDef) {
   const used = new Set<string>()
   for (const piece of scene.pieces) used.add(piece.model)
-  for (const actor of scene.actors ?? []) {
-    used.add(actor.model)
-    if (actor.holds) used.add(actor.holds.model)
-  }
+  for (const actor of scene.actors ?? []) used.add(actor.model)
   return used
 }
 

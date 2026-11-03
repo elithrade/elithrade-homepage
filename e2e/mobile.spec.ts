@@ -8,7 +8,9 @@ test('mobile layout uses the hamburger menu', async ({ page }) => {
 
   // Desktop links, and the navbar's Download CV button, are hidden below
   // the md breakpoint.
-  await expect(page.getByRole('link', { name: 'GitHub' })).toBeHidden()
+  await expect(
+    page.getByRole('navigation').getByRole('link', { name: 'GitHub' })
+  ).toBeHidden()
   await expect(
     page.getByRole('navigation').getByRole('link', { name: 'Download CV' })
   ).toBeHidden()

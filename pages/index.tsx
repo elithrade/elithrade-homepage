@@ -102,16 +102,8 @@ const Page = ({ buildYear, quote }: PageProps) => {
             &ldquo;{quote.text}&rdquo;
           </Text>
           <Text as="figcaption" fontSize="sm" color="text-muted" mt={1}>
+            {/* The ZenQuotes attribution is in the footer. */}
             &mdash; {quote.author}
-            {quote.source === 'zenquotes' && (
-              <Text as="span" fontSize="xs">
-                {' · via '}
-                {/* ZenQuotes' free tier requires this attribution link. */}
-                <Link href="https://zenquotes.io/" isExternal>
-                  ZenQuotes
-                </Link>
-              </Text>
-            )}
           </Text>
         </Box>
         <Section delay={0.1}>

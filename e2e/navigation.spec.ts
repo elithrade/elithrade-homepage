@@ -13,7 +13,9 @@ test('works page renders and the logo links back home', async ({ page }) => {
 
 test('desktop navbar links to GitHub in a new tab', async ({ page }) => {
   await page.goto('/')
-  const github = page.getByRole('link', { name: 'GitHub' })
+  const github = page
+    .getByRole('navigation')
+    .getByRole('link', { name: 'GitHub' })
   await expect(github).toBeVisible()
   await expect(github).toHaveAttribute('href', 'https://github.com/elithrade')
   await expect(github).toHaveAttribute('target', '_blank')

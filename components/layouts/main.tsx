@@ -5,15 +5,21 @@ import { Box, Container } from '@chakra-ui/react'
 import Navbar from '../navbar'
 import NoSsr from '../no-ssr'
 import VoxelDog from '../voxel-dog'
+import Footer from '../footer'
 
 type MainProps = {
   children?: ReactNode
   router: NextRouter
+  showQuoteAttribution?: boolean
 }
 
-export default function Main({ children, router }: MainProps) {
+export default function Main({
+  children,
+  router,
+  showQuoteAttribution
+}: MainProps) {
   return (
-    <Box as="main" pb={8}>
+    <Box>
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>Bin Hu - Homepage</title>
@@ -21,11 +27,15 @@ export default function Main({ children, router }: MainProps) {
 
       <Navbar path={router.asPath} />
 
-      <Container maxW="container.lg" pt={14}>
+      <Container as="main" maxW="container.lg" pt={14}>
         <NoSsr>
           <VoxelDog />
         </NoSsr>
         {children}
+      </Container>
+
+      <Container maxW="container.lg">
+        <Footer showQuoteAttribution={showQuoteAttribution} />
       </Container>
     </Box>
   )

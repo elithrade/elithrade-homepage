@@ -2,7 +2,6 @@ import { Box, Link, Text } from '@chakra-ui/react'
 
 export const LINKEDIN_URL = 'https://www.linkedin.com/in/bin-hu-ab9035195'
 export const SOURCE_URL = 'https://github.com/elithrade/elithrade-homepage'
-export const TEMPLATE_URL = 'https://www.craftz.dog/'
 export const ZENQUOTES_URL = 'https://zenquotes.io/'
 
 type FooterProps = {
@@ -37,22 +36,14 @@ const Footer = ({ showQuoteAttribution = false }: FooterProps) => (
         Source on GitHub
       </Link>
     </Text>
-    <Text fontSize="xs" mt={1}>
-      {/* The craftzdog-homepage template's license asks for this link. */}
-      Based on{' '}
-      <Link href={TEMPLATE_URL} isExternal>
-        craftz.dog
-      </Link>
-      {showQuoteAttribution && (
-        <>
-          <Separator />
-          Quote via{' '}
-          <Link href={ZENQUOTES_URL} isExternal>
-            ZenQuotes
-          </Link>
-        </>
-      )}
-    </Text>
+    {showQuoteAttribution && (
+      <Text fontSize="xs" mt={1}>
+        Quote via{' '}
+        <Link href={ZENQUOTES_URL} isExternal>
+          ZenQuotes
+        </Link>
+      </Text>
+    )}
   </Box>
 )
 

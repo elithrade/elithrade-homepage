@@ -1,10 +1,5 @@
 import { test, expect } from './fixtures'
-import {
-  LINKEDIN_URL,
-  SOURCE_URL,
-  TEMPLATE_URL,
-  ZENQUOTES_URL
-} from '../components/footer'
+import { LINKEDIN_URL, SOURCE_URL, ZENQUOTES_URL } from '../components/footer'
 
 test('footer is a page landmark with the copyright and links', async ({
   page
@@ -16,8 +11,7 @@ test('footer is a page landmark with the copyright and links', async ({
   await expect(footer).toContainText(`© ${new Date().getFullYear()} Bin Hu`)
   for (const [name, href] of [
     ['LinkedIn', LINKEDIN_URL],
-    ['Source on GitHub', SOURCE_URL],
-    ['craftz.dog', TEMPLATE_URL]
+    ['Source on GitHub', SOURCE_URL]
   ]) {
     const link = footer.getByRole('link', { name })
     await expect(link).toHaveAttribute('href', href)

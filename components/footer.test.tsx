@@ -1,12 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { screen } from '@testing-library/react'
 import { renderWithTheme } from '../test/test-utils'
-import Footer, {
-  LINKEDIN_URL,
-  SOURCE_URL,
-  TEMPLATE_URL,
-  ZENQUOTES_URL
-} from './footer'
+import Footer, { LINKEDIN_URL, SOURCE_URL, ZENQUOTES_URL } from './footer'
 
 describe('Footer', () => {
   it('shows the copyright line with the current year', () => {
@@ -19,8 +14,7 @@ describe('Footer', () => {
 
   it.each([
     ['LinkedIn', LINKEDIN_URL],
-    ['Source on GitHub', SOURCE_URL],
-    ['craftz.dog', TEMPLATE_URL]
+    ['Source on GitHub', SOURCE_URL]
   ])('links "%s" to %s in a new tab', (name, href) => {
     renderWithTheme(<Footer />)
 

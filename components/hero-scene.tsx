@@ -4,38 +4,21 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { GLTFLoader, type GLTF } from 'three/addons/loaders/GLTFLoader.js'
 import { clone as cloneSkinned } from 'three/addons/utils/SkeletonUtils.js'
 import WebGL from 'three/addons/capabilities/WebGL.js'
-import {
-  ARENA_MODELS,
-  PIECES,
-  SOLDIERS,
-  arenaModelUrl,
-  type ArenaModel,
-  type Piece
-} from '../libs/arena'
-import { ArenaSpinner, ArenaContainer } from './mini-arena-loader'
+import type { Placement, SceneDef } from '../libs/scenes/types'
+import { SceneSpinner, SceneContainer } from './hero-scene-loader'
 
-// Half the visible width of the scene in world units; the arena is about 10
-// tiles across. The height follows the container's aspect ratio.
-const HALF_WIDTH = 5.9
-// The opening spin around the arena, in seconds.
+// The opening spin around the scene, in seconds.
 const INTRO_SECONDS = 2
-// Where the camera comes to rest: in front of the arena, a little to the
-// left and about 29° above it, like the pack's sample image. Together with
-// the target below, this leaves a similar margin above the tallest piece
-// and below the front floor slabs.
-const REST_AZIMUTH = -0.12 * Math.PI
-const CAMERA_DISTANCE = 20
-const CAMERA_HEIGHT = 11
+const DEG = Math.PI / 180
 
 function easeOutCirc(x: number) {
   return Math.sqrt(1 - Math.pow(x - 1, 4))
 }
 
-const DEG = Math.PI / 180
-
-function place(object: THREE.Object3D, piece: Omit<Piece, 'model'>) {
-  object.position.set(piece.x, piece.y ?? 0, piece.z)
-  object.rotation.y = (piece.turn ?? 0) * DEG
+function place(object: THREE.Object3D, placement: Placement) {
+  object.position.set(placement.x, placement.y ?? 0, placement.z)
+  object.rotation.y = (placement.turn ?? 0) * DEG
+  object.scale.setScalar(placement.scale ?? 1)
 }
 
 function enableShadows(object: THREE.Object3D) {
@@ -44,6 +27,39 @@ function enableShadows(object: THREE.Object3D) {
       child.castShadow = true
       child.receiveShadow = true
     }
+  })
+}
+
+// Replace flat, unlit materials with lit ones of the same colour. Converted
+// once per loaded model, before it's copied, so copies share materials.
+function lightUnlitMaterials(root: THREE.Object3D) {
+  const converted = new Map<THREE.Material, THREE.Material>()
+  const convert = (material: THREE.Material) => {
+    const basic = material as THREE.MeshBasicMaterial
+    if (!basic.isMeshBasicMaterial) return material
+    let lit = converted.get(basic)
+    if (!lit) {
+      lit = new THREE.MeshStandardMaterial({
+        name: basic.name,
+        color: basic.color,
+        map: basic.map,
+        transparent: basic.transparent,
+        opacity: basic.opacity,
+        side: basic.side,
+        roughness: 0.85,
+        metalness: 0
+      })
+      converted.set(basic, lit)
+      basic.dispose()
+    }
+    return lit
+  }
+  root.traverse(child => {
+    const mesh = child as THREE.Mesh
+    if (!mesh.isMesh) return
+    mesh.material = Array.isArray(mesh.material)
+      ? mesh.material.map(convert)
+      : convert(mesh.material)
   })
 }
 
@@ -62,12 +78,16 @@ function disposeScene(scene: THREE.Scene) {
   })
 }
 
-const MiniArena = () => {
+type HeroSceneProps = {
+  scene: SceneDef
+}
+
+const HeroScene = ({ scene: def }: HeroSceneProps) => {
   const refContainer = useRef<HTMLDivElement>(null)
 
   // This component only renders on the client (see NoSsr), so it's safe to
   // probe for WebGL here. three.js r163+ requires WebGL 2. Without it the
-  // arena is skipped instead of throwing and taking down the whole page.
+  // scene is skipped instead of throwing and taking down the whole page.
   const [webglAvailable] = useState(() => WebGL.isWebGL2Available())
   const [loading, setLoading] = useState(webglAvailable)
 
@@ -81,7 +101,7 @@ const MiniArena = () => {
     } catch (err) {
       // Context creation can still fail after the WebGL 2 probe (e.g. GPU
       // process crash). Never let that unmount the whole app.
-      console.warn('Arena disabled: could not create a WebGL context', err)
+      console.warn('3D scene disabled: could not create a WebGL context', err)
       return
     }
 
@@ -93,20 +113,22 @@ const MiniArena = () => {
     container.appendChild(renderer.domElement)
 
     const scene = new THREE.Scene()
-    const target = new THREE.Vector3(0.5, 1.0, -0.3)
+    const { camera: view, sun: sunDef } = def
+    const target = new THREE.Vector3(...view.target)
+    const azimuth = view.azimuth * DEG
     const restPosition = new THREE.Vector3(
-      CAMERA_DISTANCE * Math.sin(REST_AZIMUTH),
-      CAMERA_HEIGHT,
-      CAMERA_DISTANCE * Math.cos(REST_AZIMUTH)
-    ).add(new THREE.Vector3(target.x, 0, target.z))
+      target.x + view.distance * Math.sin(azimuth),
+      view.height,
+      target.z + view.distance * Math.cos(azimuth)
+    )
 
     const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.01, 1000)
     const fitCamera = () => {
       const aspect = container.clientWidth / container.clientHeight
-      camera.left = -HALF_WIDTH
-      camera.right = HALF_WIDTH
-      camera.top = HALF_WIDTH / aspect
-      camera.bottom = -HALF_WIDTH / aspect
+      camera.left = -view.halfWidth
+      camera.right = view.halfWidth
+      camera.top = view.halfWidth / aspect
+      camera.bottom = -view.halfWidth / aspect
       camera.updateProjectionMatrix()
     }
     fitCamera()
@@ -115,30 +137,38 @@ const MiniArena = () => {
 
     // three r155+ uses physically-correct lighting; intensities are scaled
     // by PI to match the brightness of the old legacy-lights mode.
-    scene.add(new THREE.HemisphereLight(0xfff4e6, 0x6a5a6a, Math.PI * 0.5))
-    const sun = new THREE.DirectionalLight(0xfff1dc, Math.PI * 0.85)
-    // From the right, so shadows fall to the left as in the sample image.
-    sun.position.set(9, 12, 4)
-    sun.target.position.set(0, 0, -0.5)
+    const strength = { ambient: 1, sun: 1, ...def.lights }
+    scene.add(
+      new THREE.HemisphereLight(
+        0xfff4e6,
+        0x6a5a6a,
+        Math.PI * 0.5 * strength.ambient
+      )
+    )
+    const sun = new THREE.DirectionalLight(
+      0xfff1dc,
+      Math.PI * 0.85 * strength.sun
+    )
+    sun.position.copy(target).add(new THREE.Vector3(...sunDef.position))
+    sun.target.position.copy(target)
     sun.castShadow = true
     sun.shadow.mapSize.set(2048, 2048)
-    sun.shadow.camera.left = -8
-    sun.shadow.camera.right = 8
-    sun.shadow.camera.top = 8
-    sun.shadow.camera.bottom = -8
-    sun.shadow.camera.near = 1
-    sun.shadow.camera.far = 40
+    const shadowCamera = sun.shadow.camera
+    shadowCamera.left = shadowCamera.bottom = -sunDef.shadowExtent
+    shadowCamera.right = shadowCamera.top = sunDef.shadowExtent
+    shadowCamera.near = 0.5
+    shadowCamera.far = 60
     sun.shadow.bias = -0.0005
     sun.shadow.normalBias = 0.02
     sun.shadow.radius = 3
     scene.add(sun, sun.target)
 
-    // Drag to look around, but stay in front of the arena and above it.
+    // Drag to look around, but stay in front of the scene and above it.
     const controls = new OrbitControls(camera, renderer.domElement)
     controls.target.copy(target)
     controls.enablePan = false
-    controls.minAzimuthAngle = REST_AZIMUTH - Math.PI / 4
-    controls.maxAzimuthAngle = REST_AZIMUTH + Math.PI / 4
+    controls.minAzimuthAngle = azimuth - Math.PI / 4
+    controls.maxAzimuthAngle = azimuth + Math.PI / 4
     controls.maxPolarAngle = Math.PI / 2.4
 
     const mixers: THREE.AnimationMixer[] = []
@@ -161,7 +191,7 @@ const MiniArena = () => {
       const progress = (elapsed - introStart) / INTRO_SECONDS
 
       if (progress < 1) {
-        // Ten turns around the arena, slowing down to stop at the rest view.
+        // Ten turns around the scene, slowing down to stop at the rest view.
         const angle = -easeOutCirc(progress) * Math.PI * 20
         const offset = restPosition.clone().sub(target)
         offset.applyAxisAngle(THREE.Object3D.DEFAULT_UP, angle)
@@ -174,62 +204,62 @@ const MiniArena = () => {
       renderer.render(scene, camera)
     }
 
-    // Load each model once, then place a copy of it for every piece.
+    // Load each model once, then place a copy of it wherever it's used.
     const loader = new GLTFLoader()
-    Promise.allSettled(
-      ARENA_MODELS.map(model => loader.loadAsync(arenaModelUrl(model)))
-    ).then(results => {
-      const models = new Map<ArenaModel, GLTF>()
-      results.forEach((result, i) => {
-        if (result.status === 'fulfilled') {
-          models.set(ARENA_MODELS[i], result.value)
-        } else {
-          console.warn('Arena model failed to load', result.reason)
+    const ids = Object.keys(def.models)
+    Promise.allSettled(ids.map(id => loader.loadAsync(def.models[id]))).then(
+      results => {
+        const models = new Map<string, GLTF>()
+        results.forEach((result, i) => {
+          if (result.status === 'fulfilled') {
+            if (def.lightUnlitMaterials) lightUnlitMaterials(result.value.scene)
+            models.set(ids[i], result.value)
+          } else {
+            console.warn('3D model failed to load', result.reason)
+          }
+        })
+        if (disposed) return
+
+        for (const piece of def.pieces) {
+          const gltf = models.get(piece.model)
+          if (!gltf) continue
+          const object = gltf.scene.clone()
+          place(object, piece)
+          enableShadows(object)
+          scene.add(object)
         }
-      })
-      if (disposed) return
 
-      for (const piece of PIECES) {
-        const gltf = models.get(piece.model)
-        if (!gltf) continue
-        const object = gltf.scene.clone()
-        place(object, piece)
-        enableShadows(object)
-        scene.add(object)
-      }
-
-      const soldier = models.get('character-soldier')
-      const spear = models.get('weapon-spear')
-      if (soldier) {
-        SOLDIERS.forEach((spec, i) => {
-          const object = cloneSkinned(soldier.scene)
-          place(object, spec)
-          if (spear && spec.spear) {
-            const hand = object.getObjectByName('arm-right')
-            const weapon = spear.scene.clone()
-            weapon.position.set(-0.03, -0.12, 0.05)
-            hand?.add(weapon)
+        def.actors?.forEach((actor, i) => {
+          const gltf = models.get(actor.model)
+          if (!gltf) return
+          // Skeleton-aware copy, so each actor animates on its own.
+          const object = cloneSkinned(gltf.scene)
+          place(object, actor)
+          const held = actor.holds && models.get(actor.holds.model)
+          if (actor.holds && held) {
+            const item = held.scene.clone()
+            item.position.set(...actor.holds.offset)
+            object.getObjectByName(actor.holds.bone)?.add(item)
           }
           enableShadows(object)
           scene.add(object)
 
-          const clip = THREE.AnimationClip.findByName(
-            soldier.animations,
-            spec.animation
-          )
+          const clip =
+            actor.animation &&
+            THREE.AnimationClip.findByName(gltf.animations, actor.animation)
           if (clip) {
             const mixer = new THREE.AnimationMixer(object)
             mixer.clipAction(clip).play()
-            // Offset each soldier so they don't move in lockstep.
+            // Offset each actor so they don't move in lockstep.
             mixer.setTime(i * 0.4)
             mixers.push(mixer)
           }
         })
-      }
 
-      if (models.size > 0) animate()
-      setLoading(false)
-    })
+        if (models.size > 0) animate()
+        setLoading(false)
+      }
+    )
 
     const handleWindowResize = () => {
       renderer.setSize(container.clientWidth, container.clientHeight)
@@ -248,13 +278,13 @@ const MiniArena = () => {
       renderer.domElement.remove()
       renderer.dispose()
     }
-  }, [webglAvailable])
+  }, [webglAvailable, def])
 
   return (
-    <ArenaContainer ref={refContainer}>
-      {loading && <ArenaSpinner />}
-    </ArenaContainer>
+    <SceneContainer ref={refContainer}>
+      {loading && <SceneSpinner />}
+    </SceneContainer>
   )
 }
 
-export default MiniArena
+export default HeroScene

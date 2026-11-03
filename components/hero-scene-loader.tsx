@@ -1,7 +1,7 @@
 import { forwardRef, type ReactNode } from 'react'
 import { Box, Spinner } from '@chakra-ui/react'
 
-export const ArenaSpinner = () => (
+export const SceneSpinner = () => (
   <Spinner
     size="xl"
     position="absolute"
@@ -12,35 +12,35 @@ export const ArenaSpinner = () => (
   />
 )
 
-type ArenaContainerProps = {
+type SceneContainerProps = {
   children?: ReactNode
 }
 
 // The width of the main column, with a fixed aspect ratio so the scene just
 // scales up or down with the page: the camera always shows the same view.
-export const ARENA_ASPECT_RATIO = '640 / 380'
+export const SCENE_ASPECT_RATIO = '640 / 380'
 
-export const ArenaContainer = forwardRef<HTMLDivElement, ArenaContainerProps>(
+export const SceneContainer = forwardRef<HTMLDivElement, SceneContainerProps>(
   ({ children }, ref) => (
     <Box
       ref={ref}
-      className="mini-arena"
+      className="hero-scene"
       mb={[2, 4, 6]}
       w="100%"
-      sx={{ aspectRatio: ARENA_ASPECT_RATIO }}
+      sx={{ aspectRatio: SCENE_ASPECT_RATIO }}
       position="relative"
     >
       {children}
     </Box>
   )
 )
-ArenaContainer.displayName = 'ArenaContainer'
+SceneContainer.displayName = 'SceneContainer'
 
 const Loader = () => {
   return (
-    <ArenaContainer>
-      <ArenaSpinner />
-    </ArenaContainer>
+    <SceneContainer>
+      <SceneSpinner />
+    </SceneContainer>
   )
 }
 

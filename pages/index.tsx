@@ -84,8 +84,16 @@ const Page = ({ buildYear, quote }: PageProps) => {
           </Box>
         </Box>
         {/* The quote of the day, set apart as an epigraph. Its width is capped
-            because long centred lines are hard to read. */}
-        <Box as="figure" textAlign="center" maxW="36rem" mx="auto" mt={6}>
+            because long centred lines are hard to read. Its bottom margin collapses
+            with the section title's top margin, leaving equal space each side. */}
+        <Box
+          as="figure"
+          textAlign="center"
+          maxW="36rem"
+          mx="auto"
+          mt={6}
+          mb={8}
+        >
           <Text
             as="blockquote"
             fontStyle="italic"

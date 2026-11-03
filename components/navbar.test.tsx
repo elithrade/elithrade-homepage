@@ -3,6 +3,7 @@ import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { renderWithTheme } from '../test/test-utils'
 import Navbar from './navbar'
+import { CV_URL } from '../libs/cv'
 
 const GITHUB_URL = 'https://github.com/elithrade'
 
@@ -34,6 +35,21 @@ describe('Navbar', () => {
     )
   })
 
+  it('has a Download CV button that downloads in the same tab', () => {
+    renderWithTheme(<Navbar path="/" />)
+
+    // The button is display:none at the base breakpoint and jsdom doesn't
+    // evaluate media queries, so its accessible name computes as empty:
+    // match on its text instead.
+    const cv = screen
+      .getAllByRole('link', { hidden: true })
+      .find(el => el.textContent === 'Download CV')
+    expect(cv).toHaveAttribute('href', CV_URL)
+    // The CV is served as an attachment, so it downloads without leaving
+    // the page; a new tab would just flash open and close.
+    expect(cv).not.toHaveAttribute('target')
+  })
+
   it.each([
     ['/', false],
     ['/works', true],
@@ -61,7 +77,7 @@ describe('Navbar', () => {
     ).toBeInTheDocument()
   })
 
-  it('opens the mobile menu with About, Works and GitHub entries', async () => {
+  it('opens the mobile menu with About, Works, GitHub and CV entries', async () => {
     const user = userEvent.setup()
     renderWithTheme(<Navbar path="/" />)
 
@@ -77,5 +93,8 @@ describe('Navbar', () => {
     expect(
       within(menu).getByRole('menuitem', { name: 'GitHub' })
     ).toHaveAttribute('href', GITHUB_URL)
+    expect(
+      within(menu).getByRole('menuitem', { name: 'Download CV' })
+    ).toHaveAttribute('href', CV_URL)
   })
 })

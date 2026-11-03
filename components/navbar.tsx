@@ -19,7 +19,9 @@ import {
 import { HamburgerIcon } from '@chakra-ui/icons'
 import NextLink from 'next/link'
 import ThemeToggleButton from './theme-toggle-button'
+import DownloadCvButton from './download-cv-button'
 import { IoLogoGithub } from 'react-icons/io5'
+import { CV_URL } from '../libs/cv'
 
 type LinkItemProps = LinkProps & {
   href: string
@@ -113,6 +115,17 @@ const Navbar = (props: NavbarProps) => {
           </LinkItem>
         </Stack>
         <Box flex={1} align="right">
+          {/* An action, so it sits with the theme toggle. Outline, so it
+              doesn't compete with the solid toggle or the home page's
+              primary button; it fills with the accent on hover. Phones get
+              it from the menu instead. */}
+          <DownloadCvButton
+            variant="outline"
+            size="md"
+            mr={2}
+            display={{ base: 'none', md: 'inline-flex' }}
+            _hover={{ bg: 'accent-solid', color: 'on-accent' }}
+          />
           <ThemeToggleButton />
           <Box ml={2} display={{ base: 'inline-block', md: 'none' }}>
             <Menu>
@@ -131,6 +144,9 @@ const Navbar = (props: NavbarProps) => {
                 </MenuItem>
                 <MenuItem as={Link} href="https://github.com/elithrade">
                   GitHub
+                </MenuItem>
+                <MenuItem as={Link} href={CV_URL}>
+                  Download CV
                 </MenuItem>
               </MenuList>
             </Menu>

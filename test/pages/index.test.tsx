@@ -2,6 +2,7 @@ import { describe, it, expect, vi, afterEach } from 'vitest'
 import { screen } from '@testing-library/react'
 import { renderWithTheme } from '../test-utils'
 import Page from '../../pages/index'
+import { CV_URL } from '../../libs/cv'
 
 describe('Home page', () => {
   afterEach(() => {
@@ -31,6 +32,16 @@ describe('Home page', () => {
     renderWithTheme(<Page buildYear={2026} />)
 
     expect(screen.getByText(/with over 24 years of hands/)).toBeInTheDocument()
+  })
+
+  it('links the Download CV button to the published CV', () => {
+    renderWithTheme(<Page buildYear={2026} />)
+
+    const link = screen.getByRole('link', { name: 'Download CV' })
+    expect(link).toHaveAttribute('href', CV_URL)
+    // The blob's Content-Disposition header triggers the download, so the
+    // link must not open a new tab.
+    expect(link).not.toHaveAttribute('target')
   })
 
   it.each([

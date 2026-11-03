@@ -92,6 +92,8 @@ test.describe('Download CV button', () => {
       const before = await currentMode(page)
       await toggle.click()
       await expect.poll(() => currentMode(page)).not.toBe(before)
+      // Leave the toggle, or the next round reads its hover colour.
+      await page.mouse.move(0, 400)
     }
   })
 })

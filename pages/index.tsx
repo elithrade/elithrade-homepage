@@ -91,7 +91,10 @@ const Page = ({ buildYear, quote }: PageProps) => {
           </Box>
           <Box
             as="figure"
-            maxW="28rem"
+            // Shrinks to the quote, so the right-aligned author sits under the
+            // end of it rather than at the far edge on a phone.
+            w="fit-content"
+            maxW="36rem"
             ml={{ md: 'auto' }}
             mt={{ base: 6, md: 0 }}
             pl={4}
@@ -101,7 +104,13 @@ const Page = ({ buildYear, quote }: PageProps) => {
             <Text as="blockquote" fontStyle="italic" color="text-muted">
               &ldquo;{quote.text}&rdquo;
             </Text>
-            <Text as="figcaption" fontSize="sm" color="text-muted" mt={1}>
+            <Text
+              as="figcaption"
+              fontSize="sm"
+              color="text-muted"
+              mt={1}
+              textAlign="right"
+            >
               {/* The ZenQuotes attribution is in the footer. */}
               &mdash; {quote.author}
             </Text>

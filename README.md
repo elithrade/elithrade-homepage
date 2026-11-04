@@ -3,7 +3,7 @@
 [![CI](https://github.com/elithrade/elithrade-homepage/actions/workflows/ci.yml/badge.svg)](https://github.com/elithrade/elithrade-homepage/actions/workflows/ci.yml)
 [![E2E Test](https://github.com/elithrade/elithrade-homepage/actions/workflows/e2e.yml/badge.svg)](https://github.com/elithrade/elithrade-homepage/actions/workflows/e2e.yml)
 
-Personal homepage of Bin Hu: a small Next.js site with an animated 3D developer's corner,
+Personal homepage of Bin Hu: a small Next.js site with an animated 3D voxel dog at its desk,
 light/dark themes, a bio and skills page, and a works page built from the CV.
 
 **Live:** https://mango-pebble-00502641e.3.azurestaticapps.net

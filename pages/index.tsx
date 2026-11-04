@@ -60,47 +60,52 @@ const Page = ({ buildYear, quote }: PageProps) => {
         >
           Hello, I&apos;m a full stack developer based in Perth, Australia!
         </Box>
-        {/* The photo sits right beside the name so the two read as one, at
-            every width: a 96px photo and the name fit side by side on a phone. */}
-        <Box display="flex" alignItems="center" gap={{ base: 4, md: 6 }}>
-          <Image
-            flexShrink={0}
-            boxSize={{ base: '96px', md: '120px' }}
-            objectFit="cover"
-            borderColor="whiteAlpha.800"
-            borderWidth={2}
-            borderStyle="solid"
-            borderRadius="full"
-            src="/images/profile.jpg"
-            alt="Profile image"
-          />
-          <Box>
-            <Heading as="h2">Bin Hu</Heading>
-            <DownloadCvButton mt={2} />
-          </Box>
-        </Box>
-        {/* The quote of the day, set apart as an epigraph. Its width is capped
-            because long centred lines are hard to read. Its bottom margin collapses
-            with the section title's top margin, leaving equal space each side. */}
+        {/* One header band: the photo sits right beside the name so the two
+            read as one, and the quote of the day fills the space to their right.
+            On phones there's no room for three columns, so the quote drops
+            below. A divider and muted text keep it reading as a quote, not as a
+            tagline. Its length changes daily, so its width is capped and it is
+            centred against the photo. */}
         <Box
-          as="figure"
-          textAlign="center"
-          maxW="36rem"
-          mx="auto"
-          mt={6}
-          mb={8}
+          display={{ md: 'flex' }}
+          alignItems="center"
+          gap={8}
+          mb={{ base: 8, md: 10 }}
         >
-          <Text
-            as="blockquote"
-            fontStyle="italic"
-            fontSize={{ base: 'md', md: 'lg' }}
+          <Box display="flex" alignItems="center" gap={{ base: 4, md: 6 }}>
+            <Image
+              flexShrink={0}
+              boxSize={{ base: '96px', md: '120px' }}
+              objectFit="cover"
+              borderColor="whiteAlpha.800"
+              borderWidth={2}
+              borderStyle="solid"
+              borderRadius="full"
+              src="/images/profile.jpg"
+              alt="Profile image"
+            />
+            <Box flexShrink={0}>
+              <Heading as="h2">Bin Hu</Heading>
+              <DownloadCvButton mt={2} />
+            </Box>
+          </Box>
+          <Box
+            as="figure"
+            maxW="28rem"
+            ml={{ md: 'auto' }}
+            mt={{ base: 6, md: 0 }}
+            pl={4}
+            borderLeftWidth="2px"
+            borderColor="surface-border"
           >
-            &ldquo;{quote.text}&rdquo;
-          </Text>
-          <Text as="figcaption" fontSize="sm" color="text-muted" mt={1}>
-            {/* The ZenQuotes attribution is in the footer. */}
-            &mdash; {quote.author}
-          </Text>
+            <Text as="blockquote" fontStyle="italic" color="text-muted">
+              &ldquo;{quote.text}&rdquo;
+            </Text>
+            <Text as="figcaption" fontSize="sm" color="text-muted" mt={1}>
+              {/* The ZenQuotes attribution is in the footer. */}
+              &mdash; {quote.author}
+            </Text>
+          </Box>
         </Box>
         <Section delay={0.1}>
           <Heading as="h3" variant="section-title">

@@ -60,27 +60,23 @@ const Page = ({ buildYear, quote }: PageProps) => {
         >
           Hello, I&apos;m a full stack developer based in Perth, Australia!
         </Box>
-        <Box display={{ md: 'flex' }}>
-          <Box flexGrow={1}>
+        {/* The photo sits right beside the name so the two read as one, at
+            every width: a 96px photo and the name fit side by side on a phone. */}
+        <Box display="flex" alignItems="center" gap={{ base: 4, md: 6 }}>
+          <Image
+            flexShrink={0}
+            boxSize={{ base: '96px', md: '120px' }}
+            objectFit="cover"
+            borderColor="whiteAlpha.800"
+            borderWidth={2}
+            borderStyle="solid"
+            borderRadius="full"
+            src="/images/profile.jpg"
+            alt="Profile image"
+          />
+          <Box>
             <Heading as="h2">Bin Hu</Heading>
             <DownloadCvButton mt={2} />
-          </Box>
-          <Box
-            flexShrink={0}
-            mt={{ base: 4, md: 0 }}
-            ml={{ md: 6 }}
-            align="center"
-          >
-            <Image
-              borderColor="whiteAlpha.800"
-              borderWidth={2}
-              borderStyle="solid"
-              maxWidth="100px"
-              display="inline-block"
-              borderRadius="full"
-              src="/images/profile.jpg"
-              alt="Profile image"
-            />
           </Box>
         </Box>
         {/* The quote of the day, set apart as an epigraph. Its width is capped

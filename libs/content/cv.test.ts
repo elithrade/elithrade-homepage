@@ -143,13 +143,13 @@ describe('noBreakHyphens', () => {
 })
 
 describe('bioEntries', () => {
-  it('lists education and positions oldest first, with website details', () => {
+  it('lists education and positions newest first, with website details', () => {
     expect(
       bioEntries(sample).map(entry => [entry.headline, entry.organisation.name])
     ).toEqual([
-      ['BE', 'The University of New South Wales'],
+      ['Now', 'RACWA'],
       ['Before', 'Fugro'],
-      ['Now', 'RACWA']
+      ['BE', 'The University of New South Wales']
     ])
   })
 

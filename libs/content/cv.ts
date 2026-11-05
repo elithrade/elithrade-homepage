@@ -78,7 +78,7 @@ export type BioEntry = {
   organisation: OrganisationDetails
 }
 
-/** Education and positions together, oldest first. */
+/** Education and positions together, newest first, as on a CV. */
 export const bioEntries = (data: Cv = cv): BioEntry[] =>
   [
     ...data.education.map(entry => ({
@@ -95,4 +95,4 @@ export const bioEntries = (data: Cv = cv): BioEntry[] =>
       headline: position.title,
       organisation: detailsFor(position.organisation)
     }))
-  ].sort((a, b) => a.start.localeCompare(b.start))
+  ].sort((a, b) => b.start.localeCompare(a.start))

@@ -87,13 +87,16 @@ describe('Home page', () => {
     }
   })
 
-  it('shows the bio oldest first, with the years of each entry', () => {
+  it('shows the bio newest first, with the years of each entry', () => {
     renderPage()
 
     const years = screen
-      .getAllByText(/^\d{4} - (\d{4}|present)$/)
+      .getAllByText(/^\d{4}–(\d{4}|present)$/)
       .map(el => el.textContent)
-    expect(years).toEqual(['2002 - 2005', '2006 - 2022', '2022 - present'])
+    expect(years).toEqual(['2022–present', '2006–2022', '2002–2005'])
+    for (const year of years) {
+      expect(screen.getByText(year).tagName).toBe('DT')
+    }
   })
 
   it.each([

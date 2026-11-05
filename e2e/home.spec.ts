@@ -46,7 +46,7 @@ test.describe('home page', () => {
 
   test('opens employer links in a new tab', async ({ page }) => {
     for (const [name, href] of [
-      ['The University of New South Wales.', 'https://unsw.edu.au'],
+      ['The University of New South Wales', 'https://unsw.edu.au'],
       ['Fugro', 'https://www.fugro.com'],
       ['RACWA', 'https://rac.com.au']
     ]) {

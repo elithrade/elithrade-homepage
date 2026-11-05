@@ -3,6 +3,7 @@ import { screen } from '@testing-library/react'
 import { renderWithTheme } from '../test-utils'
 import Page from '../../pages/index'
 import { CV_URL } from '../../libs/cv'
+import { cv, noBreakHyphens } from '../../libs/content/cv'
 import { FALLBACK_QUOTE, type Quote } from '../../libs/quote'
 
 const zenQuote: Quote = {
@@ -72,8 +73,27 @@ describe('Home page', () => {
     expect(link).not.toHaveAttribute('target')
   })
 
+  it('shows a skills row per CV category', () => {
+    renderPage()
+
+    for (const skill of cv.skills) {
+      // Hyphens inside words are rendered non-breaking.
+      const row = screen.getByText(noBreakHyphens(skill.category)).parentElement
+      expect(row).toHaveTextContent(noBreakHyphens(skill.items.join(', ')))
+    }
+  })
+
+  it('shows the bio oldest first, with the years of each entry', () => {
+    renderPage()
+
+    const years = screen
+      .getAllByText(/^\d{4} - (\d{4}|present)$/)
+      .map(el => el.textContent)
+    expect(years).toEqual(['2002 - 2005', '2006 - 2022', '2022 - present'])
+  })
+
   it.each([
-    ['The University of New South Wales.', 'https://unsw.edu.au'],
+    ['The University of New South Wales', 'https://unsw.edu.au'],
     ['Fugro', 'https://www.fugro.com'],
     ['RACWA', 'https://rac.com.au']
   ])('links "%s" to %s in a new tab', (name, href) => {

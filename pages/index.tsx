@@ -9,8 +9,14 @@ import { BioSection, BioYear } from '../components/bio'
 import { Category, CategorySection } from '../components/category'
 import DownloadCvButton from '../components/download-cv-button'
 import { fetchQuoteOfTheDay } from '../libs/quote'
-
-const CAREER_START_YEAR = 2006
+import {
+  bioEntries,
+  careerStartYear,
+  cv,
+  noBreakHyphens,
+  summaryParagraphs,
+  yearRange
+} from '../libs/content/cv'
 
 const currentYear = () => new Date().getFullYear()
 const subscribeToYear = () => () => {}
@@ -44,7 +50,7 @@ export const getStaticProps = async () => {
 type PageProps = InferGetStaticPropsType<typeof getStaticProps>
 
 const Page = ({ buildYear, quote }: PageProps) => {
-  const experienceYears = useCurrentYear(buildYear) - CAREER_START_YEAR
+  const experienceYears = useCurrentYear(buildYear) - careerStartYear()
 
   return (
     <Layout>
@@ -120,109 +126,39 @@ const Page = ({ buildYear, quote }: PageProps) => {
           <Heading as="h3" variant="section-title">
             Me
           </Heading>
-          <Paragraph>
-            I am a Senior Software Engineer with over {experienceYears} years of
-            hands‑on experience across full‑stack development, cloud
-            infrastructure, and system integration. I specialize in building
-            robust, scalable applications and automating deployment pipelines
-            using modern DevOps tools and practices. A long‑time Vim enthusiast,
-            I enjoy working in terminal‑based environments and continuously
-            refine my toolchain to boost efficiency and focus.
-          </Paragraph>
-          <Paragraph>
-            I’m passionate about solving complex technical challenges and
-            constantly exploring new technologies and development techniques.
-            While my primary focus remains software engineering, I’m
-            increasingly contributing to architectural discussions and system
-            design, aiming to grow into broader technical leadership over time
-          </Paragraph>
+          {summaryParagraphs(experienceYears).map(paragraph => (
+            <Paragraph key={paragraph}>{noBreakHyphens(paragraph)}</Paragraph>
+          ))}
         </Section>
         <Section delay={0.2}>
           <Heading as="h3" variant="section-title">
             Bio
           </Heading>
-          <BioSection>
-            <BioYear>2002 - 2006</BioYear>
-            Completed Bachelor of Engineering degree in Software Engineering
-            with Honours at&nbsp;
-            <Link
-              as={NextLink}
-              href="https://unsw.edu.au"
-              passHref
-              target="_blank"
-            >
-              The University of New South Wales.
-            </Link>
-          </BioSection>
-          <BioSection>
-            <BioYear>2006 - 2022</BioYear>
-            Senior Innovation Engineer at&nbsp;
-            <Link
-              as={NextLink}
-              href="https://www.fugro.com"
-              passHref
-              target="_blank"
-            >
-              Fugro
-            </Link>
-          </BioSection>
-          <BioSection>
-            <BioYear>2022 - present</BioYear>
-            Senior Software Engineer at&nbsp;
-            <Link
-              as={NextLink}
-              href="https://rac.com.au"
-              passHref
-              target="_blank"
-            >
-              RACWA
-            </Link>
-          </BioSection>
+          {bioEntries().map(entry => (
+            <BioSection key={entry.key}>
+              <BioYear>{yearRange(entry)}</BioYear>
+              {noBreakHyphens(entry.headline)} at&nbsp;
+              <Link
+                as={NextLink}
+                href={entry.organisation.url}
+                passHref
+                target="_blank"
+              >
+                {entry.organisation.name}
+              </Link>
+            </BioSection>
+          ))}
         </Section>
         <Section delay={0.3}>
           <Heading as="h3" variant="section-title">
             Technical Skills
           </Heading>
-          <CategorySection>
-            <Category>Backend</Category>
-            GraphQL, Express, REST API, Serverless, EntityFramework, SQL,
-            Non‑SQL (DynamoDB)
-          </CategorySection>
-          <CategorySection>
-            <Category>Frontend</Category>
-            Next.js, React, Material UI, CSS
-          </CategorySection>
-          <CategorySection>
-            <Category>DevOps</Category>
-            GitHub Actions, AWS CDK, Docker, Terraform, Jenkins
-          </CategorySection>
-          <CategorySection>
-            <Category>Programming Languages</Category>
-            C#, TypeScript, Python, Go, Rust, C, Julia
-          </CategorySection>
-          <CategorySection>
-            <Category>Cloud - Azure</Category>
-            App Service, Container Apps, Functions, App Gateway, App Insights,
-            APIM, AD (Entra ID)
-          </CategorySection>
-          <CategorySection>
-            <Category>Cloud - AWS</Category>
-            EC2, S3, RDS, Lambda, API Gateway, CloudFront, Elemental, DynamoDB,
-            ECR, ECS, Fargate
-          </CategorySection>
-          <CategorySection>
-            <Category>Tools</Category>
-            Git, Neovim/Vim, Visual Studio, VSCode, Unity Editor
-          </CategorySection>
-          <CategorySection>
-            <Category>Methodology</Category>
-            Agile, Object‑Oriented/Functional Programming, CI/CD, Unit testing
-            for all languages
-          </CategorySection>
-          <CategorySection>
-            <Category>Languages</Category>
-            English, Mandarin
-          </CategorySection>
+          {cv.skills.map(skill => (
+            <CategorySection key={skill.category}>
+              <Category>{noBreakHyphens(skill.category)}</Category>
+              {noBreakHyphens(skill.items.join(', '))}
+            </CategorySection>
+          ))}
         </Section>
       </Container>
     </Layout>

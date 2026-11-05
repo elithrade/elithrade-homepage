@@ -1,11 +1,26 @@
-// Projects shown on /works. Content comes from the CV
-// (github.com/elithrade/My-Awesome-CV, examples/resume/experience.tex);
-// keep the two in sync when either changes.
+// Projects shown on /works. The project write-ups are curated by hand from the
+// CV (github.com/elithrade/My-Awesome-CV, examples/resume/experience.tex), so
+// review them when the CV's experience changes. Each organisation's name, role
+// and period come from content/cv.json.
+
+import { cv, yearRange } from './content/cv'
+import { detailsFor } from './content/organisations'
 
 export type Organisation = {
   name: string
   role: string
   period: string
+}
+
+/** The organisation as the CV names it, with the site's short name. */
+function organisation(cvName: string): Organisation {
+  const position = cv.experience.find(p => p.organisation === cvName)
+  if (!position) throw new Error(`content/cv.json has no position at ${cvName}`)
+  return {
+    name: detailsFor(cvName).name,
+    role: position.title,
+    period: yearRange(position, ' – ')
+  }
 }
 
 export type Work = {
@@ -19,17 +34,9 @@ export type Work = {
   stack: string[]
 }
 
-export const RACWA: Organisation = {
-  name: 'RACWA',
-  role: 'Senior Software Engineer',
-  period: '2022 – present'
-}
+export const RACWA = organisation('RACWA')
 
-export const FUGRO: Organisation = {
-  name: 'Fugro',
-  role: 'Senior Innovation Engineer',
-  period: '2006 – 2022'
-}
+export const FUGRO = organisation('Fugro Marine Australia')
 
 export const organisations = [RACWA, FUGRO]
 

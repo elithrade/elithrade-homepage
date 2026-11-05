@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 1,
+  "summary": [
+    "Senior Software Engineer with over {years} years of hands-on experience across full-stack development, cloud infrastructure, and system integration. I specialize in building robust, scalable applications and automating deployment pipelines using modern DevOps tools and practices. A long-time Vim enthusiast, I enjoy working in terminal-based environments and continuously refine my toolchain to boost efficiency and focus.",
+    "I’m passionate about solving complex technical challenges and constantly exploring new technologies and development techniques. While my primary focus remains software engineering, I’m increasingly contributing to architectural discussions and system design, aiming to grow into broader technical leadership over time."
+  ],
+  "skills": [
+    {
+      "category": "Back-end",
+      "items": [
+        "GraphQL",
+        "Express",
+        "REST API",
+        "Serverless",
+        "EntityFramework",
+        "SQL",
+        "Non-SQL (DynamoDB)"
+      ]
+    },
+    {
+      "category": "Front-end",
+      "items": ["Next.js", "React", "Material UI", "CSS"]
+    },
+    {
+      "category": "DevOps",
+      "items": ["GitHub Actions", "AWS CDK", "Docker", "Terraform", "Jenkins"]
+    },
+    {
+      "category": "Programming Languages",
+      "items": ["C#", "TypeScript", "Python", "Go", "Rust", "C", "Julia"]
+    },
+    {
+      "category": "Azure",
+      "items": [
+        "App Service",
+        "Container Apps",
+        "Functions",
+        "App Gateway",
+        "App Insights",
+        "APIM",
+        "Entra ID (formerly Azure AD)"
+      ]
+    },
+    {
+      "category": "AWS",
+      "items": [
+        "EC2",
+        "S3",
+        "RDS",
+        "Lambda",
+        "API Gateway",
+        "CloudFront",
+        "Elemental",
+        "DynamoDB",
+        "ECR",
+        "ECS",
+        "Fargate"
+      ]
+    },
+    {
+      "category": "Tools",
+      "items": ["Git", "Neovim/Vim", "Visual Studio", "VSCode", "Unity Editor"]
+    },
+    {
+      "category": "Methodology",
+      "items": [
+        "Agile",
+        "Object-Oriented/Functional Programming",
+        "CI/CD",
+        "Unit testing for all languages"
+      ]
+    },
+    {
+      "category": "CMS",
+      "items": ["Contentful", "Sitecore"]
+    },
+    {
+      "category": "AI & Machine Learning",
+      "items": [
+        "Prompt Engineering",
+        "Large Language Models (LLMs)",
+        "Generative AI (ChatGPT, Claude AI, Gemini)"
+      ]
+    },
+    {
+      "category": "Languages",
+      "items": ["English", "Mandarin"]
+    }
+  ],
+  "education": [
+    {
+      "degree": "Bachelor of Engineering (Honours) (Software)",
+      "institution": "UNSW (The University of New South Wales)",
+      "location": "Sydney, NSW, Australia",
+      "start": "2002-02",
+      "end": "2005-12"
+    }
+  ],
+  "experience": [
+    {
+      "title": "Senior Software Engineer",
+      "organisation": "RACWA",
+      "location": "Perth, WA, Australia",
+      "start": "2022-04",
+      "end": null
+    },
+    {
+      "title": "Senior Innovation Engineer (Promoted from Software Engineer)",
+      "organisation": "Fugro Marine Australia",
+      "location": "Perth, WA, Australia",
+      "start": "2006-06",
+      "end": "2022-03"
+    }
+  ]
+}

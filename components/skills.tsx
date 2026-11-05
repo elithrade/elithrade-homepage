@@ -1,68 +1,49 @@
 import { Box } from '@chakra-ui/react'
 import { noBreakHyphens, type Skill } from '../libs/content/cv'
 
-// Every chip is at least 28px tall. On wide screens each label is padded
-// down by LABEL_OFFSET so its first line sits level with the text of the
-// first row of chips beside it, even when a long label wraps.
-const CHIP_HEIGHT = '28px'
-const LABEL_OFFSET = '6px'
-
-const SkillChip = ({ children }: { children: string }) => (
+// Plain text in the same voice as the Bio: bold labels and a muted dot
+// between skills, light enough to pick out each skill without boxing it.
+// The dot trails its skill, so a wrapped line never starts with one, and a
+// skill only wraps inside itself when it is wider than the whole line.
+const SkillList = ({ items }: { items: string[] }) => (
   <Box
-    as="li"
-    fontSize="sm"
-    lineHeight="20px"
-    px={2.5}
-    py="3px"
-    minH={CHIP_HEIGHT}
-    borderRadius="md"
-    borderWidth="1px"
-    borderColor="surface-border"
-    bg="surface"
+    as="ul"
+    listStyleType="none"
+    display="flex"
+    flexWrap="wrap"
+    sx={{
+      '& > li:not(:last-of-type)::after': {
+        content: '"·"',
+        color: 'text-muted',
+        mx: 2
+      }
+    }}
   >
-    {noBreakHyphens(children)}
+    {items.map(item => (
+      <li key={item}>{noBreakHyphens(item)}</li>
+    ))}
   </Box>
 )
 
-// A description list: the category names line up in one narrow column so
-// the eye can run down them, and each category's skills start at the same
-// edge as chips. Phones have no room for two columns, so there the label
-// sits above its chips. The gap between categories is wider than the gap
-// between wrapped rows of chips, so a long list still reads as one group.
+// A description list: the category names line up in one narrow column and
+// every list of skills starts at the same edge, wrapped lines included, so
+// the eye can run straight down either column. Phones have no room for two
+// columns, so there the label sits above its skills. 13rem fits the
+// longest bold label, Programming Languages, on one line.
 export const SkillGroups = ({ skills }: { skills: Skill[] }) => (
-  <Box as="dl" display="flex" flexDirection="column" gap={{ base: 5, md: 4 }}>
+  <Box as="dl" display="flex" flexDirection="column" gap={{ base: 3, md: 1.5 }}>
     {skills.map(skill => (
       <Box
         key={skill.category}
         display="grid"
-        gridTemplateColumns={{ base: '1fr', md: '11rem 1fr' }}
+        gridTemplateColumns={{ base: '1fr', md: '13rem 1fr' }}
         columnGap={4}
-        rowGap={1.5}
       >
-        <Box
-          as="dt"
-          fontSize="xs"
-          fontWeight={600}
-          textTransform="uppercase"
-          letterSpacing="wider"
-          color="text-muted"
-          lineHeight="short"
-          pt={{ md: LABEL_OFFSET }}
-        >
+        <Box as="dt" fontWeight="bold">
           {noBreakHyphens(skill.category)}
         </Box>
         <Box as="dd">
-          <Box
-            as="ul"
-            listStyleType="none"
-            display="flex"
-            flexWrap="wrap"
-            gap={2}
-          >
-            {skill.items.map(item => (
-              <SkillChip key={item}>{item}</SkillChip>
-            ))}
-          </Box>
+          <SkillList items={skill.items} />
         </Box>
       </Box>
     ))}

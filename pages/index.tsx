@@ -5,9 +5,9 @@ import { Container, Box, Heading, Link, Image, Text } from '@chakra-ui/react'
 import Layout from '../components/layouts/article'
 import Section from '../components/section'
 import Paragraph from '../components/Paragraph'
-import { BioSection, BioYear } from '../components/bio'
 import DownloadCvButton from '../components/download-cv-button'
 import { SkillGroups } from '../components/skills'
+import { TermList, TermRow } from '../components/term-list'
 import { fetchQuoteOfTheDay } from '../libs/quote'
 import {
   bioEntries,
@@ -134,20 +134,21 @@ const Page = ({ buildYear, quote }: PageProps) => {
           <Heading as="h3" variant="section-title">
             Bio
           </Heading>
-          {bioEntries().map(entry => (
-            <BioSection key={entry.key}>
-              <BioYear>{yearRange(entry)}</BioYear>
-              {noBreakHyphens(entry.headline)} at&nbsp;
-              <Link
-                as={NextLink}
-                href={entry.organisation.url}
-                passHref
-                target="_blank"
-              >
-                {entry.organisation.name}
-              </Link>
-            </BioSection>
-          ))}
+          <TermList>
+            {bioEntries().map(entry => (
+              <TermRow key={entry.key} term={yearRange(entry, '–')}>
+                {noBreakHyphens(entry.headline)} at&nbsp;
+                <Link
+                  as={NextLink}
+                  href={entry.organisation.url}
+                  passHref
+                  target="_blank"
+                >
+                  {entry.organisation.name}
+                </Link>
+              </TermRow>
+            ))}
+          </TermList>
         </Section>
         <Section delay={0.3}>
           <Heading as="h3" variant="section-title">

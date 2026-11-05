@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import { screen } from '@testing-library/react'
+import { screen, within } from '@testing-library/react'
 import { renderWithTheme } from '../test-utils'
 import Page from '../../pages/index'
 import { CV_URL } from '../../libs/cv'
@@ -73,13 +73,17 @@ describe('Home page', () => {
     expect(link).not.toHaveAttribute('target')
   })
 
-  it('shows a skills row per CV category', () => {
+  it('lists each CV skill category with its skills as separate items', () => {
     renderPage()
 
     for (const skill of cv.skills) {
       // Hyphens inside words are rendered non-breaking.
-      const row = screen.getByText(noBreakHyphens(skill.category)).parentElement
-      expect(row).toHaveTextContent(noBreakHyphens(skill.items.join(', ')))
+      const term = screen.getByText(noBreakHyphens(skill.category))
+      expect(term.tagName).toBe('DT')
+      const items = within(term.parentElement!)
+        .getAllByRole('listitem')
+        .map(li => li.textContent)
+      expect(items).toEqual(skill.items.map(noBreakHyphens))
     }
   })
 

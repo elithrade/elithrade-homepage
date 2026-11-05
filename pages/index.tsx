@@ -6,8 +6,8 @@ import Layout from '../components/layouts/article'
 import Section from '../components/section'
 import Paragraph from '../components/Paragraph'
 import { BioSection, BioYear } from '../components/bio'
-import { Category, CategorySection } from '../components/category'
 import DownloadCvButton from '../components/download-cv-button'
+import { SkillGroups } from '../components/skills'
 import { fetchQuoteOfTheDay } from '../libs/quote'
 import {
   bioEntries,
@@ -153,12 +153,7 @@ const Page = ({ buildYear, quote }: PageProps) => {
           <Heading as="h3" variant="section-title">
             Technical Skills
           </Heading>
-          {cv.skills.map(skill => (
-            <CategorySection key={skill.category}>
-              <Category>{noBreakHyphens(skill.category)}</Category>
-              {noBreakHyphens(skill.items.join(', '))}
-            </CategorySection>
-          ))}
+          <SkillGroups skills={cv.skills} />
         </Section>
       </Container>
     </Layout>

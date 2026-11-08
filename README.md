@@ -15,7 +15,7 @@ light/dark themes, a bio and skills page, and a works page built from the CV.
 - [Chakra UI](https://v2.chakra-ui.com) 2 and Emotion for styling and colour mode
 - [framer-motion](https://motion.dev) for page and section transitions
 - [three.js](https://threejs.org) for the 3D hero scene: a voxel dog at its
-  desk, with models drawn as text and built by a script
+  desk, or me at mine, with models drawn as text and built by a script
 - [Vitest](https://vitest.dev) and Testing Library for unit tests
 - [Playwright](https://playwright.dev) for end-to-end tests
 - ESLint 10 (flat config) and Prettier
@@ -57,7 +57,7 @@ libs/
   works.ts           Projects shown on /works, taken from the CV
 pages/               Next.js routes (/, /works and /works/[id])
 public/              Static assets: 3D models (models/<scene>/), images
-scripts/             Builds the voxel dog's models from text layouts
+scripts/             Builds the voxel scenes' models from text layouts
 test/                Test setup, helpers and page tests
 types/               Project-wide type declarations
 ```
@@ -67,23 +67,30 @@ types/               Project-wide type declarations
 The scene at the top of every page is data, not code. Each file in
 `libs/scenes/` lists the models it loads (served from
 `public/models/<scene>/`), where every copy goes, and the camera and sun.
-`components/hero-scene.tsx` renders whichever scene `HERO_SCENE` in
-`libs/scenes/index.ts` points at, so adding or switching scenes is a small
-change. Any `.glb` can be used, as long as it's self-contained: the unit
+`components/hero-scene.tsx` renders one, and `components/hero-scenes.tsx`
+adds a switch in its corner for each scene in `SCENES` in
+`libs/scenes/index.ts`. `HERO_SCENE` is shown first, and a visitor's pick is
+remembered in their browser. Any `.glb` can be used, as long as it's self-contained: the unit
 tests fail on one that loads its texture from a separate file.
 
-The scene is `libs/scenes/voxel-dog.ts`: a voxel dog at a desk on a grass
-island, standing on its hind legs with its paws on the keyboard. It faces a
-monitor full of code and wags its tail, a bee visits the flowers, and the
-camera circles it all like a turntable.
+There are two scenes, and the camera circles each like a turntable:
+
+- `libs/scenes/voxel-me.ts` (the default): a voxel me, after my pixel-art
+  profile picture, typing at a desk with a crowbar on my back, while a voxel
+  dog naps at my feet and a bee flies over it.
+- `libs/scenes/voxel-dog.ts`: the dog at the same desk on a grass island,
+  standing on its hind legs with its paws on the keyboard. It faces a monitor
+  full of code and wags its tail, and the bee visits the flowers.
 
 Its models are drawn as text, so they can be changed without a 3D editor.
-`scripts/voxels/dog.txt`, `desk.txt`, `island.txt` and `bee.txt` list the
-voxels layer by layer, one letter per voxel, with the format and colours
-explained at the top of each file. After editing one, run
+The files in `scripts/voxels/` (`dog.txt`, `avatar.txt`, `desk.txt` and so
+on) list the voxels layer by layer, one letter per voxel, with the format and
+colours explained at the top of each file. After editing one, run
 `node scripts/make-voxel-models.mjs` to rebuild the `.glb` files in
-`public/models/voxel-dog/`. The bee's flight path is worked out from the
-flowers in `island.txt`, so it follows them when they move.
+`public/models/voxel-dog/` and `public/models/voxel-me/`; `SCENES` at the top
+of the script says which layouts go into which scene. The bee's flight path
+is worked out from the flowers on its scene's island, so it follows them when
+they move.
 
 ## TypeScript
 

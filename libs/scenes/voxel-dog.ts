@@ -8,6 +8,7 @@ import { defineScene } from './types'
 
 export const voxelDog = defineScene({
   name: 'voxel-dog',
+  label: 'Dog',
   models: {
     bee: '/models/voxel-dog/bee.glb',
     desk: '/models/voxel-dog/desk.glb',
@@ -35,7 +36,7 @@ export const voxelDog = defineScene({
     azimuth: 65,
     height: 11,
     distance: 20,
-    halfWidth: 2.4,
+    halfWidth: 2.6,
     turntable: 30
   },
   // From the right and a little behind, so it lights the dog's face as well

@@ -1,5 +1,5 @@
-// Builds the voxel dog scene's models from the text files in scripts/voxels/
-// into public/models/voxel-dog/. Edit a .txt file, then run:
+// Builds the voxel scenes' models from the text files in scripts/voxels/
+// into public/models/<scene>/ (see SCENES below). Edit a .txt file, then run:
 //
 //   node scripts/make-voxel-models.mjs
 //
@@ -70,42 +70,66 @@ const PALETTE = {
   j: 0x3f3849 // left glove
 }
 
-const MODELS = [
-  {
-    name: 'dog',
-    // The tail is its own node, turning where it meets the dog's rump, so the
-    // "wag" clip can swing it from side to side along the ground.
-    parts: { tail: { letters: 'tu', pivot: [3.5, 1.5, 2] } },
-    animations: [wag()]
+// The screen is unlit, so it glows instead of being shaded.
+const DESK = {
+  name: 'desk',
+  parts: { screen: { letters: 'SXYZV', unlit: true } }
+}
+
+// Each wing turns about the line along the top of the bee's back. Its flight
+// path is worked out from the flowers on the island it flies round.
+const bee = flight => ({
+  name: 'bee',
+  voxel: 0.03,
+  parts: {
+    wingL: { letters: 'q', pivot: [2.5, 3, 4] },
+    wingR: { letters: 'r', pivot: [2.5, 3, 4] }
   },
-  {
-    name: 'desk',
-    // The screen is unlit, so it glows instead of being shaded.
-    parts: { screen: { letters: 'SXYZV', unlit: true } }
-  },
-  { name: 'island' },
-  {
-    name: 'avatar',
-    // Smaller voxels than the dog's, so its hands come level with the keys.
-    voxel: 0.08,
-    // Each arm turns at the shoulder, so the "type" clip can tap the keys.
-    parts: {
-      armR: { letters: 'elf', pivot: [2, 11, 3] },
-      armL: { letters: 'imj', pivot: [12, 11, 3] }
+  animations: [beeFlight(flight)]
+})
+
+// The models of each scene, built into public/models/<scene>/<name>.glb from
+// scripts/voxels/<layout>.txt (the layout defaults to the model's name).
+const SCENES = {
+  'voxel-dog': [
+    {
+      name: 'dog',
+      // The tail is its own node, turning where it meets the dog's back, so
+      // the "wag" clip can swing it side to side.
+      parts: { tail: { letters: 'tu', pivot: [4.5, 4.5, 2] } },
+      animations: [wag()]
     },
-    animations: [type()]
-  },
-  {
-    name: 'bee',
-    voxel: 0.03,
-    // Each wing turns about the line along the top of the bee's back.
-    parts: {
-      wingL: { letters: 'q', pivot: [2.5, 3, 4] },
-      wingR: { letters: 'r', pivot: [2.5, 3, 4] }
+    DESK,
+    { name: 'island' },
+    bee({ island: 'island', radius: 1.3, height: 0.5 })
+  ],
+  'voxel-me': [
+    {
+      name: 'avatar',
+      // Smaller voxels than the dog's, so its hands come level with the keys.
+      voxel: 0.08,
+      // Each arm turns at the shoulder, so the "type" clip can tap the keys.
+      parts: {
+        armR: { letters: 'elf', pivot: [2, 11, 3] },
+        armL: { letters: 'imj', pivot: [12, 11, 3] }
+      },
+      animations: [type()]
     },
-    animations: [beeFlight()]
-  }
-]
+    {
+      name: 'dog',
+      layout: 'dog-napping',
+      // The tail turns where it meets the dog's rump, so the "wag" clip
+      // swings it from side to side along the ground.
+      parts: { tail: { letters: 'tu', pivot: [3.5, 1.5, 2] } },
+      animations: [wag()]
+    },
+    DESK,
+    { name: 'island', layout: 'island-me' },
+    // Higher and a little wider than in voxel-dog, so it flies over the
+    // napping dog and stays clear of the desk.
+    bee({ island: 'island-me', radius: 1.4, height: 0.8 })
+  ]
+}
 
 // Reads a layout: "y N" starts a layer, then one row per z and one
 // character per x. Lines starting with # are comments. Returns the voxels
@@ -277,16 +301,17 @@ function type() {
   ])
 }
 
-// Flies a loop round the island: out near its edge, then in to hover over
-// each flower in island.txt in turn, bobbing and flapping all the way. The
-// path follows the flowers, so it changes when they're moved.
-function beeFlight() {
-  const CRUISE_RADIUS = 1.4 // clear of the desk, just inside the edge
-  const CRUISE_HEIGHT = 0.8 // over the napping dog
+// Flies a loop round the island: out to `radius` from its centre at
+// `height`, then in to hover over each flower in the island's layout in
+// turn, bobbing and flapping all the way. The path follows the flowers, so
+// it changes when they're moved.
+function beeFlight({ island: layout, radius, height }) {
+  const CRUISE_RADIUS = radius
+  const CRUISE_HEIGHT = height
   const SPEED = 0.6 // units per second
   const HOVER = 0.8 // seconds over each flower
 
-  const island = readVoxels(new URL('voxels/island.txt', import.meta.url))
+  const island = readVoxels(new URL(`voxels/${layout}.txt`, import.meta.url))
   const flowers = island.voxels
     .filter(v => 'FO'.includes(v.letter))
     .map(v => ({
@@ -380,9 +405,19 @@ function beeFlight() {
   ])
 }
 
-for (const { name, voxel = VOXEL, parts = {}, animations = [] } of MODELS) {
+const builds = Object.entries(SCENES).flatMap(([scene, models]) =>
+  models.map(model => ({ scene, ...model }))
+)
+for (const {
+  scene: sceneName,
+  name,
+  layout = name,
+  voxel = VOXEL,
+  parts = {},
+  animations = []
+} of builds) {
   const { voxels, width, depth } = readVoxels(
-    new URL(`voxels/${name}.txt`, import.meta.url)
+    new URL(`voxels/${layout}.txt`, import.meta.url)
   )
   // Centre the model on x and z; y 0 is the ground.
   const centre = [width / 2, 0, depth / 2]
@@ -416,9 +451,12 @@ for (const { name, voxel = VOXEL, parts = {}, animations = [] } of MODELS) {
     binary: true,
     animations
   })
-  const out = new URL(`../public/models/voxel-dog/${name}.glb`, import.meta.url)
+  const out = new URL(
+    `../public/models/${sceneName}/${name}.glb`,
+    import.meta.url
+  )
   writeFileSync(out, Buffer.from(glb))
   console.log(
-    `${name}: ${voxels.length} voxels → ${out.pathname} (${glb.byteLength} bytes)`
+    `${sceneName}/${name}: ${voxels.length} voxels → ${out.pathname} (${glb.byteLength} bytes)`
   )
 }

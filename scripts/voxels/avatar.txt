@@ -1,4 +1,4 @@
-# The voxel avatar, built into public/models/voxel-dog/avatar.glb by
+# The voxel avatar, built into public/models/voxel-me/avatar.glb by
 # `node scripts/make-voxel-models.mjs`, after the pixel-art profile
 # picture: beard, glasses, an orange and grey suit and a crowbar on the
 # back. It stands at the desk with its arms reaching forward to type.

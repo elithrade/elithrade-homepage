@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, type ReactNode } from 'react'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { GLTFLoader, type GLTF } from 'three/addons/loaders/GLTFLoader.js'
@@ -47,9 +47,12 @@ function disposeScene(scene: THREE.Scene) {
 
 type HeroSceneProps = {
   scene: SceneDef
+  // Shown over the scene, such as controls. Left out without WebGL, since
+  // there's no scene to control.
+  children?: ReactNode
 }
 
-const HeroScene = ({ scene: def }: HeroSceneProps) => {
+const HeroScene = ({ scene: def, children }: HeroSceneProps) => {
   const refContainer = useRef<HTMLDivElement>(null)
 
   // This component only renders on the client (see NoSsr), so it's safe to
@@ -250,6 +253,7 @@ const HeroScene = ({ scene: def }: HeroSceneProps) => {
   return (
     <SceneContainer ref={refContainer}>
       {loading && <SceneSpinner />}
+      {webglAvailable && children}
     </SceneContainer>
   )
 }

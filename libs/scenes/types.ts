@@ -26,6 +26,8 @@ export type Actor<M extends string = string> = Piece<M> & {
 
 export type SceneDef<M extends string = string> = {
   name: string
+  // Short name for the button that switches to this scene.
+  label: string
   // Every model the scene loads, by id, and where to fetch it.
   models: Record<M, string>
   pieces: Piece<M>[]

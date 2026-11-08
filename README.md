@@ -3,7 +3,7 @@
 [![CI](https://github.com/elithrade/elithrade-homepage/actions/workflows/ci.yml/badge.svg)](https://github.com/elithrade/elithrade-homepage/actions/workflows/ci.yml)
 [![E2E Test](https://github.com/elithrade/elithrade-homepage/actions/workflows/e2e.yml/badge.svg)](https://github.com/elithrade/elithrade-homepage/actions/workflows/e2e.yml)
 
-Personal homepage of Bin Hu: a small Next.js site with an animated 3D voxel dog at its desk,
+Personal homepage of Bin Hu: a small Next.js site with an animated 3D voxel me at my desk,
 light/dark themes, a bio and skills page, and a works page built from the CV.
 
 **Live:** https://mango-pebble-00502641e.3.azurestaticapps.net
@@ -14,8 +14,8 @@ light/dark themes, a bio and skills page, and a works page built from the CV.
 - [Next.js](https://nextjs.org) 16 (pages router, Turbopack) and React 19
 - [Chakra UI](https://v2.chakra-ui.com) 2 and Emotion for styling and colour mode
 - [framer-motion](https://motion.dev) for page and section transitions
-- [three.js](https://threejs.org) for the 3D hero scene: a voxel dog at its
-  desk, with models drawn as text and built by a script
+- [three.js](https://threejs.org) for the 3D hero scene: a voxel me at my
+  desk with the dog, with models drawn as text and built by a script
 - [Vitest](https://vitest.dev) and Testing Library for unit tests
 - [Playwright](https://playwright.dev) for end-to-end tests
 - ESLint 10 (flat config) and Prettier
@@ -57,7 +57,7 @@ libs/
   works.ts           Projects shown on /works, taken from the CV
 pages/               Next.js routes (/, /works and /works/[id])
 public/              Static assets: 3D models (models/<scene>/), images
-scripts/             Builds the voxel dog's models from text layouts
+scripts/             Builds the voxel scene's models from text layouts
 test/                Test setup, helpers and page tests
 types/               Project-wide type declarations
 ```
@@ -72,15 +72,15 @@ The scene at the top of every page is data, not code. Each file in
 change. Any `.glb` can be used, as long as it's self-contained: the unit
 tests fail on one that loads its texture from a separate file.
 
-The scene is `libs/scenes/voxel-dog.ts`: a voxel dog at a desk on a grass
-island, standing on its hind legs with its paws on the keyboard. It faces a
-monitor full of code and wags its tail, a bee visits the flowers, and the
-camera circles it all like a turntable.
+The scene is `libs/scenes/voxel-dog.ts`: a voxel me, after my pixel-art
+profile picture, typing at a desk on a grass island, facing a monitor full
+of code with a crowbar on my back. The dog naps at my feet wagging its tail,
+a bee visits the flowers, and the camera circles it all like a turntable.
 
 Its models are drawn as text, so they can be changed without a 3D editor.
-`scripts/voxels/dog.txt`, `desk.txt`, `island.txt` and `bee.txt` list the
-voxels layer by layer, one letter per voxel, with the format and colours
-explained at the top of each file. After editing one, run
+`scripts/voxels/avatar.txt`, `dog.txt`, `desk.txt`, `island.txt` and
+`bee.txt` list the voxels layer by layer, one letter per voxel, with the
+format and colours explained at the top of each file. After editing one, run
 `node scripts/make-voxel-models.mjs` to rebuild the `.glb` files in
 `public/models/voxel-dog/`. The bee's flight path is worked out from the
 flowers in `island.txt`, so it follows them when they move.

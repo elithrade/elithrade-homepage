@@ -50,15 +50,32 @@ const PALETTE = {
   t: 0xc0803f, // tail, brown
   u: 0xf5efe4, // tail, white
   q: 0xe6f2ff, // bee wing, left
-  r: 0xe6f2ff // bee wing, right
+  r: 0xe6f2ff, // bee wing, right
+  // The avatar.
+  h: 0x7a3a1f, // hair and beard
+  b: 0x4e2414, // mouth
+  s: 0xf2b08c, // skin
+  n: 0xe0967a, // nose
+  g: 0x6f6880, // suit grey
+  k: 0x3f3849, // suit dark grey
+  o: 0xf28c28, // suit orange
+  d: 0xc8571b, // chest emblem, dark orange
+  y: 0xffd25a, // chest emblem, yellow
+  c: 0x58516a, // crowbar
+  e: 0x6f6880, // right arm, grey
+  l: 0xf28c28, // right arm, orange
+  f: 0x3f3849, // right glove
+  i: 0x6f6880, // left arm, grey
+  m: 0xf28c28, // left arm, orange
+  j: 0x3f3849 // left glove
 }
 
 const MODELS = [
   {
     name: 'dog',
-    // The tail is its own node, turning where it meets the dog's back, so the
-    // "wag" clip can swing it side to side.
-    parts: { tail: { letters: 'tu', pivot: [4.5, 4.5, 2] } },
+    // The tail is its own node, turning where it meets the dog's rump, so the
+    // "wag" clip can swing it from side to side along the ground.
+    parts: { tail: { letters: 'tu', pivot: [3.5, 1.5, 2] } },
     animations: [wag()]
   },
   {
@@ -67,6 +84,17 @@ const MODELS = [
     parts: { screen: { letters: 'SXYZV', unlit: true } }
   },
   { name: 'island' },
+  {
+    name: 'avatar',
+    // Smaller voxels than the dog's, so its hands come level with the keys.
+    voxel: 0.08,
+    // Each arm turns at the shoulder, so the "type" clip can tap the keys.
+    parts: {
+      armR: { letters: 'elf', pivot: [2, 11, 3] },
+      armL: { letters: 'imj', pivot: [12, 11, 3] }
+    },
+    animations: [type()]
+  },
   {
     name: 'bee',
     voxel: 0.03,
@@ -228,12 +256,33 @@ function wag() {
   ])
 }
 
+// Taps the keys: each arm lifts its hand a little and drops it again, in
+// turn, about three times a second.
+function type() {
+  const axis = new THREE.Vector3(1, 0, 0)
+  const lift = degrees =>
+    new THREE.Quaternion()
+      .setFromAxisAngle(axis, (-degrees * Math.PI) / 180)
+      .toArray()
+  const times = [0, 0.15, 0.3, 0.45, 0.6]
+  const track = (part, keys) =>
+    new THREE.QuaternionKeyframeTrack(
+      `${part}.quaternion`,
+      times,
+      keys.flatMap(lift)
+    )
+  return new THREE.AnimationClip('type', 0.6, [
+    track('armR', [0, 7, 0, 0, 0]),
+    track('armL', [0, 0, 0, 7, 0])
+  ])
+}
+
 // Flies a loop round the island: out near its edge, then in to hover over
 // each flower in island.txt in turn, bobbing and flapping all the way. The
 // path follows the flowers, so it changes when they're moved.
 function beeFlight() {
-  const CRUISE_RADIUS = 1.3 // clear of the desk and the dog
-  const CRUISE_HEIGHT = 0.5
+  const CRUISE_RADIUS = 1.4 // clear of the desk, just inside the edge
+  const CRUISE_HEIGHT = 0.8 // over the napping dog
   const SPEED = 0.6 // units per second
   const HOVER = 0.8 // seconds over each flower
 

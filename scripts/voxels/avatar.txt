@@ -1,0 +1,265 @@
+# The voxel avatar, built into public/models/voxel-dog/avatar.glb by
+# `node scripts/make-voxel-models.mjs`, after the pixel-art profile
+# picture: beard, glasses, an orange and grey suit and a crowbar on the
+# back. It stands at the desk with its arms reaching forward to type.
+#
+# Each "y N" block is one layer of voxels, from the boots (y 0) up to the
+# top of the head. In a layer, each row is one step from the back (first
+# row) to the front (last row), and each character is one voxel from the
+# figure's right side to its left. A "." is empty; the other letters are
+# colours, listed in PALETTE in the script (h hair and beard, b mouth,
+# s skin, n nose, K glasses, W lenses, g suit grey, k dark grey, o orange,
+# d dark orange and y yellow: the chest emblem, R red, c crowbar). The
+# arms are separate parts, so they can type: e grey, l orange and f glove
+# on the right arm, and i, m and j on the left. Every layer must have the
+# same size.
+
+y 0
+.............
+.............
+...kkk..kkk..
+...kkk..kkk..
+...kkk..kkk..
+...kkk..kkk..
+...kkk..kkk..
+.............
+
+y 1
+.............
+.............
+...kkk..kkk..
+...kkk..kkk..
+...kkk..kkk..
+...kkk..kkk..
+.............
+.............
+
+y 2
+.............
+.............
+...ggg..ggg..
+...ggg..ggg..
+...ggg..ggg..
+...ggg..ggg..
+.............
+.............
+
+y 3
+.............
+.............
+...ooo..ooo..
+...ooo..ooo..
+...ooo..ooo..
+...ooo..ooo..
+.............
+.............
+
+y 4
+.............
+.............
+...ggg..ggg..
+...ggg..ggg..
+...ggg..ggg..
+...ggg..ggg..
+.............
+.............
+
+y 5
+.............
+.............
+...ggg..ggg..
+...ggg..ggg..
+...ggg..ggg..
+...ggg..ggg..
+.............
+.............
+
+y 6
+........c....
+.............
+...kkkkkkkk..
+...kkkkkkkk..
+...kkkkkkkk..
+...kkkkkkkk..
+.............
+.............
+
+y 7
+.......c.....
+....kkkkkk...
+...gggggggg..
+...gggggggg..
+...gggggggg..
+...goooooog..
+.............
+.............
+
+y 8
+......c......
+....kkkkkk...
+...gggggggg..
+...gggggggg..
+...gggggggg..
+...goddddog..
+.............
+.............
+
+y 9
+.....c.......
+....kkkkkk...
+...gggggggg..
+...gggggggg..
+...gggggggg..
+...godyydog..
+.............
+.............
+
+y 10
+....c........
+....kkkkkk...
+.eeggggggggii
+.eeggggggggii
+.eeggggggggii
+.llgodyydogmm
+.ff........jj
+.ff........jj
+
+y 11
+...c.........
+....kkkkkk...
+.eeggggggggii
+.eeggggggggii
+.eeggggggggii
+.llgoddddogmm
+.ff........jj
+.ff........jj
+
+y 12
+..c..........
+.............
+.kk.kkkkkk.kk
+.kk.kkkkkk.kk
+.RR.kkkkkk.RR
+....kkkkkk...
+....hhhhhh...
+....hhhhhh...
+
+y 13
+.c...........
+...hhhhhhhh..
+..hhhhhhhhhh.
+..hhhhhhhhhh.
+..hhhhhhhhhh.
+..hhhhhhhhhh.
+..hhhhhhhhhh.
+...hhhhhhhh..
+
+y 14
+c............
+..hhhhhhhhhh.
+..hhhhhhhhhh.
+..hhhhhhhhhh.
+..hhhhhhhhhh.
+..hhhhhhhhhh.
+..hhhhbbhhhh.
+..hhhhbbhhhh.
+
+y 15
+c............
+..hhhhhhhhhh.
+..hhhhhhhhhh.
+..hhhhhhhhhh.
+..hhhhhhhhhh.
+..hhhhhhhhhh.
+..hhhhhhhhhh.
+..hhhhhhhhhh.
+
+y 16
+c............
+..hhhhhhhhhh.
+..hhhhhhhhhh.
+..shhhhhhhhs.
+..hhhhhhhhhh.
+..hhhhhhhhhh.
+..hsssnnsssh.
+..hsssnnsssh.
+
+y 17
+c............
+..hhhhhhhhhh.
+..hhhhhhhhhh.
+..shhhhhhhhs.
+..hhhhhhhhhh.
+..hhhhhhhhhh.
+..ssssssssss.
+..KWKKssKKWK.
+
+y 18
+c............
+..hhhhhhhhhh.
+..hhhhhhhhhh.
+..hhhhhhhhhh.
+..hhhhhhhhhh.
+..hhhhhhhhhh.
+..ssssssssss.
+..KWWKssKWWK.
+
+y 19
+c............
+..hhhhhhhhhh.
+..hhhhhhhhhh.
+..hhhhhhhhhh.
+..KhhhhhhhhK.
+..KhhhhhhhhK.
+..KssssssssK.
+..KKKKKKKKKK.
+
+y 20
+c............
+..hhhhhhhhhh.
+..hhhhhhhhhh.
+..hhhhhhhhhh.
+..hhhhhhhhhh.
+..hhhhhhhhhh.
+..hssssssssh.
+..hssssssssh.
+
+y 21
+c............
+..hhhhhhhhhh.
+..hhhhhhhhhh.
+..hhhhhhhhhh.
+..hhhhhhhhhh.
+..hhhhhhhhhh.
+..hhhhhhhhhh.
+..hhhhhhhhhh.
+
+y 22
+c............
+...hhhhhhhh..
+..hhhhhhhhhh.
+..hhhhhhhhhh.
+..hhhhhhhhhh.
+..hhhhhhhhhh.
+..hhhhhhhhhh.
+...hhhhhhhh..
+
+y 23
+c..c.........
+.............
+.............
+.............
+.............
+.............
+.............
+.............
+
+y 24
+.cc..........
+.............
+.............
+.............
+.............
+.............
+.............
+.............

@@ -101,7 +101,9 @@ const SCENES = {
     },
     DESK,
     { name: 'island' },
-    bee({ island: 'island', radius: 1.3, height: 0.5 })
+    // Out just past the island's edge between flowers, so it loops round the
+    // desk instead of cutting between its legs.
+    bee({ island: 'island', radius: 1.9, height: 0.5 })
   ],
   'voxel-me': [
     {
@@ -125,9 +127,9 @@ const SCENES = {
     },
     DESK,
     { name: 'island', layout: 'island-me' },
-    // Higher and a little wider than in voxel-dog, so it flies over the
-    // napping dog and stays clear of the desk.
-    bee({ island: 'island-me', radius: 1.4, height: 0.8 })
+    // Higher than in voxel-dog, so it flies over the napping dog, and not as
+    // far out, so it doesn't swing wide into the dog either.
+    bee({ island: 'island-me', radius: 1.6, height: 0.8 })
   ]
 }
 

@@ -75,12 +75,12 @@ tests fail on one that loads its texture from a separate file.
 
 There are two scenes, and the camera circles each like a turntable:
 
-- `libs/scenes/voxel-dog.ts` (the default): a voxel dog at a desk on a grass
-  island, standing on its hind legs with its paws on the keyboard. It faces a
-  monitor full of code and wags its tail, and a bee visits the flowers.
-- `libs/scenes/voxel-me.ts`: a voxel me, after my pixel-art profile picture,
-  typing at the same desk with a crowbar on my back, while the dog naps at my
-  feet and the bee flies over it.
+- `libs/scenes/voxel-me.ts` (the default): a voxel me, after my pixel-art
+  profile picture, typing at a desk with a crowbar on my back, while a voxel
+  dog naps at my feet and a bee flies over it.
+- `libs/scenes/voxel-dog.ts`: the dog at the same desk on a grass island,
+  standing on its hind legs with its paws on the keyboard. It faces a monitor
+  full of code and wags its tail, and the bee visits the flowers.
 
 Its models are drawn as text, so they can be changed without a 3D editor.
 The files in `scripts/voxels/` (`dog.txt`, `avatar.txt`, `desk.txt` and so

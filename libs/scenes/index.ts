@@ -6,4 +6,4 @@ import { voxelMe } from './voxel-me'
 export const SCENES = [voxelDog, voxelMe]
 
 // The scene shown until a visitor picks another.
-export const HERO_SCENE = voxelDog
+export const HERO_SCENE = voxelMe

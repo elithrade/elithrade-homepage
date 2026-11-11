@@ -29,17 +29,18 @@ export const voxelDog = defineScene({
     // Its flight path, round the island's flowers, is baked into the model.
     { model: 'bee', x: 0, z: 0, animation: 'fly' }
   ],
-  // Starts side on, so the code shows beside the dog. The monitor sits low
-  // enough that the dog's face shows over it from the front.
+  // Starts in front of the dog and to one side: the monitor sits low enough
+  // that its face shows over it. The turntable brings the code on the screen
+  // round a few seconds later. As wide a view as voxel-me's, so the island
+  // stays the same size when switching between them.
   camera: {
-    target: [0, 0.52, 0],
-    azimuth: 65,
+    target: [0, 0.46, 0],
+    azimuth: 125,
     height: 11,
     distance: 20,
-    halfWidth: 2.6,
+    halfWidth: 2.75,
     turntable: 30
   },
-  // From the right and a little behind, so it lights the dog's face as well
-  // as the side seen at the start.
+  // From behind the starting view, so it lights the dog's face.
   sun: { position: [5, 7, -3], shadowExtent: 2 }
 })

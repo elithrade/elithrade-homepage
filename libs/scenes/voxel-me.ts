@@ -35,16 +35,18 @@ export const voxelMe = defineScene({
     // into the model.
     { model: 'bee', x: 0, z: 0, animation: 'fly' }
   ],
-  // Starts side on, so the code shows beside the avatar.
+  // Starts in front of the avatar and to one side, so its face shows over the
+  // monitor; the turntable brings the code on the screen round a few seconds
+  // later. The view is just wide enough to keep the island and the crowbar's
+  // hook inside the canvas all the way round.
   camera: {
-    target: [0, 0.6, 0],
-    azimuth: 65,
+    target: [0, 0.54, 0],
+    azimuth: 125,
     height: 11,
     distance: 20,
-    halfWidth: 2.6,
+    halfWidth: 2.75,
     turntable: 30
   },
-  // From the right and a little behind, so it lights the avatar's face as
-  // well as the side seen at the start.
+  // From behind the starting view, so it lights the avatar's face.
   sun: { position: [5, 7, -3], shadowExtent: 2 }
 })

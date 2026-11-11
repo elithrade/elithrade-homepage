@@ -73,7 +73,11 @@ adds a switch in its corner for each scene in `SCENES` in
 remembered in their browser. Any `.glb` can be used, as long as it's self-contained: the unit
 tests fail on one that loads its texture from a separate file.
 
-There are two scenes, and the camera circles each like a turntable:
+There are two scenes. Each opens with one turn of the camera, then keeps
+circling like a turntable until a visitor clicks or drags it. The scene leaves
+scrolling to the page (no wheel zoom, and a swipe up or down passes through),
+stops drawing while it's off screen, and stays still for visitors whose system
+asks for reduced motion.
 
 - `libs/scenes/voxel-me.ts` (the default): a voxel me, after my pixel-art
   profile picture, typing at a desk with a crowbar on my back, while a voxel
@@ -171,7 +175,8 @@ served with `next start` on port 3100. They cover:
 
 - home page content
 - the works list and every work's detail page
-- the 3D hero scene loading and rendering
+- the 3D hero scene: loading, rendering, switching scenes, leaving scrolling
+  to the page, pausing off screen and reduced motion
 - the theme toggle, including persistence across reloads
 - navigation and the 404 page
 - the mobile menu

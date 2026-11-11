@@ -1,15 +1,27 @@
 import { forwardRef, type ReactNode } from 'react'
 import { Box, Spinner } from '@chakra-ui/react'
+import { keyframes } from '@emotion/react'
 
+const appear = keyframes`
+  from { opacity: 0; }
+  to { opacity: 1; }
+`
+
+// Centred over the scene. It fades in after a moment, so a load that's over
+// quickly (switching to a scene whose models are cached) doesn't flash it,
+// and it lets clicks through to the scene underneath.
 export const SceneSpinner = () => (
-  <Spinner
-    size="xl"
+  <Box
     position="absolute"
-    left="50%"
-    top="50%"
-    ml="calc(0px - var(--spinner-size) / 2)"
-    mt="calc(0px - var(--spinner-size) / 2)"
-  />
+    inset={0}
+    display="flex"
+    alignItems="center"
+    justifyContent="center"
+    pointerEvents="none"
+    animation={`${appear} 0.2s ease-out 0.3s both`}
+  >
+    <Spinner size="xl" />
+  </Box>
 )
 
 type SceneContainerProps = {

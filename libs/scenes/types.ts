@@ -44,12 +44,14 @@ export type SceneDef<M extends string = string> = {
     // canvas's aspect ratio.
     halfWidth: number
     // Seconds per turn, to keep circling the scene after the intro like a
-    // turntable. Without it the camera rests at `azimuth`, and dragging can
-    // swing it at most 45° either way.
+    // turntable, until the visitor clicks or drags it. Without it the camera
+    // rests at `azimuth`, and dragging can swing it at most 45° either way.
     turntable?: number
   }
-  // Light strengths, relative to the defaults (1 = default).
-  lights?: { ambient?: number; sun?: number }
+  // Light strengths, relative to the defaults (1 = default). The fill is a
+  // weak light from across the scene from the sun, which keeps the sides in
+  // shadow from going dark.
+  lights?: { ambient?: number; sun?: number; fill?: number }
   sun: {
     // Relative to the camera target.
     position: [number, number, number]

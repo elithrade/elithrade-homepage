@@ -143,8 +143,9 @@ function createViewer(container: HTMLDivElement) {
   controls.maxPolarAngle = Math.PI / 2.4
   canvas.style.touchAction = 'pan-y'
 
-  // Visitors who ask their system for less motion get a still scene, which
-  // they can still drag.
+  // For visitors who ask their system for less motion the camera stays put:
+  // no opening turn and no turntable. The small movements (typing, the tail,
+  // the bee) carry on, and the scene can still be dragged.
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
 
   let stage: Stage | null = null
@@ -158,13 +159,13 @@ function createViewer(container: HTMLDivElement) {
 
     timer.update(timestamp)
     const delta = timer.getDelta()
-    const still = reducedMotion.matches
-    if (!still) for (const mixer of stage.mixers) mixer.update(delta)
+    const calm = reducedMotion.matches
+    for (const mixer of stage.mixers) mixer.update(delta)
 
     // Time-based, so the turn lasts as long on a 120 Hz display as on 60 Hz.
     const elapsed = timer.getElapsed()
     stage.introStart ??= elapsed
-    const progress = still ? 1 : (elapsed - stage.introStart) / INTRO_SECONDS
+    const progress = calm ? 1 : (elapsed - stage.introStart) / INTRO_SECONDS
 
     if (progress < 1) {
       // Once around the scene, slowing down to stop at the rest view.
@@ -174,7 +175,7 @@ function createViewer(container: HTMLDivElement) {
       camera.position.copy(target).add(offset)
       camera.lookAt(target)
     } else {
-      controls.autoRotate = stage.turning && !still
+      controls.autoRotate = stage.turning && !calm
       controls.update(delta)
     }
 

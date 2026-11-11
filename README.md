@@ -76,8 +76,9 @@ tests fail on one that loads its texture from a separate file.
 There are two scenes. Each opens with one turn of the camera, then keeps
 circling like a turntable until a visitor clicks or drags it. The scene leaves
 scrolling to the page (no wheel zoom, and a swipe up or down passes through),
-stops drawing while it's off screen, and stays still for visitors whose system
-asks for reduced motion.
+and stops drawing while it's off screen. For visitors whose system asks for
+reduced motion the camera stays put (no opening turn, no turntable), while the
+typing, the tail and the bee carry on.
 
 - `libs/scenes/voxel-me.ts` (the default): a voxel me, after my pixel-art
   profile picture, typing at a desk with a crowbar on my back, while a voxel

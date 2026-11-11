@@ -72,7 +72,7 @@ test('leaves scrolling to the page', async ({ page }) => {
   await expect(scene.locator('canvas')).toHaveCSS('touch-action', 'pan-y')
 })
 
-test('keeps the scene still for visitors who ask for less motion', async ({
+test('keeps the camera still for visitors who ask for less motion', async ({
   page
 }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
@@ -82,15 +82,29 @@ test('keeps the scene still for visitors who ask for less motion', async ({
     timeout: 15_000
   })
 
-  // Wait for the scene to be drawn (see the first test), then expect the
-  // next second to change nothing: no opening turn, turntable or animation.
+  // Wait for the scene to be drawn (see the first test).
   const canvas = scene.locator('canvas')
   await expect
     .poll(async () => (await canvas.screenshot()).length)
     .toBeGreaterThan(10_000)
+
+  // The island's front rim fills the bottom of the canvas. It changes as soon
+  // as the camera moves, and nothing on the island moves in front of it.
+  const box = (await canvas.boundingBox())!
+  const rim = {
+    x: box.x,
+    y: box.y + box.height * 0.9,
+    width: box.width,
+    height: box.height * 0.1
+  }
+  const rimBefore = await page.screenshot({ clip: rim })
+  expect(rimBefore.length).toBeGreaterThan(1_000)
   const before = await canvas.screenshot()
   await page.waitForTimeout(1000)
-  expect((await canvas.screenshot()).equals(before)).toBe(true)
+
+  // No opening turn and no turntable, but the typing and the bee carry on.
+  expect((await page.screenshot({ clip: rim })).equals(rimBefore)).toBe(true)
+  expect((await canvas.screenshot()).equals(before)).toBe(false)
 })
 
 test('stops drawing while scrolled out of view', async ({ page }) => {

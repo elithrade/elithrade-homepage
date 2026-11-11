@@ -1,14 +1,13 @@
-# The dog's desk: a monitor showing code, a keyboard, a mug of coffee and a
-# small plant. Built into public/models/voxel-dog/desk.glb by
-# `node scripts/make-voxel-models.mjs`.
-#
-# Same format as dog.txt: one "y N" block per layer from the floor up, rows
-# from the back of the desk (first row) to the front, one character per
-# voxel. H is the wood and A dark grey (monitor, keyboard base). The keys
-# (layer y 7) are cream C and green J. The mug is white W, full of coffee D.
-# T is the plant pot, L and M leaves. The screen is S, with code drawn over
-# it in X, Y, Z and V; those letters glow (they're unlit).
-
+// The desk: a monitor showing code, a keyboard, a mug of coffee and a small
+// plant.
+//
+// Same format as dog.ts: one "y N" block per layer from the floor up, rows
+// from the back of the desk (first row) to the front, one character per
+// voxel. H is the wood and A dark grey (monitor, keyboard base). The keys
+// (layer y 7) are cream C and green J. The mug is white W, full of coffee D.
+// T is the plant pot, L and M leaves. The screen is S, with code drawn over
+// it in X, Y, Z and V; those letters glow (they're unlit).
+export const desk = `
 y 0
 H...............H
 .................
@@ -173,3 +172,4 @@ y 14
 .................
 .................
 .................
+`

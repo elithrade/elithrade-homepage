@@ -1,16 +1,15 @@
-# The voxel dog, built into public/models/voxel-dog/dog.glb by
-# `node scripts/make-voxel-models.mjs`. It stands on its hind legs with its
-# front paws reaching forward, to rest on the desk's keyboard.
-#
-# Each "y N" block is one layer of voxels, from the feet (y 0) up to the top
-# of the head. In a layer, each row is one step from the tail (first row) to
-# the nose (last row), and each character is one voxel from the dog's right
-# side to its left. A "." is empty; the other letters are colours, listed in
-# PALETTE in the script (C cream, B brown: eye patch and ears, W white,
-# K black: eyes, nose and mouth, D dark brown, R red, G gold). Lower-case t and u are the tail, in brown
-# and white: it's a separate part, so it can wag. Every layer must have the
-# same size.
-
+// The voxel dog of the voxel-dog scene. It stands on its hind legs with its
+// front paws reaching forward, to rest on the desk's keyboard.
+//
+// Each "y N" block is one layer of voxels, from the feet (y 0) up to the top
+// of the head. In a layer, each row is one step from the tail (first row) to
+// the nose (last row), and each character is one voxel from the dog's right
+// side to its left. A "." is empty; the other letters are colours, listed in
+// PALETTE in ../layout.ts (C cream, B brown: eye patch and ears, W white,
+// K black: eyes, nose and mouth, D dark brown, R red, G gold). Lower-case t
+// and u are the tail, in brown and white: it's a separate part, so it can
+// wag. Every layer must have the same size.
+export const dog = `
 y 0
 .........
 .........
@@ -214,3 +213,4 @@ y 16
 .CCCCCCC.
 .........
 .........
+`

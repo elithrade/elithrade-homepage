@@ -1,19 +1,28 @@
 // A voxel dog at its desk, on a little grass island: it stands on its hind
 // legs with its front paws on the keyboard, facing a monitor full of code and
 // wagging its tail, while a bee visits the flowers and the camera circles it
-// all like a turntable. The models are built from the text layouts in
-// scripts/voxels/ by scripts/make-voxel-models.mjs: edit a layout, rerun the
-// script, and the scene picks up the new model. One voxel is 0.1 units.
+// all like a turntable. The models are built in the browser from the text
+// layouts in libs/voxels/layouts/: edit a layout and the scene picks up the
+// new model. One voxel is 0.1 units.
+import { bee, desk } from './models'
 import { defineScene } from './types'
 
 export const voxelDog = defineScene({
   name: 'voxel-dog',
   label: 'Dog',
   models: {
-    bee: '/models/voxel-dog/bee.glb',
-    desk: '/models/voxel-dog/desk.glb',
-    dog: '/models/voxel-dog/dog.glb',
-    island: '/models/voxel-dog/island.glb'
+    // Out just past the island's edge between flowers, so it loops round the
+    // desk instead of cutting between its legs.
+    bee: bee({ island: 'island', radius: 1.9, height: 0.5 }),
+    desk,
+    dog: {
+      layout: 'dog',
+      // The tail is its own part, turning where it meets the dog's back, so
+      // the "wag" animation can swing it side to side.
+      parts: { tail: { letters: 'tu', pivot: [4.5, 4.5, 2] } },
+      animations: [{ name: 'wag' }]
+    },
+    island: { layout: 'island' }
   },
   pieces: [
     { model: 'island', x: 0, z: 0 },
@@ -26,7 +35,7 @@ export const voxelDog = defineScene({
     // Turned round to face the screen, close enough that its front paws rest
     // on the keyboard at the front of the desk.
     { model: 'dog', x: 0, z: 0.375, turn: 180, animation: 'wag' },
-    // Its flight path, round the island's flowers, is baked into the model.
+    // It flies round the island's flowers, from the island's centre.
     { model: 'bee', x: 0, z: 0, animation: 'fly' }
   ],
   // Starts in front of the dog and to one side: the monitor sits low enough

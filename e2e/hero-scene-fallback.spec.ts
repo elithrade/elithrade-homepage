@@ -2,23 +2,6 @@ import { test, expect } from './fixtures'
 
 const homeHeading = { level: 2, name: 'Bin Hu' } as const
 
-test.describe('when the scene models fail to load', () => {
-  test.use({ allowedErrors: [/^http 404: .*\/models\/.*\.glb$/] })
-
-  test('stops the spinner and keeps the page working', async ({ page }) => {
-    await page.route('**/models/**/*.glb', route =>
-      route.fulfill({ status: 404 })
-    )
-
-    await page.goto('/')
-
-    await expect(page.getByRole('heading', homeHeading)).toBeVisible()
-    await expect(page.locator('.hero-scene .chakra-spinner')).toHaveCount(0, {
-      timeout: 15_000
-    })
-  })
-})
-
 test.describe('when WebGL is unavailable', () => {
   // three.js logs its own console error when it can't create a context.
   test.use({ allowedErrors: [/^console: .*WebGL/] })
@@ -43,6 +26,5 @@ test.describe('when WebGL is unavailable', () => {
 
     await expect(page.getByRole('heading', homeHeading)).toBeVisible()
     await expect(page.locator('.hero-scene canvas')).toHaveCount(0)
-    await expect(page.locator('.hero-scene .chakra-spinner')).toHaveCount(0)
   })
 })

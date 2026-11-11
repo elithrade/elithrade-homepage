@@ -1,19 +1,18 @@
-# The voxel avatar, built into public/models/voxel-me/avatar.glb by
-# `node scripts/make-voxel-models.mjs`, after the pixel-art profile
-# picture: beard, glasses, an orange and grey suit and a crowbar on the
-# back. It stands at the desk with its arms reaching forward to type.
-#
-# Each "y N" block is one layer of voxels, from the boots (y 0) up to the
-# top of the head. In a layer, each row is one step from the back (first
-# row) to the front (last row), and each character is one voxel from the
-# figure's right side to its left. A "." is empty; the other letters are
-# colours, listed in PALETTE in the script (h hair and beard, b mouth,
-# s skin, n nose, K glasses, W lenses, g suit grey, k dark grey, o orange,
-# d dark orange and y yellow: the chest emblem, R red, c crowbar). The
-# arms are separate parts, so they can type: e grey, l orange and f glove
-# on the right arm, and i, m and j on the left. Every layer must have the
-# same size.
-
+// The voxel avatar of the voxel-me scene, after the pixel-art profile
+// picture: beard, glasses, an orange and grey suit and a crowbar on the
+// back. It stands at the desk with its arms reaching forward to type.
+//
+// Each "y N" block is one layer of voxels, from the boots (y 0) up to the
+// top of the head. In a layer, each row is one step from the back (first
+// row) to the front (last row), and each character is one voxel from the
+// figure's right side to its left. A "." is empty; the other letters are
+// colours, listed in PALETTE in ../layout.ts (h hair and beard, b mouth,
+// s skin, n nose, K glasses, W lenses, g suit grey, k dark grey, o orange,
+// d dark orange and y yellow: the chest emblem, R red, c crowbar). The
+// arms are separate parts, so they can type: e grey, l orange and f glove
+// on the right arm, and i, m and j on the left. Every layer must have the
+// same size.
+export const avatar = `
 y 0
 .............
 .............
@@ -263,3 +262,4 @@ y 24
 .............
 .............
 .............
+`

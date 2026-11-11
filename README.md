@@ -15,7 +15,7 @@ light/dark themes, a bio and skills page, and a works page built from the CV.
 - [Chakra UI](https://v2.chakra-ui.com) 2 and Emotion for styling and colour mode
 - [framer-motion](https://motion.dev) for page and section transitions
 - [three.js](https://threejs.org) for the 3D hero scene: a voxel dog at its
-  desk, or me at mine, with models drawn as text and built by a script
+  desk, or me at mine, with models drawn as text and built in the browser
 - [Vitest](https://vitest.dev) and Testing Library for unit tests
 - [Playwright](https://playwright.dev) for end-to-end tests
 - ESLint 10 (flat config) and Prettier
@@ -53,11 +53,11 @@ components/          UI components (navbar, theme toggle, 3D hero scene, ...)
 e2e/                 Playwright end-to-end tests
 libs/
   scenes/            3D hero scenes as data: models, layout, camera, light
+  voxels/            Voxel models: text layouts and the code that builds them
   theme.ts           Chakra theme: colours, fonts, colour mode
   works.ts           Projects shown on /works, taken from the CV
 pages/               Next.js routes (/, /works and /works/[id])
-public/              Static assets: 3D models (models/<scene>/), images
-scripts/             Builds the voxel scenes' models from text layouts
+public/              Static assets: images
 test/                Test setup, helpers and page tests
 types/               Project-wide type declarations
 ```
@@ -65,13 +65,11 @@ types/               Project-wide type declarations
 ### 3D hero scene
 
 The scene at the top of every page is data, not code. Each file in
-`libs/scenes/` lists the models it loads (served from
-`public/models/<scene>/`), where every copy goes, and the camera and sun.
-`components/hero-scene.tsx` renders one, and `components/hero-scenes.tsx`
-adds a switch in its corner for each scene in `SCENES` in
-`libs/scenes/index.ts`. `HERO_SCENE` is shown first, and a visitor's pick is
-remembered in their browser. Any `.glb` can be used, as long as it's self-contained: the unit
-tests fail on one that loads its texture from a separate file.
+`libs/scenes/` lists the voxel models it's made of, where each one goes, and
+the camera and sun. `components/hero-scene.tsx` renders one, and
+`components/hero-scenes.tsx` adds a switch in its corner for each scene in
+`SCENES` in `libs/scenes/index.ts`. `HERO_SCENE` is shown first, and a
+visitor's pick is remembered in their browser.
 
 There are two scenes. Each opens with one turn of the camera, then keeps
 circling like a turntable until a visitor clicks or drags it. The scene leaves
@@ -87,15 +85,16 @@ typing, the tail and the bee carry on.
   standing on its hind legs with its paws on the keyboard. It faces a monitor
   full of code and wags its tail, and the bee visits the flowers.
 
-Its models are drawn as text, so they can be changed without a 3D editor.
-The files in `scripts/voxels/` (`dog.txt`, `avatar.txt`, `desk.txt` and so
+The models are drawn as text, so they can be changed without a 3D editor.
+The files in `libs/voxels/layouts/` (`dog.ts`, `avatar.ts`, `desk.ts` and so
 on) list the voxels layer by layer, one letter per voxel, with the format and
-colours explained at the top of each file. After editing one, run
-`node scripts/make-voxel-models.mjs` to rebuild the `.glb` files in
-`public/models/voxel-dog/` and `public/models/voxel-me/`; `SCENES` at the top
-of the script says which layouts go into which scene. The bee's flight path
-is worked out from the flowers on its scene's island, so it follows them when
-they move.
+colours explained at the top of each file. `libs/voxels/build.ts` turns a
+layout into a mesh in the browser when its scene is shown, so an edit shows up
+on the next reload and the site ships no model files. A scene's `models` say
+which layout each model uses, which of its voxels are separate parts (the
+tail, the arms, the bee's wings, the screen) and how they move. The bee's
+flight path is worked out from the flowers on its scene's island, so it
+follows them when they move.
 
 ## TypeScript
 
@@ -176,8 +175,8 @@ served with `next start` on port 3100. They cover:
 
 - home page content
 - the works list and every work's detail page
-- the 3D hero scene: loading, rendering, switching scenes, leaving scrolling
-  to the page, pausing off screen and reduced motion
+- the 3D hero scene: rendering, switching scenes, leaving scrolling to the
+  page, pausing off screen and reduced motion
 - the theme toggle, including persistence across reloads
 - navigation and the 404 page
 - the mobile menu

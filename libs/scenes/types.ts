@@ -1,6 +1,7 @@
-// A hero scene is plain data: which models to load, where each copy goes,
-// and how the camera and sun are set up. components/hero-scene.tsx renders
-// any scene described this way.
+// A hero scene is plain data: which voxel models it's made of, where each
+// one goes, and how the camera and sun are set up. components/hero-scene.tsx
+// renders any scene described this way.
+import type { ClipDef, ModelDef } from '../voxels/types'
 
 // Where a model goes. Positions are in world units, with y up and z towards
 // the viewer. `turn` rotates in degrees, anticlockwise seen from above,
@@ -18,18 +19,18 @@ export type Piece<M extends string = string> = Placement & {
   model: M
 }
 
-// An animated character. `animation` names one of the model's clips, played
-// on a loop.
+// An animated character. `animation` names one of the model's animations,
+// played on a loop.
 export type Actor<M extends string = string> = Piece<M> & {
-  animation?: string
+  animation?: ClipDef['name']
 }
 
 export type SceneDef<M extends string = string> = {
   name: string
   // Short name for the button that switches to this scene.
   label: string
-  // Every model the scene loads, by id, and where to fetch it.
-  models: Record<M, string>
+  // Every model in the scene, by id, and how it's built.
+  models: Record<M, ModelDef>
   pieces: Piece<M>[]
   actors?: Actor<M>[]
   camera: {

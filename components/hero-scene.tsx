@@ -1,11 +1,10 @@
 import { useState, useEffect, useRef, type ReactNode } from 'react'
+import { Box } from '@chakra-ui/react'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
-import { GLTFLoader, type GLTF } from 'three/addons/loaders/GLTFLoader.js'
-import { clone as cloneSkinned } from 'three/addons/utils/SkeletonUtils.js'
 import WebGL from 'three/addons/capabilities/WebGL.js'
-import type { Placement, SceneDef } from '../libs/scenes/types'
-import { SceneSpinner, SceneContainer } from './hero-scene-loader'
+import type { Piece, SceneDef } from '../libs/scenes/types'
+import { buildModel } from '../libs/voxels/build'
 
 // The opening turn around the scene, in seconds.
 const INTRO_SECONDS = 2
@@ -16,55 +15,13 @@ function easeOutCubic(x: number) {
   return 1 - Math.pow(1 - x, 3)
 }
 
-function place(object: THREE.Object3D, placement: Placement) {
-  object.position.set(placement.x, placement.y ?? 0, placement.z)
-  object.rotation.y = (placement.turn ?? 0) * DEG
-  object.scale.setScalar(placement.scale ?? 1)
-}
-
-function enableShadows(object: THREE.Object3D) {
-  object.traverse(child => {
-    if ((child as THREE.Mesh).isMesh) {
-      child.castShadow = true
-      child.receiveShadow = true
-    }
-  })
-}
-
 function disposeMeshes(object: THREE.Object3D) {
   object.traverse(obj => {
-    const mesh = obj as THREE.Mesh
+    const mesh = obj as THREE.Mesh<THREE.BufferGeometry, THREE.Material>
     if (!mesh.isMesh) return
     mesh.geometry.dispose()
-    const materials = Array.isArray(mesh.material)
-      ? mesh.material
-      : [mesh.material]
-    for (const material of materials) {
-      ;(material as THREE.MeshStandardMaterial).map?.dispose()
-      material.dispose()
-    }
+    mesh.material.dispose()
   })
-}
-
-type Models = Map<string, GLTF>
-
-// Loads each of a scene's models once. One that fails is left out, so the
-// rest of the scene still shows.
-async function loadModels(def: SceneDef): Promise<Models> {
-  const loader = new GLTFLoader()
-  const ids = Object.keys(def.models)
-  const results = await Promise.allSettled(
-    ids.map(id => loader.loadAsync(def.models[id]))
-  )
-  const models: Models = new Map()
-  results.forEach((result, i) => {
-    if (result.status === 'fulfilled') {
-      models.set(ids[i], result.value)
-    } else {
-      console.warn('3D model failed to load', result.reason)
-    }
-  })
-  return models
 }
 
 // What's on show: one scene's models, and where its camera is in its moves.
@@ -82,8 +39,7 @@ type Stage = {
 type Viewer = NonNullable<ReturnType<typeof createViewer>>
 
 // Draws hero scenes into `container`, one at a time. The canvas, camera and
-// lights are made once; show() swaps in a scene's models and settings, so the
-// scene before it stays on screen until the next is ready.
+// lights are made once; show() swaps in a scene's models and settings.
 function createViewer(container: HTMLDivElement) {
   let renderer: THREE.WebGLRenderer
   try {
@@ -223,35 +179,36 @@ function createViewer(container: HTMLDivElement) {
   }
 
   return {
-    // Replaces the scene on show with `def`, built from its loaded models,
-    // and plays its opening turn.
-    show(def: SceneDef, models: Models) {
+    // Replaces the scene on show with `def` and plays its opening turn. The
+    // models are built here from their layouts, which takes a few
+    // milliseconds, so there's nothing to wait for.
+    show(def: SceneDef) {
       clearStage()
 
-      // Place a copy of each model wherever it's used.
+      // Builds a model and stands it in the scene. The model sits in a holder
+      // that carries the placement, so an animation that moves the whole
+      // model moves it from there.
       const root = new THREE.Group()
-      for (const piece of def.pieces) {
-        const gltf = models.get(piece.model)
-        if (!gltf) continue
-        const object = gltf.scene.clone()
-        place(object, piece)
-        enableShadows(object)
-        root.add(object)
+      const add = ({ model, ...placement }: Piece) => {
+        const built = buildModel(def.models[model])
+        for (const mesh of built.object.children) {
+          mesh.castShadow = true
+          mesh.receiveShadow = true
+        }
+        const holder = new THREE.Group()
+        holder.position.set(placement.x, placement.y ?? 0, placement.z)
+        holder.rotation.y = (placement.turn ?? 0) * DEG
+        holder.scale.setScalar(placement.scale ?? 1)
+        holder.add(built.object)
+        root.add(holder)
+        return built
       }
 
+      def.pieces.forEach(add)
       const mixers: THREE.AnimationMixer[] = []
       def.actors?.forEach((actor, i) => {
-        const gltf = models.get(actor.model)
-        if (!gltf) return
-        // Skeleton-aware copy, so each actor animates on its own.
-        const object = cloneSkinned(gltf.scene)
-        place(object, actor)
-        enableShadows(object)
-        root.add(object)
-
-        const clip =
-          actor.animation &&
-          THREE.AnimationClip.findByName(gltf.animations, actor.animation)
+        const { object, clips } = add(actor)
+        const clip = clips.find(clip => clip.name === actor.animation)
         if (clip) {
           const mixer = new THREE.AnimationMixer(object)
           mixer.clipAction(clip).play()
@@ -344,9 +301,6 @@ const HeroScene = ({ scene: def, children }: HeroSceneProps) => {
   // probe for WebGL here. three.js r163+ requires WebGL 2. Without it the
   // scene is skipped instead of throwing and taking down the whole page.
   const [webglAvailable] = useState(() => WebGL.isWebGL2Available())
-  // The scene that has finished loading. While it isn't the one asked for,
-  // that one is on its way and the spinner shows.
-  const [loaded, setLoaded] = useState<SceneDef | null>(null)
 
   useEffect(() => {
     const { current: container } = refContainer
@@ -360,29 +314,29 @@ const HeroScene = ({ scene: def, children }: HeroSceneProps) => {
     }
   }, [webglAvailable])
 
+  // Runs after the effect above, so the viewer is there on the first render
+  // too.
   useEffect(() => {
-    if (!webglAvailable) return
+    refViewer.current?.show(def)
+  }, [def])
 
-    const viewer = refViewer.current
-    let cancelled = false
-    // Without a viewer there's nothing to load, but the spinner has to stop.
-    const loading = viewer ? loadModels(def) : Promise.resolve(null)
-    loading.then(models => {
-      if (cancelled) return
-      // If nothing loaded, whatever was on show stays.
-      if (models && models.size > 0) viewer?.show(def, models)
-      setLoaded(def)
-    })
-    return () => {
-      cancelled = true
-    }
-  }, [webglAvailable, def])
-
+  // A fixed aspect ratio, so the scene just scales up or down with the page:
+  // the camera always shows the same view. It fills the main column on narrow
+  // screens but stops at 640px, so it sets the mood without pulling attention
+  // from the content below.
   return (
-    <SceneContainer ref={refContainer}>
-      {webglAvailable && loaded !== def && <SceneSpinner />}
+    <Box
+      ref={refContainer}
+      className="hero-scene"
+      mx="auto"
+      mb={[2, 4, 6]}
+      w="100%"
+      maxW="640px"
+      sx={{ aspectRatio: '640 / 380' }}
+      position="relative"
+    >
       {webglAvailable && children}
-    </SceneContainer>
+    </Box>
   )
 }
 

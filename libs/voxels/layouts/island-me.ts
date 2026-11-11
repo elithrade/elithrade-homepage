@@ -1,14 +1,13 @@
-# The grass island for the voxel-me scene, built into
-# public/models/voxel-me/island.glb by `node scripts/make-voxel-models.mjs`.
-# It's island.txt without the bone (the napping dog has it) and with the
-# flowers placed so the bee's path stays clear of the dog and the desk.
-#
-# Same format as dog.txt: one "y N" block per layer, rows from back to front,
-# one character per voxel. The top of layer y -1 is the ground everything
-# stands on. L and M are two greens, N is dirt, F and O are flowers.
-# The desk stands at the back, with the avatar at it and the dog lying in
-# front (see libs/scenes/voxel-me.ts), so keep that part of the grass clear.
-
+// The grass island for the voxel-me scene. It's island.ts without the bone
+// (the napping dog has it) and with the flowers placed so the bee's path
+// stays clear of the dog and the desk.
+//
+// Same format as dog.ts: one "y N" block per layer, rows from back to front,
+// one character per voxel. The top of layer y -1 is the ground everything
+// stands on. L and M are two greens, N is dirt, F and O are flowers.
+// The desk stands at the back, with the avatar at it and the dog lying in
+// front (see libs/scenes/voxel-me.ts), so keep that part of the grass clear.
+export const islandMe = `
 y -2
 .....................................
 .............NNNNNNNNNNN.............
@@ -164,3 +163,4 @@ y 1
 .....................................
 .....................................
 .....................................
+`

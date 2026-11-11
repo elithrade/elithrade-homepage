@@ -1,22 +1,42 @@
 // A voxel me at my desk, on a little grass island: I stand typing at the
 // keyboard, facing a monitor full of code, with a crowbar on my back, while
 // the dog naps at my feet wagging its tail, a bee visits the flowers and the
-// camera circles it all like a turntable. The models are built from the text
-// layouts in scripts/voxels/ by scripts/make-voxel-models.mjs: edit a layout,
-// rerun the script, and the scene picks up the new model. One voxel is 0.1
-// units, except the avatar's, which are 0.08. It's the alternative to the
-// voxel-dog scene, which has the dog at the desk instead.
+// camera circles it all like a turntable. The models are built in the browser
+// from the text layouts in libs/voxels/layouts/: edit a layout and the scene
+// picks up the new model. One voxel is 0.1 units, except the avatar's, which
+// are 0.08. It's the alternative to the voxel-dog scene, which has the dog at
+// the desk instead.
+import { bee, desk } from './models'
 import { defineScene } from './types'
 
 export const voxelMe = defineScene({
   name: 'voxel-me',
   label: 'Me',
   models: {
-    avatar: '/models/voxel-me/avatar.glb',
-    bee: '/models/voxel-me/bee.glb',
-    desk: '/models/voxel-me/desk.glb',
-    dog: '/models/voxel-me/dog.glb',
-    island: '/models/voxel-me/island.glb'
+    avatar: {
+      layout: 'avatar',
+      // Smaller voxels than the dog's, so its hands come level with the keys.
+      voxel: 0.08,
+      // Each arm turns at the shoulder, so the "type" animation can tap the
+      // keys.
+      parts: {
+        armR: { letters: 'elf', pivot: [2, 11, 3] },
+        armL: { letters: 'imj', pivot: [12, 11, 3] }
+      },
+      animations: [{ name: 'type' }]
+    },
+    // Higher than in voxel-dog, so it flies over the napping dog, and not as
+    // far out, so it doesn't swing wide into the dog either.
+    bee: bee({ island: 'island-me', radius: 1.6, height: 0.8 }),
+    desk,
+    dog: {
+      layout: 'dog-napping',
+      // The tail turns where it meets the dog's rump, so the "wag" animation
+      // swings it from side to side along the ground.
+      parts: { tail: { letters: 'tu', pivot: [3.5, 1.5, 2] } },
+      animations: [{ name: 'wag' }]
+    },
+    island: { layout: 'island-me' }
   },
   pieces: [
     { model: 'island', x: 0, z: 0 },
@@ -31,8 +51,8 @@ export const voxelMe = defineScene({
     { model: 'avatar', x: 0.04, z: 0.19, turn: 180, animation: 'type' },
     // Lying just behind the avatar's heels, facing out.
     { model: 'dog', x: 0, z: 0.92, animation: 'wag' },
-    // Its flight path, round the island's flowers and over the dog, is baked
-    // into the model.
+    // It flies round the island's flowers and over the dog, from the island's
+    // centre.
     { model: 'bee', x: 0, z: 0, animation: 'fly' }
   ],
   // Starts in front of the avatar and to one side, so its face shows over the

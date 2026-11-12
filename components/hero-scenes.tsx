@@ -49,7 +49,10 @@ const HeroScenes = () => {
         position="absolute"
         right={2}
         bottom={2}
-        zIndex={1}
+        // Chakra gives a focused button in an attached group z-index 1, the
+        // same as the navbar. Level 0 keeps that inside the group, so the
+        // whole switch stays under the navbar when the page scrolls.
+        zIndex={0}
       >
         {SCENES.map(option => {
           const active = option === scene

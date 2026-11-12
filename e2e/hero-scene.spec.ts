@@ -178,3 +178,30 @@ test('keeps the scene on screen while another loads', async ({ page }) => {
   await expect(spinner).toHaveCount(0, { timeout: 15_000 })
   expect(await canvas!.evaluate(node => node.isConnected)).toBe(true)
 })
+
+test('keeps the scene switch under the navbar when the page scrolls', async ({
+  page
+}) => {
+  const other = SCENES.find(scene => scene !== HERO_SCENE)!
+  await page.goto('/')
+
+  // Clicking a button focuses it, and Chakra raises a focused button in an
+  // attached group to the navbar's z-index.
+  const button = page
+    .getByRole('group', { name: '3D scene' })
+    .getByRole('button', { name: other.label })
+  await button.click()
+  await expect(button).toBeFocused()
+
+  // Scroll the button under the navbar and see what's on top at its centre.
+  const covered = await button.evaluate(node => {
+    window.scrollBy(0, node.getBoundingClientRect().top - 20)
+    const box = node.getBoundingClientRect()
+    const top = document.elementFromPoint(
+      box.x + box.width / 2,
+      box.y + box.height / 2
+    )
+    return !node.contains(top)
+  })
+  expect(covered).toBe(true)
+})

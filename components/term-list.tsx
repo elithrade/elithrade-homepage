@@ -6,9 +6,10 @@ import { Box } from '@chakra-ui/react'
 // page and every entry starts at the same edge, wrapped lines included.
 // 13rem fits the longest bold label, Programming Languages, on one line.
 // Phones have no room for two columns, so there the label sits above its
-// entry.
+// entry. The gap between rows is half a line: enough for an entry that wraps
+// onto a second line to still read as one row.
 export const TermList = ({ children }: { children: ReactNode }) => (
-  <Box as="dl" display="flex" flexDirection="column" gap={{ base: 3, md: 1.5 }}>
+  <Box as="dl" display="flex" flexDirection="column" gap={3}>
     {children}
   </Box>
 )

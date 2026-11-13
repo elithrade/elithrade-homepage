@@ -19,6 +19,9 @@ Contact details are deliberately left out.
   words for non-breaking ones when it renders.
 - Website-only details the CV doesn't have (short names, links) are in
   `libs/content/organisations.ts`, keyed by the CV's organisation name.
+- The order the home page shows the skill categories in is set in
+  `libs/content/skills.ts`, keyed by the CV's category name: which ones lead
+  and which come last. The rest sit between them in the order they have here.
 
 For now this file is kept in step with the CV by hand. The plan is for the CV
 repository's CI to export it and open a PR here whenever the CV changes, at

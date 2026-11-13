@@ -4,6 +4,10 @@ import { renderWithTheme } from '../test-utils'
 import Page from '../../pages/index'
 import { CV_URL } from '../../libs/cv'
 import { cv, noBreakHyphens } from '../../libs/content/cv'
+import {
+  coreSkillCategories,
+  lastSkillCategories
+} from '../../libs/content/skills'
 import { FALLBACK_QUOTE, type Quote } from '../../libs/quote'
 
 const zenQuote: Quote = {
@@ -85,6 +89,25 @@ describe('Home page', () => {
         .map(li => li.textContent)
       expect(items).toEqual(skill.items.map(noBreakHyphens))
     }
+  })
+
+  it('leads with the core skill categories and ends with the last ones', () => {
+    renderPage()
+
+    const categories = cv.skills.map(skill => skill.category)
+    const named = [...coreSkillCategories, ...lastSkillCategories]
+    const shown = screen
+      .getAllByRole('term')
+      .map(term => term.textContent)
+      .filter(text => categories.map(noBreakHyphens).includes(text ?? ''))
+    expect(shown).toEqual(
+      [
+        ...coreSkillCategories,
+        ...categories.filter(c => !named.includes(c)),
+        ...lastSkillCategories
+      ].map(noBreakHyphens)
+    )
+    expect(shown.slice(-2)).toEqual(['Programming Languages', 'Languages'])
   })
 
   it('shows the bio newest first, with the years of each entry', () => {

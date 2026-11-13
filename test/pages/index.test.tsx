@@ -107,7 +107,7 @@ describe('Home page', () => {
         ...lastSkillCategories
       ].map(noBreakHyphens)
     )
-    expect(shown.at(-1)).toBe('Programming Languages')
+    expect(shown.slice(-2)).toEqual(['Programming Languages', 'Languages'])
   })
 
   it('shows the bio newest first, with the years of each entry', () => {

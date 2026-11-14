@@ -22,6 +22,14 @@ export type Education = {
   end: CvDate
 }
 
+/** A group of the CV's bullets about one piece of work, shown at /works/<id>. */
+export type CvWork = {
+  id: string
+  title: string
+  /** The CV's bullets, word for word. */
+  highlights: string[]
+}
+
 export type Position = {
   title: string
   organisation: string
@@ -29,6 +37,21 @@ export type Position = {
   start: CvDate
   /** null while the position is current. */
   end: CvDate | null
+  /** The bullets the CV marks as works; a position may have none. */
+  works: CvWork[]
+}
+
+/** A personal project, shown at /works/<id> like a work. */
+export type Project = {
+  id: string
+  name: string
+  /** One line saying what it is. */
+  description: string
+  url: string
+  start: CvDate
+  /** null while the project is current. */
+  end: CvDate | null
+  highlights: string[]
 }
 
 export type Cv = {
@@ -39,6 +62,7 @@ export type Cv = {
   education: Education[]
   /** Most recent first, as in the CV. */
   experience: Position[]
+  projects: Project[]
 }
 
 export const cv: Cv = cvJson

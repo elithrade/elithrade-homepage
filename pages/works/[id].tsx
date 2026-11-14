@@ -18,6 +18,7 @@ import { ChevronLeftIcon } from '@chakra-ui/icons'
 import Layout from '../../components/layouts/article'
 import Section from '../../components/section'
 import { TechTags } from '../../components/work-card'
+import { noBreakHyphens } from '../../libs/content/cv'
 import { getWork, works, type Work } from '../../libs/works'
 
 type Params = { id: string }
@@ -48,20 +49,27 @@ const WorkPage = ({ work }: WorkPageProps) => (
       </Heading>
       <Box mb={4}>
         <Badge bg="tag-bg" color="tag-fg" mr={2}>
-          {work.organisation.name}
+          {work.group.name}
         </Badge>
         <Text as="span" fontSize={14} color="text-muted">
-          {work.organisation.period}
+          {work.period}
         </Text>
       </Box>
       <Section delay={0.1}>
-        <Text mb={4}>{work.summary}</Text>
+        {work.tagline && <Text mb={2}>{noBreakHyphens(work.tagline)}</Text>}
+        {work.url && (
+          <Text mb={4}>
+            <Link href={work.url} target="_blank">
+              {work.url.replace(/^https:\/\//, '')}
+            </Link>
+          </Text>
+        )}
         <Heading as="h3" variant="section-title">
           Highlights
         </Heading>
         <UnorderedList spacing={2} mb={6}>
           {work.highlights.map(highlight => (
-            <ListItem key={highlight}>{highlight}</ListItem>
+            <ListItem key={highlight}>{noBreakHyphens(highlight)}</ListItem>
           ))}
         </UnorderedList>
         {work.stack.length > 0 && (

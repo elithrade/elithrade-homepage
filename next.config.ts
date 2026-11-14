@@ -1,10 +1,18 @@
 import type { NextConfig } from 'next'
+import { workRedirects } from './libs/work-redirects'
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   output: 'standalone',
   // Stop `next dev` writing AGENTS.md whenever an AI coding agent starts it.
   agentRules: false,
+  async redirects() {
+    return Object.entries(workRedirects).map(([from, to]) => ({
+      source: `/works/${from}`,
+      destination: `/works/${to}`,
+      permanent: true
+    }))
+  },
   async headers() {
     return [
       {

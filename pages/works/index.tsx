@@ -2,7 +2,7 @@ import { Container, Heading, SimpleGrid, Text } from '@chakra-ui/react'
 import Section from '../../components/section'
 import Layout from '../../components/layouts/article'
 import { WorkCard } from '../../components/work-card'
-import { organisations, worksFor } from '../../libs/works'
+import { groups, worksFor } from '../../libs/works'
 
 const Works = () => {
   return (
@@ -11,16 +11,18 @@ const Works = () => {
         <Heading as="h3" fontSize={20} mb={4}>
           Works
         </Heading>
-        {organisations.map((organisation, i) => (
-          <Section key={organisation.name} delay={0.1 * (i + 1)}>
+        {groups.map((group, i) => (
+          <Section key={group.name} delay={0.1 * (i + 1)}>
             <Heading as="h4" variant="section-title">
-              {organisation.name}
+              {group.name}
             </Heading>
-            <Text fontSize={14} color="text-muted" mb={4} mt={-2}>
-              {organisation.role} · {organisation.period}
-            </Text>
+            {group.caption && (
+              <Text fontSize={14} color="text-muted" mb={4} mt={-2}>
+                {group.caption}
+              </Text>
+            )}
             <SimpleGrid columns={[1, 1, 2]} gap={6}>
-              {worksFor(organisation).map(work => (
+              {worksFor(group).map(work => (
                 <WorkCard key={work.id} work={work} />
               ))}
             </SimpleGrid>

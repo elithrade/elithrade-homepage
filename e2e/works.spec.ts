@@ -1,5 +1,7 @@
 import { test, expect } from './fixtures'
-import { organisations, works } from '../libs/works'
+import { noBreakHyphens } from '../libs/content/cv'
+import { groups, works } from '../libs/works'
+import { workRedirects } from '../libs/work-redirects'
 
 // The highlighted nav item uses the theme toggle's colour: purple.500 in
 // light mode, orange.200 in dark.
@@ -36,9 +38,9 @@ test('navbar Works link opens the works page and is highlighted', async ({
   await expect(page).toHaveURL('/works')
   await expect(page).toHaveTitle('Works - Bin Hu')
   await expect(navLink).toHaveAttribute('aria-current', 'page')
-  for (const org of organisations) {
+  for (const group of groups) {
     await expect(
-      page.getByRole('heading', { level: 4, name: org.name })
+      page.getByRole('heading', { level: 4, name: group.name })
     ).toBeVisible()
   }
   // One card (an <article> inside the page's <article>) per work.
@@ -75,8 +77,17 @@ for (const work of works) {
       page.getByRole('heading', { level: 2, name: work.title })
     ).toBeVisible()
     for (const highlight of work.highlights) {
-      await expect(page.getByText(highlight)).toBeVisible()
+      await expect(page.getByText(noBreakHyphens(highlight))).toBeVisible()
     }
+  })
+}
+
+for (const [from, to] of Object.entries(workRedirects)) {
+  test(`the old address /works/${from} leads to ${to}`, async ({ page }) => {
+    await page.goto(`/works/${from}`)
+
+    await expect(page).toHaveURL(`/works/${to}`)
+    await expect(page.getByRole('heading', { level: 2 })).toBeVisible()
   })
 }
 

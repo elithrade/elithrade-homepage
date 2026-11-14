@@ -54,7 +54,7 @@ e2e/                 Playwright end-to-end tests
 libs/
   scenes/            3D hero scenes as data: models, layout, camera, light
   theme.ts           Chakra theme: colours, fonts, colour mode
-  works.ts           Projects shown on /works, taken from the CV
+  works.ts           The works shown on /works, built from content/cv.json
 pages/               Next.js routes (/, /works and /works/[id])
 public/              Static assets: 3D models (models/<scene>/), images
 scripts/             Builds the voxel scenes' models from text layouts
@@ -149,10 +149,20 @@ WCAG AA contrast. Fonts are self-hosted with `next/font`
 
 ## Adding a work
 
-Works live in `libs/works.ts`. Add an entry to `works` with a unique,
-URL-safe `id`; the list page groups it under its organisation and
-`/works/<id>` is generated at build time. The unit and e2e tests pick up new
-entries automatically.
+Works are not written here. `/works` is built from `content/cv.json`
+(`libs/works.ts`), which the CV repository's CI exports and sends as a pull
+request whenever the CV changes; see [`content/README.md`](content/README.md).
+
+- A work at an organisation is a group of the CV's bullets. In the CV's
+  `experience.tex`, `\work{id}{title}` goes above the bullets that make up the
+  work; `/works/<id>` is its address.
+- A personal project is an entry in the CV's `projects.tex`.
+- A card shows a work's first bullet, cut off after three lines, or a
+  project's description. The work's page shows every bullet.
+- The technology tags are the CV's skills that the bullets name.
+
+When the CV renames a work's id, its old address stops working. Add the old
+and new ids to `libs/work-redirects.ts` to keep it alive.
 
 ## Testing
 

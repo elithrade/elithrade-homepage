@@ -6,19 +6,20 @@ import WorkPage, {
   getStaticPaths,
   getStaticProps
 } from '../../pages/works/[id]'
-import { getWork, organisations, works } from '../../libs/works'
+import { noBreakHyphens } from '../../libs/content/cv'
+import { groups, works, type Work } from '../../libs/works'
 
 describe('Works page', () => {
-  it('has a section per organisation with its role and period', () => {
+  it('has a section per group, with the role and period at an organisation', () => {
     renderWithTheme(<Works />)
 
-    for (const org of organisations) {
+    for (const group of groups) {
       expect(
-        screen.getByRole('heading', { level: 4, name: org.name })
+        screen.getByRole('heading', { level: 4, name: group.name })
       ).toBeInTheDocument()
-      expect(
-        screen.getByText(`${org.role} · ${org.period}`)
-      ).toBeInTheDocument()
+      if (group.caption) {
+        expect(screen.getByText(group.caption)).toBeInTheDocument()
+      }
     }
   })
 
@@ -47,28 +48,69 @@ describe('Work detail page', () => {
     })
   })
 
-  it('shows the work with its highlights and stack', () => {
-    const work = getWork('rov-video-streaming')!
-    renderWithTheme(<WorkPage work={work} />)
+  const example: Work = {
+    id: 'example',
+    title: 'Example work',
+    group: { name: 'Acme', caption: 'Engineer · 2020 – present' },
+    period: '2020 – present',
+    tagline: null,
+    url: null,
+    highlights: ['Built a full-stack thing.', 'Shipped it.'],
+    stack: ['TypeScript', 'React']
+  }
+
+  it('shows the work with its group, period, highlights and stack', () => {
+    renderWithTheme(<WorkPage work={example} />)
 
     expect(
-      screen.getByRole('heading', { level: 2, name: work.title })
+      screen.getByRole('heading', { level: 2, name: 'Example work' })
     ).toBeInTheDocument()
-    expect(screen.getByText(work.summary)).toBeInTheDocument()
-    for (const highlight of work.highlights) {
-      expect(screen.getByText(highlight)).toBeInTheDocument()
-    }
-    for (const tech of work.stack) {
+    expect(screen.getByText('Acme')).toBeInTheDocument()
+    expect(screen.getByText('2020 – present')).toBeInTheDocument()
+    // Hyphens inside words are rendered non-breaking.
+    expect(
+      screen.getByText(noBreakHyphens('Built a full-stack thing.'))
+    ).toBeInTheDocument()
+    expect(screen.getByText('Shipped it.')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Stack' })).toBeInTheDocument()
+    for (const tech of example.stack) {
       expect(screen.getByText(tech)).toBeInTheDocument()
     }
-    expect(screen.getByRole('link', { name: /works/i })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'Works' })).toHaveAttribute(
       'href',
       '/works'
     )
   })
 
+  it("shows a project's description and links to it in a new tab", () => {
+    const project: Work = {
+      ...example,
+      tagline: 'A small tool',
+      url: 'https://github.com/me/tool'
+    }
+    renderWithTheme(<WorkPage work={project} />)
+
+    expect(screen.getByText('A small tool')).toBeInTheDocument()
+    const link = screen.getByRole('link', { name: 'github.com/me/tool' })
+    expect(link).toHaveAttribute('href', 'https://github.com/me/tool')
+    expect(link).toHaveAttribute('target', '_blank')
+  })
+
+  it('renders every work of the CV', () => {
+    for (const work of works) {
+      const { unmount } = renderWithTheme(<WorkPage work={work} />)
+      for (const highlight of work.highlights) {
+        expect(
+          screen.getByText(noBreakHyphens(highlight)),
+          work.id
+        ).toBeInTheDocument()
+      }
+      unmount()
+    }
+  })
+
   it('leaves out the Stack heading when no technologies are known', () => {
-    const work = works.find(w => w.stack.length === 0)!
+    const work: Work = { ...example, stack: [] }
     renderWithTheme(<WorkPage work={work} />)
 
     expect(

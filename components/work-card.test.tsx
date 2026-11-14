@@ -2,14 +2,16 @@ import { describe, it, expect } from 'vitest'
 import { screen } from '@testing-library/react'
 import { renderWithTheme } from '../test/test-utils'
 import { WorkCard } from './work-card'
-import { RACWA, type Work } from '../libs/works'
+import type { Work } from '../libs/works'
 
 const work: Work = {
   id: 'example-work',
   title: 'Example work',
-  organisation: RACWA,
-  summary: 'An example summary.',
-  highlights: ['Did a thing'],
+  group: { name: 'Acme', caption: 'Engineer · 2020 – present' },
+  period: '2020 – present',
+  tagline: null,
+  url: null,
+  highlights: ['Did a thing.', 'Did another.'],
   stack: ['TypeScript', 'React']
 }
 
@@ -23,12 +25,20 @@ describe('WorkCard', () => {
     )
   })
 
-  it('shows the summary and technology tags', () => {
+  it('shows the first highlight and the technology tags', () => {
     renderWithTheme(<WorkCard work={work} />)
 
-    expect(screen.getByText('An example summary.')).toBeInTheDocument()
+    expect(screen.getByText('Did a thing.')).toBeInTheDocument()
+    expect(screen.queryByText('Did another.')).not.toBeInTheDocument()
     expect(screen.getByText('TypeScript')).toBeInTheDocument()
     expect(screen.getByText('React')).toBeInTheDocument()
+  })
+
+  it("shows a project's description in place of a highlight", () => {
+    renderWithTheme(<WorkCard work={{ ...work, tagline: 'A small tool' }} />)
+
+    expect(screen.getByText('A small tool')).toBeInTheDocument()
+    expect(screen.queryByText('Did a thing.')).not.toBeInTheDocument()
   })
 
   it('omits the tag list when no technologies are known', () => {

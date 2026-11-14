@@ -36,5 +36,10 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      # Vitest doesn't type-check, and this is where a content/cv.json of the
+      # wrong shape is rejected.
+      - name: Type-check
+        run: npm run typecheck
+
       - name: Unit tests
         run: npm test

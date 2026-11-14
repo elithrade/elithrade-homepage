@@ -1,2 +1,4 @@
 node_modules
 .next
+# Written by the CV exporter with JSON.stringify; see content/README.md.
+content/cv.json

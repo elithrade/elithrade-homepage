@@ -8,8 +8,8 @@ import { cv, type Skill } from './cv'
 
 /** Shown first, in this order. */
 export const coreSkillCategories = [
-  'Back-end',
-  'Front-end',
+  'Backend',
+  'Frontend',
   'Azure',
   'AWS',
   'DevOps'
@@ -20,7 +20,7 @@ export const coreSkillCategories = [
  * of the technical skills here: a senior developer picks one up as needed.
  * Spoken languages aren't technical, so they close the list.
  */
-export const lastSkillCategories = ['Programming Languages', 'Languages']
+export const lastSkillCategories = ['Languages', 'Spoken']
 
 export type SkillTiers = {
   /** The core categories, in the order they are named. */

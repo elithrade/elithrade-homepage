@@ -11,13 +11,14 @@ import {
 } from './cv'
 import { organisationDetails } from './organisations'
 
-const YEAR_MONTH = /^\d{4}-(0[1-9]|1[0-2])$/
+// YYYY-MM, or YYYY where the CV gives no month.
+const CV_DATE = /^\d{4}(-(0[1-9]|1[0-2]))?$/
 
 const datedEntries = [...cv.education, ...cv.experience]
 
 describe('content/cv.json', () => {
-  it('is schema version 1', () => {
-    expect(cv.schemaVersion).toBe(1)
+  it('is schema version 2', () => {
+    expect(cv.schemaVersion).toBe(2)
   })
 
   it('has a summary that mentions the years of experience', () => {
@@ -45,14 +46,17 @@ describe('content/cv.json', () => {
     expect(cv.experience.length).toBeGreaterThan(0)
   })
 
-  it('dates every entry as YYYY-MM, ending no earlier than it starts', () => {
-    for (const entry of datedEntries) {
-      expect(entry.start).toMatch(YEAR_MONTH)
-      if (entry.end !== null) {
-        expect(entry.end).toMatch(YEAR_MONTH)
-        expect(entry.end >= entry.start, entry.start).toBe(true)
-      }
+  it('dates every entry as YYYY-MM or YYYY, ending no earlier than it starts', () => {
+    for (const { start, end } of datedEntries) {
+      if (start !== null) expect(start).toMatch(CV_DATE)
+      if (end !== null) expect(end).toMatch(CV_DATE)
+      if (start !== null && end !== null) expect(end >= start, start).toBe(true)
     }
+  })
+
+  it('gives every position a start and every degree an end', () => {
+    for (const position of cv.experience) expect(position.start).not.toBeNull()
+    for (const entry of cv.education) expect(entry.end).not.toBeNull()
   })
 
   it('lists experience most recent first', () => {
@@ -70,30 +74,34 @@ describe('content/cv.json', () => {
   })
 })
 
+// Any three organisations the site has details for; which ones doesn't
+// matter, so the sample doesn't name them and survives a rename in the CV.
+const [school, earlier, current] = Object.keys(organisationDetails)
+
 const sample: Cv = {
-  schemaVersion: 1,
+  schemaVersion: 2,
   summary: ['Over {years} years.', 'No placeholder.'],
   skills: [],
   education: [
     {
       degree: 'BE',
-      institution: 'UNSW (The University of New South Wales)',
+      institution: school,
       location: 'Sydney',
-      start: '2002-02',
-      end: '2005-12'
+      start: null,
+      end: '2005'
     }
   ],
   experience: [
     {
       title: 'Now',
-      organisation: 'RACWA',
+      organisation: current,
       location: 'Perth',
       start: '2022-04',
       end: null
     },
     {
       title: 'Before',
-      organisation: 'Fugro Marine Australia',
+      organisation: earlier,
       location: 'Perth',
       start: '2006-06',
       end: '2022-03'
@@ -130,6 +138,10 @@ describe('yearRange', () => {
       '2006 – 2022'
     )
   })
+
+  it('shows one year for an entry with one date', () => {
+    expect(yearRange({ start: null, end: '2005' })).toBe('2005')
+  })
 })
 
 describe('noBreakHyphens', () => {
@@ -147,9 +159,21 @@ describe('bioEntries', () => {
     expect(
       bioEntries(sample).map(entry => [entry.headline, entry.organisation.name])
     ).toEqual([
-      ['Now', 'RACWA'],
-      ['Before', 'Fugro'],
-      ['BE', 'The University of New South Wales']
+      ['Now', organisationDetails[current].name],
+      ['Before', organisationDetails[earlier].name],
+      ['BE', organisationDetails[school].name]
+    ])
+  })
+
+  it('places an entry with one date by that date', () => {
+    const studiedLater: Cv = {
+      ...sample,
+      education: [{ ...sample.education[0], end: '2010' }]
+    }
+    expect(bioEntries(studiedLater).map(entry => entry.headline)).toEqual([
+      'Now',
+      'BE',
+      'Before'
     ])
   })
 

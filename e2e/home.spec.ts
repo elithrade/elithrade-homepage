@@ -15,6 +15,18 @@ test.describe('home page', () => {
     ).toBeVisible()
   })
 
+  // A browser that reuses its stored HTML after a deployment asks for script
+  // files of the previous build, which no longer exist, and the page stays
+  // empty. See the Cache-Control header in next.config.ts.
+  test('tells browsers to check for new HTML on every visit', async ({
+    request
+  }) => {
+    const response = await request.get('/')
+    const cacheControl = response.headers()['cache-control']
+    expect(cacheControl).toBe('public, max-age=0, must-revalidate')
+    expect(cacheControl).not.toContain('stale-while-revalidate')
+  })
+
   test('shows a quote with its author', async ({ page }) => {
     // The quote comes from ZenQuotes when the page is generated, or is the
     // fallback if that failed, so check its shape rather than its text.

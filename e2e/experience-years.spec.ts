@@ -1,4 +1,9 @@
 import { test, expect } from './fixtures'
+import {
+  careerStartYear,
+  noBreakHyphens,
+  summaryParagraphs
+} from '../libs/content/cv'
 
 // The page is prerendered at build time. The years-of-experience count must
 // follow the visitor's clock, without a server/client hydration mismatch,
@@ -8,5 +13,6 @@ test('counts years of experience from the current date', async ({ page }) => {
 
   await page.goto('/')
 
-  await expect(page.getByText('with over 25 years')).toBeVisible()
+  const [first] = summaryParagraphs(2031 - careerStartYear())
+  await expect(page.getByText(noBreakHyphens(first))).toBeVisible()
 })

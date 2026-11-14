@@ -10,12 +10,12 @@ export type OrganisationDetails = {
 }
 
 export const organisationDetails: Record<string, OrganisationDetails> = {
-  'UNSW (The University of New South Wales)': {
-    name: 'The University of New South Wales',
+  'University of New South Wales': {
+    name: 'University of New South Wales',
     url: 'https://unsw.edu.au'
   },
-  'Fugro Marine Australia': { name: 'Fugro', url: 'https://www.fugro.com' },
-  RACWA: { name: 'RACWA', url: 'https://rac.com.au' }
+  Fugro: { name: 'Fugro', url: 'https://www.fugro.com' },
+  'RAC WA': { name: 'RAC WA', url: 'https://rac.com.au' }
 }
 
 export function detailsFor(cvName: string): OrganisationDetails {

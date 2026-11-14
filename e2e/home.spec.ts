@@ -1,4 +1,10 @@
 import { test, expect } from './fixtures'
+import {
+  bioEntries,
+  careerStartYear,
+  noBreakHyphens,
+  summaryParagraphs
+} from '../libs/content/cv'
 
 test.describe('home page', () => {
   test.beforeEach(async ({ page }) => {
@@ -41,9 +47,13 @@ test.describe('home page', () => {
     }
   })
 
-  test('shows years of experience counted from 2006', async ({ page }) => {
-    const years = new Date().getFullYear() - 2006
-    await expect(page.getByText(`with over ${years} years`)).toBeVisible()
+  // The expected text comes from content/cv.json, so rewording the CV's
+  // summary doesn't fail this test.
+  test('shows the summary with the years of experience', async ({ page }) => {
+    const years = new Date().getFullYear() - careerStartYear()
+    for (const paragraph of summaryParagraphs(years)) {
+      await expect(page.getByText(noBreakHyphens(paragraph))).toBeVisible()
+    }
   })
 
   test('loads the profile image', async ({ page }) => {
@@ -57,13 +67,9 @@ test.describe('home page', () => {
   })
 
   test('opens employer links in a new tab', async ({ page }) => {
-    for (const [name, href] of [
-      ['The University of New South Wales', 'https://unsw.edu.au'],
-      ['Fugro', 'https://www.fugro.com'],
-      ['RACWA', 'https://rac.com.au']
-    ]) {
-      const link = page.getByRole('link', { name })
-      await expect(link).toHaveAttribute('href', href)
+    for (const { organisation } of bioEntries()) {
+      const link = page.getByRole('link', { name: organisation.name })
+      await expect(link).toHaveAttribute('href', organisation.url)
       await expect(link).toHaveAttribute('target', '_blank')
     }
   })

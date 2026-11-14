@@ -4,7 +4,7 @@ import { Box } from '@chakra-ui/react'
 // The home page's two-column lists (Bio and Technical Skills) share one
 // label column, so the years and the skill categories line up down the
 // page and every entry starts at the same edge, wrapped lines included.
-// 13rem fits the longest bold label, Programming Languages, on one line.
+// 13rem keeps a bold label of about twenty characters on one line.
 // Phones have no room for two columns, so there the label sits above its
 // entry. The gap between rows is half a line: enough for an entry that wraps
 // onto a second line to still read as one row.

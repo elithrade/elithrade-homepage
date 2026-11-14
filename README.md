@@ -6,7 +6,7 @@
 Personal homepage of Bin Hu: a small Next.js site with an animated 3D voxel dog at its desk,
 light/dark themes, a bio and skills page, and a works page built from the CV.
 
-**Live:** https://mango-pebble-00502641e.3.azurestaticapps.net
+**Live:** https://elithra.dev
 
 ## Tech stack
 
@@ -208,8 +208,9 @@ docker run --rm --ipc=host --user "$(id -u):$(id -g)" -e HOME=/tmp \
 ## CI/CD
 
 - **CI** (`.github/workflows/ci.yml`): on every pull request to `main` and
-  every push to it, runs `npm ci`, `npm run lint` and `npm test`. `main` is
-  protected: the `test` check must pass before a PR can merge.
+  every push to it, runs `npm ci`, `npm run lint`, `npm run typecheck` and
+  `npm test`. `main` is protected: the `test` check must pass before a PR can
+  merge.
 - **E2E Test** (`.github/workflows/e2e.yml`): a separate workflow that runs
   the Playwright suite against a production build on every pull request to
   `main`, every push to it, and on demand from the Actions tab. The HTML

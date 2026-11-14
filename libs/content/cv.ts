@@ -5,8 +5,8 @@
 import cvJson from '../../content/cv.json'
 import { detailsFor, type OrganisationDetails } from './organisations'
 
-/** A month as `YYYY-MM`. */
-export type YearMonth = string
+/** A month as `YYYY-MM`, or a year alone as `YYYY` where the CV gives no month. */
+export type CvDate = string
 
 export type Skill = {
   category: string
@@ -17,17 +17,18 @@ export type Education = {
   degree: string
   institution: string
   location: string
-  start: YearMonth
-  end: YearMonth | null
+  /** null when the CV gives one date, the year the degree was completed. */
+  start: CvDate | null
+  end: CvDate
 }
 
 export type Position = {
   title: string
   organisation: string
   location: string
-  start: YearMonth
+  start: CvDate
   /** null while the position is current. */
-  end: YearMonth | null
+  end: CvDate | null
 }
 
 export type Cv = {
@@ -44,7 +45,7 @@ export const cv: Cv = cvJson
 
 export const YEARS_PLACEHOLDER = '{years}'
 
-const yearOf = (month: YearMonth) => Number(month.slice(0, 4))
+const yearOf = (date: CvDate) => Number(date.slice(0, 4))
 
 /** The year the earliest position started, which experience counts from. */
 export const careerStartYear = (data: Cv = cv) =>
@@ -55,11 +56,14 @@ export const summaryParagraphs = (years: number, data: Cv = cv) =>
     paragraph.replaceAll(YEARS_PLACEHOLDER, String(years))
   )
 
-/** `2002 - 2005`, or `2022 - present` while current. */
+/** `2006 - 2022`, `2022 - present` while current, or `2005` for one date. */
 export const yearRange = (
-  { start, end }: { start: YearMonth; end: YearMonth | null },
+  { start, end }: { start: CvDate | null; end: CvDate | null },
   separator = ' - '
-) => `${yearOf(start)}${separator}${end ? yearOf(end) : 'present'}`
+) => {
+  const to = end === null ? 'present' : yearOf(end)
+  return start === null ? String(to) : `${yearOf(start)}${separator}${to}`
+}
 
 // U+2011, a hyphen that never breaks the line, so "hands-on" or "Non-SQL"
 // isn't split across two lines.
@@ -71,18 +75,24 @@ export const noBreakHyphens = (text: string) =>
 
 export type BioEntry = {
   key: string
-  start: YearMonth
-  end: YearMonth | null
+  /** null for an entry with one date, which is then its `end`. */
+  start: CvDate | null
+  end: CvDate | null
   /** The degree or job title. */
   headline: string
   organisation: OrganisationDetails
 }
 
+// An entry with one date is placed by that date.
+const sortDate = ({ start, end }: BioEntry) => start ?? end ?? ''
+const latestFirst = (a: BioEntry, b: BioEntry) =>
+  sortDate(b).localeCompare(sortDate(a))
+
 /** Education and positions together, newest first, as on a CV. */
 export const bioEntries = (data: Cv = cv): BioEntry[] =>
   [
     ...data.education.map(entry => ({
-      key: `${entry.institution}:${entry.start}`,
+      key: `${entry.institution}:${entry.end}`,
       start: entry.start,
       end: entry.end,
       headline: entry.degree,
@@ -95,4 +105,4 @@ export const bioEntries = (data: Cv = cv): BioEntry[] =>
       headline: position.title,
       organisation: detailsFor(position.organisation)
     }))
-  ].sort((a, b) => b.start.localeCompare(a.start))
+  ].sort(latestFirst)

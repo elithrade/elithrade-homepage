@@ -3,7 +3,15 @@ import { screen, within } from '@testing-library/react'
 import { renderWithTheme } from '../test-utils'
 import Page from '../../pages/index'
 import { CV_URL } from '../../libs/cv'
-import { cv, noBreakHyphens } from '../../libs/content/cv'
+import {
+  bioEntries,
+  careerStartYear,
+  cv,
+  noBreakHyphens,
+  summaryParagraphs,
+  yearRange,
+  YEARS_PLACEHOLDER
+} from '../../libs/content/cv'
 import {
   coreSkillCategories,
   lastSkillCategories
@@ -40,13 +48,20 @@ describe('Home page', () => {
     )
   })
 
-  it('computes years of experience from a 2006 start', () => {
+  // The expected text comes from content/cv.json, so rewording the CV's
+  // summary doesn't fail this test.
+  it("counts the summary's years of experience from the current date", () => {
     vi.useFakeTimers({ toFake: ['Date'] })
     vi.setSystemTime(new Date('2030-06-15T00:00:00Z'))
 
     renderPage()
 
-    expect(screen.getByText(/with over 24 years of hands/)).toBeInTheDocument()
+    const years = 2030 - careerStartYear()
+    expect(years).toBeGreaterThan(0)
+    for (const paragraph of summaryParagraphs(years)) {
+      expect(screen.getByText(noBreakHyphens(paragraph))).toBeInTheDocument()
+    }
+    expect(document.body).not.toHaveTextContent(YEARS_PLACEHOLDER)
   })
 
   it('shows the quote of the day with its author', () => {
@@ -107,26 +122,27 @@ describe('Home page', () => {
         ...lastSkillCategories
       ].map(noBreakHyphens)
     )
-    expect(shown.slice(-2)).toEqual(['Programming Languages', 'Languages'])
   })
 
   it('shows the bio newest first, with the years of each entry', () => {
     renderPage()
 
     const years = screen
-      .getAllByText(/^\d{4}–(\d{4}|present)$/)
+      .getAllByText(/^\d{4}(–(\d{4}|present))?$/)
       .map(el => el.textContent)
-    expect(years).toEqual(['2022–present', '2006–2022', '2002–2005'])
+    expect(years).toEqual(bioEntries().map(entry => yearRange(entry, '–')))
+    expect([...years].sort().reverse()).toEqual(years)
     for (const year of years) {
       expect(screen.getByText(year).tagName).toBe('DT')
     }
   })
 
-  it.each([
-    ['The University of New South Wales', 'https://unsw.edu.au'],
-    ['Fugro', 'https://www.fugro.com'],
-    ['RACWA', 'https://rac.com.au']
-  ])('links "%s" to %s in a new tab', (name, href) => {
+  it.each(
+    bioEntries().map(({ organisation }) => [
+      organisation.name,
+      organisation.url
+    ])
+  )('links "%s" to %s in a new tab', (name, href) => {
     renderPage()
 
     const link = screen.getByRole('link', { name })

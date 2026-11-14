@@ -34,9 +34,9 @@ export type Work = {
   stack: string[]
 }
 
-export const RACWA = organisation('RACWA')
+export const RACWA = organisation('RAC WA')
 
-export const FUGRO = organisation('Fugro Marine Australia')
+export const FUGRO = organisation('Fugro')
 
 export const organisations = [RACWA, FUGRO]
 

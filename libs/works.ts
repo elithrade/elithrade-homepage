@@ -1,173 +1,110 @@
-// Projects shown on /works. The project write-ups are curated by hand from the
-// CV (github.com/elithrade/My-Awesome-CV, examples/resume/experience.tex), so
-// review them when the CV's experience changes. Each organisation's name, role
-// and period come from content/cv.json.
+// The works shown on /works, built from content/cv.json: under each position,
+// the bullets the CV groups into works, then the CV's personal projects.
+// Nothing here is written by hand. To change a work, change the CV
+// (github.com/elithrade/My-Awesome-CV, examples/resume/experience.tex and
+// projects.tex); its CI then opens a pull request here.
 
-import { cv, yearRange } from './content/cv'
+import { cv, yearRange, type Cv, type Skill } from './content/cv'
 import { detailsFor } from './content/organisations'
 
-export type Organisation = {
+/** A section of /works: an organisation, or the personal projects. */
+export type WorkGroup = {
   name: string
-  role: string
-  period: string
-}
-
-/** The organisation as the CV names it, with the site's short name. */
-function organisation(cvName: string): Organisation {
-  const position = cv.experience.find(p => p.organisation === cvName)
-  if (!position) throw new Error(`content/cv.json has no position at ${cvName}`)
-  return {
-    name: detailsFor(cvName).name,
-    role: position.title,
-    period: yearRange(position, ' – ')
-  }
+  /** Shown under the name: the role and years at an organisation. */
+  caption: string | null
 }
 
 export type Work = {
   /** URL slug: /works/<id> */
   id: string
   title: string
-  organisation: Organisation
-  summary: string
+  group: WorkGroup
+  /** The years of the position the work was part of, or of the project. */
+  period: string
+  /** A project's one-line description; null for a work at an organisation. */
+  tagline: string | null
+  /** A project's link; null for a work at an organisation. */
+  url: string | null
+  /** The CV's bullets, word for word. */
   highlights: string[]
-  /** Technologies named in the CV for this work; may be empty. */
+  /** The CV's skills that the bullets name; may be empty. */
   stack: string[]
 }
 
-export const RACWA = organisation('RAC WA')
+export const PERSONAL_PROJECTS = 'Personal projects'
 
-export const FUGRO = organisation('Fugro')
+const PERIOD_SEPARATOR = ' – '
 
-export const organisations = [RACWA, FUGRO]
+const escapeRegExp = (text: string) =>
+  text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
-export const works: Work[] = [
-  {
-    id: 'roadside-self-service',
-    title: 'Roadside Assistance self-service',
-    organisation: RACWA,
-    summary:
-      'A self-service capability in the myRAC portal that lets members manage their Roadside Assistance cover online, instantly.',
-    highlights: [
-      'Automates around 3,700 member requests a year',
-      'Improved operational efficiency and member satisfaction'
-    ],
-    stack: []
-  },
-  {
-    id: 'digital-membership-card',
-    title: 'Digital membership card',
-    organisation: RACWA,
-    summary:
-      "Lets members securely add their RAC membership card to their phone's digital wallet.",
-    highlights: [
-      '96% member uptake within three months of launch',
-      'Led end-to-end development, including threat modelling and security architecture'
-    ],
-    stack: []
-  },
-  {
-    id: 'website-search',
-    title: 'Website search migration',
-    organisation: RACWA,
-    summary:
-      "Replaced the RAC website's Azure Search with a vendor-hosted Solr solution.",
-    highlights: [
-      'Cut search time in half',
-      'Improved content discoverability across the main site'
-    ],
-    stack: ['Solr']
-  },
-  {
-    id: 'myrac-replatform',
-    title: 'myRAC re-platform and redesign',
-    organisation: RACWA,
-    summary: 'A major re-platforming and redesign of the myRAC member portal.',
-    highlights: [
-      'Led the migration of the Next.js front end, GraphQL layer and back-end services into a single monorepo',
-      'Delivered a complete UX redesign with new navigation and back-end integrations'
-    ],
-    stack: ['Next.js', 'GraphQL']
-  },
-  {
-    id: 'autoservice-rego-lookup',
-    title: 'Autoservice registration lookup',
-    organisation: RACWA,
-    summary:
-      'Integrated a third-party vehicle registration lookup service into the Autoservice booking platform.',
-    highlights: [
-      'Full-stack: front-end booking workflows and back-end APIs',
-      'Less data entry, and a significant drop in members abandoning the booking journey'
-    ],
-    stack: []
-  },
-  {
-    id: 'rov-video-streaming',
-    title: 'Real-time ROV inspection streaming',
-    organisation: FUGRO,
-    summary:
-      'A low-latency live video platform for remote ROV inspections of seabed pipelines.',
-    highlights: [
-      'Around 6 seconds of end-to-end latency',
-      'Built the streaming front end and a full-stack admin system for client channels and users',
-      'Fully automated CI/CD deployment with AWS CDK'
-    ],
-    stack: [
-      'AWS Elemental MediaLive',
-      'AWS Elemental MediaStore',
-      'CloudFront',
-      'React',
-      'Material UI',
-      'TypeScript',
-      'DynamoDB',
-      'AWS CDK'
-    ]
-  },
-  {
-    id: 'usv-data-exchange',
-    title: 'Uncrewed vessel data exchange',
-    organisation: FUGRO,
-    summary:
-      'Scalable AWS systems, including a data exchange for uncrewed surface vessels (USVs) and a marine vessel reporting website.',
-    highlights: ['Architected and deployed scalable systems on AWS'],
-    stack: [
-      '.NET Core',
-      'TypeScript',
-      'Docker',
-      'AWS Lambda',
-      'ECS/Fargate',
-      'S3',
-      'DynamoDB'
-    ]
-  },
-  {
-    id: 'sonar-classification',
-    title: 'Multibeam sonar classification',
-    organisation: FUGRO,
-    summary:
-      'A cloud-hosted machine learning system that automatically classifies multibeam sonar data.',
-    highlights: [
-      'Automated data processing workflows for vessel-based pipe inspections, significantly reducing manual effort'
-    ],
-    stack: []
-  },
-  {
-    id: 'acquisition-suite',
-    title: 'Data acquisition suite modernisation',
-    organisation: FUGRO,
-    summary:
-      "Core modules for Fugro's next-generation global data acquisition software suite.",
-    highlights: [
-      'Led a team refactoring monolithic applications into a service-oriented architecture',
-      'Architected and maintained core modules with .NET and WPF'
-    ],
-    stack: ['.NET', 'WPF']
+// As a whole word, in the skill's own case: "REST" is not found in "rest",
+// nor ".NET" in "ASP.NET".
+const names = (text: string, skill: string) =>
+  new RegExp(`(?<![A-Za-z0-9])${escapeRegExp(skill)}(?![A-Za-z0-9])`).test(text)
+
+/** The skills the bullets name, in the order the CV lists its skills. */
+export function stackFor(highlights: string[], skills: Skill[]): string[] {
+  const text = highlights.join('\n')
+  const items = skills.flatMap(skill => skill.items)
+  return [...new Set(items)].filter(item => names(text, item))
+}
+
+export function buildWorks(data: Cv = cv): {
+  groups: WorkGroup[]
+  works: Work[]
+} {
+  const groups: WorkGroup[] = []
+  const works: Work[] = []
+
+  for (const position of data.experience) {
+    if (position.works.length === 0) continue
+    const period = yearRange(position, PERIOD_SEPARATOR)
+    const group: WorkGroup = {
+      name: detailsFor(position.organisation).name,
+      caption: `${position.title} · ${period}`
+    }
+    groups.push(group)
+    for (const { id, title, highlights } of position.works) {
+      works.push({
+        id,
+        title,
+        group,
+        period,
+        tagline: null,
+        url: null,
+        highlights,
+        stack: stackFor(highlights, data.skills)
+      })
+    }
   }
-]
+
+  if (data.projects.length > 0) {
+    const group: WorkGroup = { name: PERSONAL_PROJECTS, caption: null }
+    groups.push(group)
+    for (const project of data.projects) {
+      works.push({
+        id: project.id,
+        title: project.name,
+        group,
+        period: yearRange(project, PERIOD_SEPARATOR),
+        tagline: project.description,
+        url: project.url,
+        highlights: project.highlights,
+        stack: stackFor(project.highlights, data.skills)
+      })
+    }
+  }
+
+  return { groups, works }
+}
+
+export const { groups, works } = buildWorks()
 
 export function getWork(id: string): Work | undefined {
   return works.find(work => work.id === id)
 }
 
-export function worksFor(organisation: Organisation): Work[] {
-  return works.filter(work => work.organisation === organisation)
+export function worksFor(group: WorkGroup): Work[] {
+  return works.filter(work => work.group === group)
 }

@@ -8,11 +8,18 @@ import {
   Wrap,
   WrapItem
 } from '@chakra-ui/react'
+import { noBreakHyphens } from '../libs/content/cv'
 import type { Work } from '../libs/works'
 
 type WorkCardProps = {
   work: Work
 }
+
+/**
+ * The card's text: a project's description, or the first of the CV's bullets
+ * for a work at an organisation. The card cuts it off after three lines.
+ */
+export const leadOf = (work: Work) => work.tagline ?? work.highlights[0]
 
 export const WorkCard = ({ work }: WorkCardProps) => (
   <LinkBox
@@ -31,8 +38,14 @@ export const WorkCard = ({ work }: WorkCardProps) => (
         {work.title}
       </LinkOverlay>
     </Heading>
-    <Text fontSize={15} lineHeight={1.6} color="text-muted" mb={3}>
-      {work.summary}
+    <Text
+      fontSize={15}
+      lineHeight={1.6}
+      color="text-muted"
+      mb={3}
+      noOfLines={3}
+    >
+      {noBreakHyphens(leadOf(work))}
     </Text>
     <TechTags stack={work.stack} />
   </LinkBox>

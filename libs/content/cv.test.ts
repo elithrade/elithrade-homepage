@@ -17,8 +17,8 @@ const CV_DATE = /^\d{4}(-(0[1-9]|1[0-2]))?$/
 const datedEntries = [...cv.education, ...cv.experience]
 
 describe('content/cv.json', () => {
-  it('is schema version 2', () => {
-    expect(cv.schemaVersion).toBe(2)
+  it('is schema version 3', () => {
+    expect(cv.schemaVersion).toBe(3)
   })
 
   it('has a summary that mentions the years of experience', () => {
@@ -72,6 +72,31 @@ describe('content/cv.json', () => {
     ]
     for (const name of names) expect(organisationDetails).toHaveProperty([name])
   })
+
+  // Works and projects share the /works/<id> addresses.
+  it('gives every work and project a unique, URL-safe id and a bullet', () => {
+    const pages = [
+      ...cv.experience.flatMap(position => position.works),
+      ...cv.projects
+    ]
+    const ids = pages.map(page => page.id)
+    expect(new Set(ids).size).toBe(ids.length)
+    for (const { id, highlights } of pages) {
+      expect(id).toMatch(/^[a-z0-9]+(-[a-z0-9]+)*$/)
+      expect(highlights.length, id).toBeGreaterThan(0)
+      for (const highlight of highlights) expect(highlight.trim()).not.toBe('')
+    }
+  })
+
+  it('names, describes, dates and links every project', () => {
+    for (const project of cv.projects) {
+      expect(project.name.trim()).not.toBe('')
+      expect(project.description.trim(), project.id).not.toBe('')
+      expect(project.start, project.id).toMatch(CV_DATE)
+      if (project.end !== null) expect(project.end).toMatch(CV_DATE)
+      expect(project.url, project.id).toMatch(/^https:\/\/\S+$/)
+    }
+  })
 })
 
 // Any three organisations the site has details for; which ones doesn't
@@ -79,7 +104,7 @@ describe('content/cv.json', () => {
 const [school, earlier, current] = Object.keys(organisationDetails)
 
 const sample: Cv = {
-  schemaVersion: 2,
+  schemaVersion: 3,
   summary: ['Over {years} years.', 'No placeholder.'],
   skills: [],
   education: [
@@ -97,16 +122,19 @@ const sample: Cv = {
       organisation: current,
       location: 'Perth',
       start: '2022-04',
-      end: null
+      end: null,
+      works: []
     },
     {
       title: 'Before',
       organisation: earlier,
       location: 'Perth',
       start: '2006-06',
-      end: '2022-03'
+      end: '2022-03',
+      works: []
     }
-  ]
+  ],
+  projects: []
 }
 
 describe('careerStartYear', () => {

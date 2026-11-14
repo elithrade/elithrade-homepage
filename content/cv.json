@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "summary": [
     "Software engineer with {years} years’ experience, at RAC WA since 2022 and at Fugro for 16 years before that. At RAC I was tech lead on the digital membership card, where I decided the technical approach, wrote the solution intent, ran the threat modelling and led a team of three to launch. At Fugro I designed and built a live video streaming platform on AWS and led small teams on the Starfix.NG survey software. I treat programming as a craft. What I enjoy most is finding a simple, efficient solution to a problem, so I still write most of the code on the projects I lead, and in my own time I build side projects by hand and keep refining the Vim and terminal set-up I work in every day."
   ],
@@ -99,14 +99,126 @@
       "organisation": "RAC WA",
       "location": "Perth, WA",
       "start": "2022-04",
-      "end": null
+      "end": null,
+      "works": [
+        {
+          "id": "digital-membership-card",
+          "title": "Digital membership card",
+          "highlights": [
+            "Tech lead of a team of three, and the myRAC team’s technical representative, on the digital membership card that members add to Apple Wallet or Google Wallet. Decided the technical approach, wrote the solution intent, presented it for review by other teams’ technical representatives, ran the technical alignment meetings and deployed the final solution. Within three months of launch, 96% of members who logged in to myRAC had added the card to a wallet.",
+            "Produced the card’s threat model and security design and ran the threat modelling sessions with the team and the other teams’ representatives. In October 2024, taught the process to other RAC teams in an online session."
+          ]
+        },
+        {
+          "id": "myrac-replatform",
+          "title": "myRAC re-platform and redesign",
+          "highlights": [
+            "Rebuilt the logged-in myRAC experience during RAC’s move from Sitecore and ASP.NET pages to its Digital Experience Platform (Contentful, Next.js, GraphQL, Azure API Management, C# Function Apps). Designed the new product pages from UI components that hold no business logic, so the same components and page layouts serve roadside assistance, insurance, and finance applications and quotes.",
+            "Started the move of the myRAC team’s frontend, GraphQL layer and backend services into one monorepo."
+          ]
+        },
+        {
+          "id": "roadside-self-service",
+          "title": "Roadside Assistance self-service",
+          "highlights": [
+            "Led a team of three building the online cancel Roadside Assistance journey, which replaced a phone call to the contact centre, and wrote about 90% of its frontend and backend. Maintain and extend the team’s other self-service journeys, digital roadside assistance (location-based patrol dispatch) and update my vehicle, with new features and accessibility fixes.",
+            "Migrated the Roadside Assistance “change my cover level” journey to the new Azure backend: redesigned the UI and connected new upgrade and downgrade endpoints with the Microsoft Dynamics FinOps team, whose system holds the roadside products. Members make about 3,700 cover changes a year through it."
+          ]
+        },
+        {
+          "id": "website-search",
+          "title": "Website search migration",
+          "highlights": [
+            "Moved search on rac.com.au from Azure Search to SearchStax-hosted Solr: reindexed the site, changed the frontend to query the new engine, and secured access with Azure network rules and IP allowlists. Cached the first result set in the browser so that category clicks no longer re-run the search."
+          ]
+        },
+        {
+          "id": "autoservice-rego-lookup",
+          "title": "Autoservice registration lookup",
+          "highlights": [
+            "Added registration lookup to the Autoservice booking app: upgraded the Angular app to a supported version, integrated a vendor’s lookup API through the existing Azure Function App, and built the new step. Members now enter a rego instead of choosing make, model and year. Drop-off during booking fell by about 57%."
+          ]
+        }
+      ]
     },
     {
       "title": "Senior Innovation Engineer, promoted from Software Engineer",
       "organisation": "Fugro",
       "location": "Perth, WA",
       "start": "2006-06",
-      "end": "2022-03"
+      "end": "2022-03",
+      "works": [
+        {
+          "id": "rov-video-streaming",
+          "title": "Live video platform for ROV inspections",
+          "highlights": [
+            "Designed and built, as lead of a small team of three, a live video platform for remote ROV pipeline inspections. Owned it end to end: the design, most of the frontend and backend code, the AWS CDK infrastructure, the CI/CD pipeline, deployment and maintenance. Promoted to Senior Innovation Engineer after delivering it.",
+            "The platform replaced a prototype that decoded video on a Node server in a local server rack and sent it over WebSockets, which could not host many live streams and had high latency. It runs entirely in AWS, and video reaches client browsers about 6 s after it arrives at MediaLive.",
+            "Built it on AWS Elemental MediaLive/MediaStore with CloudFront signed cookies, a React/Material UI frontend, and an admin portal where operators manage projects and streams. Auth0 authenticated users, and a TypeScript/DynamoDB backend authorised them: which client organisation and projects each user belonged to, and which streams they could watch.",
+            "Presented the platform’s technology, lessons and results in a one-hour online talk to about 300 staff at the company-wide Fugro Innovators Conference, October 2020."
+          ]
+        },
+        {
+          "id": "survey-data-exchange",
+          "title": "Survey data exchange",
+          "highlights": [
+            "Built the frontend of a data exchange for offshore survey data, my last project at Fugro: a dashboard that shows multibeam, pipeline inspection and other survey data as vessels upload it to S3 and lets data processors download it in batches, process it and upload the results (React, TypeScript). Started it from aws-serverless-spa-template, a personal React, Lambda and CDK starter published on GitHub, and set up its CI/CD pipeline."
+          ]
+        },
+        {
+          "id": "vessel-activity-reporting",
+          "title": "Vessel activity reporting",
+          "highlights": [
+            "As Fugro modernised its stack from desktop software to the cloud from 2018, built the UI for a vessel activity reporting system, set up its CI/CD pipeline, and contributed to its API and AWS infrastructure. A daily Excel report of job progress and incidents, uploaded to S3, is parsed into a database through Entity Framework Core and served by a .NET Core API in containers (React, TypeScript, Docker)."
+          ]
+        },
+        {
+          "id": "pipeline-inspection",
+          "title": "Subsea pipeline inspection",
+          "highlights": [
+            "Worked with two other developers on the Unity application for a subsea pipeline inspection system developed by teams in Perth and Brisbane. ROVs recorded high-resolution photos and point clouds of the pipeline, an ML point classifier used both to identify freespans and damage, and the Unity app rendered the data for data processors to work through by hand."
+          ]
+        },
+        {
+          "id": "acquisition-suite",
+          "title": "Starfix.NG data acquisition suite",
+          "highlights": [
+            "Worked on the Starfix.NG multibeam solution, which Fugro’s survey vessels used to collect multibeam sonar data in the search for flight MH370 for the Australian Government from 2014.",
+            "As Starfix.NG grew with plugins and new solutions, spent several years converting the monolith into a service-oriented architecture of core services such as hardware and geodesy. Led two to three developers, working mainly on the hardware service.",
+            "One of the first developers on Starfix.NG, Fugro’s in-house real-time survey data acquisition suite (C#, WPF), from 2007 to about 2012. It replaced Starfix, a set of small C++ programs linked by a message manager, with one package covering codecs, data monitoring, database logging and initial preprocessing. Took part in the initial design and owned sensor hardware initialisation, encoder and decoder set-up, and visualisation of the collected data.",
+            "Started in 2006 building extensions to Starfix, the earlier C++ acquisition and processing software."
+          ]
+        }
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "url-shortener",
+      "name": "url-shortener",
+      "description": "System design practice, written by hand",
+      "url": "https://github.com/elithrade/url-shortener",
+      "start": "2026-10",
+      "end": null,
+      "highlights": [
+        "A URL shortener in ASP.NET Core (.NET 10) with Postgres and a Redis cache. I started it to stay sharp at writing code by hand, so I write the core logic myself and use AI as a reviewer and mentor.",
+        "Handles code collisions, rate limiting with a token bucket, link expiry with a background sweep, click counting through a bounded queue with batched writes, and a cache that falls back to Postgres when Redis is down or slow.",
+        "Load-tested with k6 on one machine: 10,000 redirects a second at a p99 of 1.5 ms with the cache and 5.3 ms without. The tests also showed that an app started cold under full load builds a backlog of requests, so I am now adding a warm-up step before the app reports ready.",
+        "The in-memory and Postgres stores pass one shared contract test suite, and most tests were mutation-checked by breaking the code on purpose. Deployed to Azure Container Apps with Bicep and GitHub Actions. Each bug and experiment becomes a flashcard in LESSONS.md."
+      ]
+    },
+    {
+      "id": "development-environment",
+      "name": "Development environment",
+      "description": "Dotfiles and Neovim configuration",
+      "url": "https://github.com/elithrade",
+      "start": "2016",
+      "end": null,
+      "highlights": [
+        "Have kept my shell, tmux and editor configuration in git since 2016 and rebuilt it as my workflow changed: Vim, then Neovim, now LazyVim with C# and TypeScript language servers, debugging and test running.",
+        "One command sets up a new WSL machine with zsh, tmux, Neovim and their tools, and is safe to re-run.",
+        "This CV is LaTeX source in git, built and published by a GitHub Actions workflow."
+      ]
     }
   ]
 }

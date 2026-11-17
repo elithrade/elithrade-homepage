@@ -105,3 +105,46 @@ export const searchQuestions = (contents: Contents, query: string) => {
       .map(card => ({ card, section: linkTo(section) }))
   )
 }
+
+/** How many cards a random practice round has. */
+export const RANDOM_ROUND_SIZE = 10
+
+/** A copy of `items` in random order (Fisher-Yates). */
+const shuffled = <T>(items: readonly T[], random: () => number): T[] => {
+  const out = [...items]
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(random() * (i + 1))
+    ;[out[i], out[j]] = [out[j], out[i]]
+  }
+  return out
+}
+
+/**
+ * Up to `count` random cards, spread across sections: one card from each of
+ * `count` random sections, so a short round covers many topics instead of
+ * favouring the big sections. With fewer sections than `count`, it goes round
+ * the sections again for a second card each, and so on. The round comes out
+ * in random order. `random` is Math.random unless a test passes its own.
+ */
+export const sampleAcrossSections = (
+  cards: readonly CardInSection[],
+  count: number,
+  random: () => number = Math.random
+): CardInSection[] => {
+  const bySection = new Map<string, CardInSection[]>()
+  for (const c of cards) {
+    bySection.set(c.section.id, [...(bySection.get(c.section.id) ?? []), c])
+  }
+  const queues = shuffled([...bySection.values()], random).map(group =>
+    shuffled(group, random)
+  )
+  const picked: CardInSection[] = []
+  while (picked.length < count && queues.some(q => q.length > 0)) {
+    for (const queue of queues) {
+      const next = queue.pop()
+      if (next) picked.push(next)
+      if (picked.length === count) break
+    }
+  }
+  return picked
+}

@@ -35,6 +35,8 @@ import {
   contentsOf,
   MIN_QUERY_LENGTH,
   plural,
+  RANDOM_ROUND_SIZE,
+  sampleAcrossSections,
   searchQuestions,
   sectionHref,
   type CardInSection,
@@ -144,6 +146,16 @@ const ProjectPage = ({ contents }: ProjectPageProps) => {
           >
             Practice all
           </PrimaryButton>
+          <SecondaryButton
+            isDisabled={loading}
+            onClick={() =>
+              start('Random cards', cards =>
+                sampleAcrossSections(cards, RANDOM_ROUND_SIZE)
+              )
+            }
+          >
+            Practice {Math.min(RANDOM_ROUND_SIZE, cardCount(contents))} random
+          </SecondaryButton>
           {missedCount > 0 && (
             <SecondaryButton
               isDisabled={loading}

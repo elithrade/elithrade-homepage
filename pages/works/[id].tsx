@@ -3,7 +3,6 @@ import type {
   GetStaticProps,
   InferGetStaticPropsType
 } from 'next'
-import NextLink from 'next/link'
 import {
   Badge,
   Box,
@@ -14,8 +13,8 @@ import {
   Text,
   UnorderedList
 } from '@chakra-ui/react'
-import { ChevronLeftIcon } from '@chakra-ui/icons'
 import Layout from '../../components/layouts/article'
+import { Breadcrumbs } from '../../components/breadcrumbs'
 import Section from '../../components/section'
 import { TechTags } from '../../components/work-card'
 import { noBreakHyphens } from '../../libs/content/cv'
@@ -40,10 +39,7 @@ type WorkPageProps = InferGetStaticPropsType<typeof getStaticProps>
 const WorkPage = ({ work }: WorkPageProps) => (
   <Layout title={work.title}>
     <Container maxW="container.lg">
-      <Link as={NextLink} href="/works" display="inline-flex" mb={4}>
-        <ChevronLeftIcon boxSize={6} />
-        Works
-      </Link>
+      <Breadcrumbs labels={{ [`/works/${work.id}`]: work.title }} />
       <Heading as="h2" fontSize={28} mb={2}>
         {work.title}
       </Heading>

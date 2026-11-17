@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { screen, within } from '@testing-library/react'
 import { renderWithTheme } from '../test-utils'
+import { setPath } from '../router'
 import Works from '../../pages/works/index'
 import WorkPage, {
   getStaticPaths,
@@ -60,6 +61,7 @@ describe('Work detail page', () => {
   }
 
   it('shows the work with its group, period, highlights and stack', () => {
+    setPath('/works/example')
     renderWithTheme(<WorkPage work={example} />)
 
     expect(
@@ -76,9 +78,14 @@ describe('Work detail page', () => {
     for (const tech of example.stack) {
       expect(screen.getByText(tech)).toBeInTheDocument()
     }
-    expect(screen.getByRole('link', { name: 'Works' })).toHaveAttribute(
-      'href',
-      '/works'
+    // The breadcrumb links back to Works and ends on this work.
+    const breadcrumb = screen.getByRole('navigation', { name: 'breadcrumb' })
+    expect(
+      within(breadcrumb).getByRole('link', { name: 'Works' })
+    ).toHaveAttribute('href', '/works')
+    expect(within(breadcrumb).getByText('Example work')).toHaveAttribute(
+      'aria-current',
+      'page'
     )
   })
 

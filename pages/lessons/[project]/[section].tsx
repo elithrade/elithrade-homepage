@@ -15,8 +15,8 @@ import {
   Text,
   Wrap
 } from '@chakra-ui/react'
-import { ChevronLeftIcon } from '@chakra-ui/icons'
 import Layout from '../../../components/layouts/article'
+import { Breadcrumbs } from '../../../components/breadcrumbs'
 import { InlineMarkdown, plainText } from '../../../components/inline-markdown'
 import { LessonCard } from '../../../components/lesson-card'
 import {
@@ -136,15 +136,14 @@ const SectionPage = ({ page }: SectionPageProps) => {
   return (
     <Layout title={plainText(section.title)}>
       <Container maxW="container.md">
-        <Link
-          as={NextLink}
-          href={`/lessons/${project.id}`}
-          display="inline-flex"
-          mb={4}
-        >
-          <ChevronLeftIcon boxSize={6} />
-          {project.name}
-        </Link>
+        <Breadcrumbs
+          labels={{
+            [`/lessons/${project.id}`]: project.name,
+            [sectionHref(project.id, section.id)]: (
+              <InlineMarkdown text={section.title} />
+            )
+          }}
+        />
         <Text fontSize={14} color="text-muted" mb={1}>
           Section {section.n} of {total}
         </Text>

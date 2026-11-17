@@ -3,6 +3,7 @@ import type { GetStaticPropsResult } from 'next'
 import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { renderWithTheme } from '../test-utils'
+import { setPath } from '../router'
 import LessonsIndex, {
   getStaticProps as indexProps
 } from '../../pages/lessons/index'
@@ -43,20 +44,35 @@ const paragraph = (markdown: string) =>
     (_, el) => el?.tagName === 'P' && el.textContent === plainText(markdown)
   )
 
-const renderProject = async () =>
-  renderWithTheme(
+const renderProject = async () => {
+  setPath(`/lessons/${project.id}`)
+  return renderWithTheme(
     <ProjectPage
       {...await propsOf(projectProps({ params: { project: project.id } }))}
     />
   )
-const renderSection = async (id: string) =>
-  renderWithTheme(
+}
+const renderSection = async (id: string) => {
+  setPath(`/lessons/${project.id}/${id}`)
+  return renderWithTheme(
     <SectionPage
       {...await propsOf(
         sectionProps({ params: { project: project.id, section: id } })
       )}
     />
   )
+}
+
+/** The breadcrumb's links, then the current page's text. */
+const breadcrumb = () => {
+  const nav = screen.getByRole('navigation', { name: 'breadcrumb' })
+  return {
+    links: within(nav)
+      .getAllByRole('link')
+      .map(a => [a.textContent, a.getAttribute('href')]),
+    current: nav.querySelector('[aria-current="page"]')?.textContent
+  }
+}
 
 beforeEach(() => {
   localStorage.clear()
@@ -92,6 +108,15 @@ describe('Project page', () => {
   it('is not found for an unknown project', async () => {
     expect(await projectProps({ params: { project: 'nope' } })).toEqual({
       notFound: true
+    })
+  })
+
+  it('has a breadcrumb back to Lessons', async () => {
+    await renderProject()
+
+    expect(breadcrumb()).toEqual({
+      links: [['Lessons', '/lessons']],
+      current: project.name
     })
   })
 
@@ -180,6 +205,18 @@ describe('Section page', () => {
     expect(
       await sectionProps({ params: { project: project.id, section: 'nope' } })
     ).toEqual({ notFound: true })
+  })
+
+  it('has a breadcrumb through Lessons and the project', async () => {
+    await renderSection(withCards.id)
+
+    expect(breadcrumb()).toEqual({
+      links: [
+        ['Lessons', '/lessons'],
+        [project.name, `/lessons/${project.id}`]
+      ],
+      current: plainText(withCards.title)
+    })
   })
 
   it('starts with the answers hidden and opens one on click', async () => {

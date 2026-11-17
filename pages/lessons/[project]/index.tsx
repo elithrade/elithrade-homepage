@@ -18,8 +18,8 @@ import {
   Text,
   Wrap
 } from '@chakra-ui/react'
-import { ChevronLeftIcon } from '@chakra-ui/icons'
 import Layout from '../../../components/layouts/article'
+import { Breadcrumbs } from '../../../components/breadcrumbs'
 import Section from '../../../components/section'
 import { InlineMarkdown } from '../../../components/inline-markdown'
 import {
@@ -126,10 +126,7 @@ const ProjectPage = ({ contents }: ProjectPageProps) => {
   return (
     <Layout title={`Lessons: ${project.name}`}>
       <Container maxW="container.md">
-        <Link as={NextLink} href="/lessons" display="inline-flex" mb={4}>
-          <ChevronLeftIcon boxSize={6} />
-          Lessons
-        </Link>
+        <Breadcrumbs labels={{ [`/lessons/${project.id}`]: project.name }} />
         <Heading as="h2" fontSize={28} mb={1}>
           {project.name}
         </Heading>

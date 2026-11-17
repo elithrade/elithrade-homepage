@@ -1,6 +1,9 @@
 import '@testing-library/jest-dom/vitest'
-import { afterEach } from 'vitest'
+import { afterEach, vi } from 'vitest'
 import { MotionGlobalConfig } from 'framer-motion'
+import { router, setPath } from './router'
+
+vi.mock('next/router', () => ({ useRouter: () => router }))
 
 // Run framer-motion animations instantly so tests don't wait on them.
 MotionGlobalConfig.skipAnimations = true
@@ -22,6 +25,7 @@ if (!window.matchMedia) {
 }
 
 afterEach(() => {
+  setPath('/')
   localStorage.clear()
   document.documentElement.removeAttribute('data-theme')
   document.documentElement.style.colorScheme = ''

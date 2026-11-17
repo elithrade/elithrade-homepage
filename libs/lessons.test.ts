@@ -3,6 +3,7 @@ import {
   cardCount,
   cardsInSections,
   contentsOf,
+  sampleAcrossSections,
   searchQuestions,
   sectionPage,
   summaryOf
@@ -79,6 +80,56 @@ describe('cardsInSections', () => {
     expect(
       cardsInSections(lessons).map(c => `${c.section.id}/${c.card.id}`)
     ).toEqual(['redis/set-nx', 'redis/ttl', 'postgres/mvcc', 'testing/gate'])
+  })
+})
+
+describe('sampleAcrossSections', () => {
+  // A small seeded generator (mulberry32), so each trial is repeatable.
+  const seeded = (seed: number) => () => {
+    seed = (seed + 0x6d2b79f5) | 0
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed)
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+  }
+  const all = cardsInSections(lessons) // redis: 2 cards, postgres: 1, testing: 1
+  const ids = (cards: { card: { id: string } }[]) => cards.map(c => c.card.id)
+  const sectionsOf = (cards: { section: { id: string } }[]) =>
+    cards.map(c => c.section.id)
+
+  it('takes each card from a different section while sections last', () => {
+    for (let seed = 1; seed <= 50; seed++) {
+      for (const count of [1, 2, 3]) {
+        const round = sampleAcrossSections(all, count, seeded(seed))
+        expect(round).toHaveLength(count)
+        expect(new Set(sectionsOf(round)).size).toBe(count)
+      }
+    }
+  })
+
+  it('goes round the sections again when there are fewer than asked for', () => {
+    for (let seed = 1; seed <= 50; seed++) {
+      const round = sampleAcrossSections(all, 4, seeded(seed))
+      expect(new Set(ids(round))).toEqual(new Set(ids(all)))
+    }
+  })
+
+  it('never repeats a card, even when asked for more than there are', () => {
+    const round = sampleAcrossSections(all, 10, seeded(7))
+    expect(round).toHaveLength(all.length)
+    expect(new Set(ids(round)).size).toBe(all.length)
+  })
+
+  it('picks different cards from run to run', () => {
+    const rounds = new Set(
+      [1, 2, 3, 4, 5, 6, 7, 8].map(seed =>
+        ids(sampleAcrossSections(all, 2, seeded(seed))).join()
+      )
+    )
+    expect(rounds.size).toBeGreaterThan(1)
+  })
+
+  it('returns nothing for no cards', () => {
+    expect(sampleAcrossSections([], 10)).toEqual([])
   })
 })
 

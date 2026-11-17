@@ -186,6 +186,25 @@ describe('Project page', () => {
       first.id
     ])
   })
+  it('practises 10 random cards, each from a different section', async () => {
+    const user = userEvent.setup()
+    await renderProject()
+
+    await user.click(screen.getByRole('button', { name: 'Practice 10 random' }))
+    expect(await screen.findByText('Card 1 of 10')).toBeInTheDocument()
+    expect(screen.getByText('Practice · Random cards')).toBeInTheDocument()
+
+    // Walk the round, noting each card's section from the line above it,
+    // such as "Card 1 of 10 · 4. URL validation and security".
+    const seen: string[] = []
+    for (let i = 1; i <= 10; i++) {
+      const line = screen.getByText(`Card ${i} of 10`).parentElement!
+      seen.push(line.textContent!.split(' · ')[1])
+      await user.click(screen.getByRole('button', { name: 'Show answer' }))
+      await user.click(screen.getByRole('button', { name: 'Got it' }))
+    }
+    expect(new Set(seen).size).toBe(10)
+  })
 })
 
 describe('Section page', () => {

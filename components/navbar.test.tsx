@@ -69,6 +69,22 @@ describe('Navbar', () => {
     }
   })
 
+  it.each([
+    ['/works', false],
+    ['/lessons', true],
+    ['/lessons/url-shortener/redis-cache-the-decorator-pattern', true]
+  ])('on %s, the Lessons link is highlighted: %s', (path, highlighted) => {
+    renderWithTheme(<Navbar path={path} />)
+
+    const lessons = screen.getByRole('link', { name: 'Lessons', hidden: true })
+    expect(lessons).toHaveAttribute('href', '/lessons')
+    if (highlighted) {
+      expect(lessons).toHaveAttribute('aria-current', 'page')
+    } else {
+      expect(lessons).not.toHaveAttribute('aria-current')
+    }
+  })
+
   it('includes the theme toggle', () => {
     renderWithTheme(<Navbar path="/" />)
 
@@ -77,7 +93,7 @@ describe('Navbar', () => {
     ).toBeInTheDocument()
   })
 
-  it('opens the mobile menu with About, Works, GitHub and CV entries', async () => {
+  it('opens the mobile menu with About, Works, Lessons, GitHub and CV entries', async () => {
     const user = userEvent.setup()
     renderWithTheme(<Navbar path="/" />)
 
@@ -90,6 +106,9 @@ describe('Navbar', () => {
     expect(
       within(menu).getByRole('menuitem', { name: 'Works' })
     ).toHaveAttribute('href', '/works')
+    expect(
+      within(menu).getByRole('menuitem', { name: 'Lessons' })
+    ).toHaveAttribute('href', '/lessons')
     expect(
       within(menu).getByRole('menuitem', { name: 'GitHub' })
     ).toHaveAttribute('href', GITHUB_URL)

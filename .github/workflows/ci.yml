@@ -43,3 +43,8 @@ jobs:
 
       - name: Unit tests
         run: npm test
+
+      # The script that opens the lessons sync pull requests
+      # (.github/workflows/sync-lessons.yml), against a throwaway repository.
+      - name: Sync script tests
+        run: scripts/sync-lessons.test.sh

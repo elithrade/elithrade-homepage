@@ -144,8 +144,9 @@ Colours are defined once, in `palette` in `libs/theme.ts`, and exposed as
 Chakra semantic tokens (`surface`, `text-muted`, `accent`, ...) that switch
 with the colour mode. The accent matches the theme toggle: purple in light
 mode, amber in dark. A unit test checks that every text/background pair meets
-WCAG AA contrast. Fonts are self-hosted with `next/font`
-(`components/fonts.tsx`): Overpass for text, M PLUS Rounded 1c for the wordmark.
+WCAG AA contrast. All text, the wordmark included, is set in the monospace
+font Hack, self-hosted with `next/font/local` (`components/fonts.tsx`) from the
+files and licence in `assets/fonts/hack`.
 
 ## Adding a work
 

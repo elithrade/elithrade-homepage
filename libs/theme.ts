@@ -56,14 +56,15 @@ const semanticTokens = {
   }
 }
 
-// --font-body and --font-logo are set by components/fonts.tsx, which loads
-// the fonts with next/font. The fallbacks cover the moment before they load.
-const fallback = "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif"
+// --font-body is set by components/fonts.tsx, which loads Hack with
+// next/font. The monospace fallbacks cover the moment before it loads.
+const fallback =
+  "ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace"
 
 export const fonts = {
   body: `var(--font-body), ${fallback}`,
   heading: `var(--font-body), ${fallback}`,
-  logo: `var(--font-logo), var(--font-body), ${fallback}`
+  mono: `var(--font-body), ${fallback}`
 }
 
 const components = {

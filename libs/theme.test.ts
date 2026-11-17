@@ -74,10 +74,11 @@ describe('theme', () => {
     })
   })
 
-  it('uses the self-hosted fonts with system fallbacks', () => {
+  it('uses the self-hosted font everywhere with monospace fallbacks', () => {
     expect(theme.fonts.body).toBe(fonts.body)
-    expect(fonts.body).toMatch(/^var\(--font-body\), system-ui/)
+    expect(fonts.body).toMatch(/^var\(--font-body\), ui-monospace/)
+    expect(fonts.body).toMatch(/monospace$/)
     expect(fonts.heading).toBe(fonts.body)
-    expect(fonts.logo).toMatch(/^var\(--font-logo\)/)
+    expect(fonts.mono).toBe(fonts.body)
   })
 })

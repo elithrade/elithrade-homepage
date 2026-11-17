@@ -23,12 +23,7 @@ const Logo = () => {
     <Link href="/">
       <LogoBox>
         <Image src={footPrintImg} width={20} height={20} alt="logo" />
-        <Text
-          color="chakra-body-text"
-          fontFamily="logo"
-          fontWeight="bold"
-          ml={3}
-        >
+        <Text color="chakra-body-text" fontWeight="bold" ml={3}>
           Bin Hu
         </Text>
       </LogoBox>

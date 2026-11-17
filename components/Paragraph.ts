@@ -1,9 +1,9 @@
 import styled from '@emotion/styled'
 
+// Left-aligned: the site font is monospace, so justifying can only stretch
+// the spaces between words, which leaves uneven gaps.
 const Paragraph = styled.p`
-  text-align: justify;
   text-indent: 1em;
-  hyphens: auto;
 `
 
 export default Paragraph

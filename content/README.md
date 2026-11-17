@@ -87,3 +87,11 @@ code blocks or links.
 
 Text before the first `##` heading is not exported. Every section needs at
 least one card, and text may not follow a section's last card.
+
+The files are generated, so don't edit them by hand. When a project's
+`LESSONS.md` changes, its repository calls `.github/workflows/sync-lessons.yml`
+here. The workflow exports the file and, when it differs from the copy here,
+opens a pull request from `sync/lessons-<project>`, or adds to the one already
+open (`scripts/sync-lessons.sh`). If that pull request fails a test, push the
+fix to the same branch. The first export of a project also needs the project
+registered in `lessonProjects` and `loadLessons`, and its pull request says so.

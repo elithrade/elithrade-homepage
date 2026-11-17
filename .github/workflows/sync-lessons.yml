@@ -1,0 +1,118 @@
+name: Sync lessons
+
+# Called by a project's repository when its LESSONS.md changes. Exports the
+# cards with this repository's exporter (scripts/export-lessons.mjs) and opens
+# a pull request here with content/lessons/<project-id>.json, or updates the
+# one already open (scripts/sync-lessons.sh). A caller looks like this:
+#
+#   on:
+#     push:
+#       branches: [main]
+#       paths: [LESSONS.md]
+#     workflow_dispatch:
+#   jobs:
+#     sync:
+#       uses: elithrade/elithrade-homepage/.github/workflows/sync-lessons.yml@main
+#       with:
+#         project-id: url-shortener
+#         name: url-shortener
+#         description: A URL shortener built from scratch ...
+#       secrets:
+#         token: ${{ secrets.HOMEPAGE_SYNC_TOKEN }}
+#
+# The jobs run in the caller's repository, so its GITHUB_TOKEN can't write
+# here. The token is a fine-grained personal access token for
+# elithrade/elithrade-homepage only, with read and write access to Contents
+# and Pull requests (the CV's sync uses the same one). This repository's own
+# GITHUB_TOKEN wouldn't do either: a pull request it opens starts no
+# workflows, so the required `test` check would never run.
+
+on:
+  workflow_call:
+    inputs:
+      project-id:
+        description: The project's address on the site, /lessons/<project-id>
+        required: true
+        type: string
+      name:
+        required: true
+        type: string
+      description:
+        required: true
+        type: string
+      lessons-path:
+        description: Where LESSONS.md is in the caller's repository
+        required: false
+        type: string
+        default: LESSONS.md
+    secrets:
+      token:
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    # One sync per project at a time; a newer push replaces one in progress.
+    concurrency:
+      group: sync-lessons-${{ inputs.project-id }}
+      cancel-in-progress: true
+
+    # Inputs reach the scripts as environment variables, never pasted into
+    # the commands, so their text can't change what the shell runs.
+    env:
+      GH_TOKEN: ${{ secrets.token }}
+      GH_REPO: elithrade/elithrade-homepage
+      PROJECT_ID: ${{ inputs.project-id }}
+      PROJECT_NAME: ${{ inputs.name }}
+      PROJECT_DESCRIPTION: ${{ inputs.description }}
+      LESSONS_PATH: ${{ inputs.lessons-path }}
+      SOURCE_URL: ${{ github.server_url }}/${{ github.repository }}/blob/${{ github.event.repository.default_branch }}/${{ inputs.lessons-path }}
+
+    steps:
+      - name: Check for the token
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::error::The token is empty. Add the HOMEPAGE_SYNC_TOKEN secret to $GITHUB_REPOSITORY (see the comment at the top of sync-lessons.yml in $GH_REPO)."
+            exit 1
+          fi
+
+      - name: Checkout the project
+        uses: actions/checkout@v7
+        with:
+          path: project
+          persist-credentials: false
+
+      - name: Checkout the homepage
+        uses: actions/checkout@v7
+        with:
+          repository: elithrade/elithrade-homepage
+          token: ${{ secrets.token }}
+          path: homepage
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      # Exits 1 with the line number when LESSONS.md breaks the format.
+      - name: Export the lessons
+        run: >
+          node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON
+          homepage/scripts/export-lessons.mjs
+          "project/$LESSONS_PATH" lessons.json
+          --id "$PROJECT_ID"
+          --name "$PROJECT_NAME"
+          --description "$PROJECT_DESCRIPTION"
+          --source "$SOURCE_URL"
+
+      # pipefail: without it, tee's success would hide a failed sync.
+      - name: Sync the homepage
+        run: |
+          set -o pipefail
+          SOURCE="$GITHUB_REPOSITORY@${GITHUB_SHA:0:7}" \
+            homepage/scripts/sync-lessons.sh lessons.json homepage "$PROJECT_ID" \
+            | tee -a "$GITHUB_STEP_SUMMARY"

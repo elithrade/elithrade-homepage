@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { lessonProjects } from './lessons'
+import { loadLessons } from './lessons-loaders'
 
 const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/
 
@@ -45,5 +46,16 @@ describe('lessonProjects', () => {
     const ids = lessonProjects.map(l => l.project.id)
     for (const id of ids) expect(id).toMatch(SLUG)
     expect(new Set(ids).size).toBe(ids.length)
+  })
+})
+
+describe('loadLessons', () => {
+  it('loads the same data as lessonProjects, for every project and no other', async () => {
+    expect(Object.keys(loadLessons).sort()).toEqual(
+      lessonProjects.map(l => l.project.id).sort()
+    )
+    for (const lessons of lessonProjects) {
+      expect(await loadLessons[lessons.project.id]()).toEqual(lessons)
+    }
   })
 })

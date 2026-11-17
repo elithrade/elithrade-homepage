@@ -102,6 +102,9 @@ const Navbar = (props: NavbarProps) => {
           <LinkItem href="/works" path={path}>
             Works
           </LinkItem>
+          <LinkItem href="/lessons" path={path}>
+            Lessons
+          </LinkItem>
           <LinkItem
             href="https://github.com/elithrade"
             display="inline-flex"
@@ -141,6 +144,9 @@ const Navbar = (props: NavbarProps) => {
                 </MenuItem>
                 <MenuItem as={NextLink} href="/works">
                   Works
+                </MenuItem>
+                <MenuItem as={NextLink} href="/lessons">
+                  Lessons
                 </MenuItem>
                 <MenuItem as={Link} href="https://github.com/elithrade">
                   GitHub

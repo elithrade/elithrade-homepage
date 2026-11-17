@@ -1,9 +1,14 @@
-import { Inter, M_PLUS_Rounded_1c } from 'next/font/google'
+import { M_PLUS_Rounded_1c, Overpass } from 'next/font/google'
 
 // next/font downloads the fonts at build time and serves them from the site,
-// preloaded, so text never renders in a fallback font first. Inter is used
-// for all text; the rounded font only for the "Bin Hu" wordmark.
-const inter = Inter({ subsets: ['latin'], display: 'swap' })
+// preloaded, so text never renders in a fallback font first. Overpass is used
+// for all text (with its italic, for the quote); the rounded font only for the
+// "Bin Hu" wordmark.
+const overpass = Overpass({
+  subsets: ['latin'],
+  style: ['normal', 'italic'],
+  display: 'swap'
+})
 const rounded = M_PLUS_Rounded_1c({
   subsets: ['latin'],
   weight: '700',
@@ -14,7 +19,7 @@ const rounded = M_PLUS_Rounded_1c({
 const Fonts = () => (
   <style jsx global>{`
     :root {
-      --font-body: ${inter.style.fontFamily};
+      --font-body: ${overpass.style.fontFamily};
       --font-logo: ${rounded.style.fontFamily};
     }
   `}</style>

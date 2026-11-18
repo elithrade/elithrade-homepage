@@ -2301,6 +2301,28 @@
           ]
         }
       ]
+    },
+    {
+      "n": 38,
+      "id": "jittered-ttls",
+      "title": "Jittered TTLs",
+      "intro": [],
+      "cards": [
+        {
+          "id": "every-cache-ttl-is-shortened-by-a-random-0-to-10-how-do-you",
+          "question": "Every cache TTL is shortened by a random 0 to 10%. How do you test randomness, and why did one sample not catch jitter applied in the wrong place?",
+          "answer": [
+            "Test the outcome over many samples, each assert aimed at one way the code can be wrong. Bounds (50 keys, every TTL in [3240 s, 3600 s]) catch jitter upward or too large, but pass with no jitter at all, because 3600 is in range. Spread (largest minus smallest over 60 s) catches missing jitter. It cannot be \"not all equal\": Redis reports TTLs in milliseconds and time passes between `SET`s, so TTLs differ without jitter. The lower bound needs a few seconds of slack for the same reason. A near-expiry check with one link (expires in 30 min, TTL in [29, 30] min) caught jitter applied after the min only when the random cut was over a minute: it survived 2 of 6 runs. With 20 links, all 20 cuts would need to be under a minute, about (1/6)^20, and it failed 6 of 6. A test that depends on one random draw catches a bug only some of the time; sample enough that a miss is practically impossible."
+          ]
+        },
+        {
+          "id": "why-did-a-ttl-bug-turn-redirects-into-500-s-even-with-redis",
+          "question": "Why did a TTL bug turn redirects into `500`s, even with Redis down, when every Redis error is caught?",
+          "answer": [
+            "A TTL of zero or less makes StackExchange.Redis throw `ArgumentOutOfRangeException` while it builds the `SET`, before it talks to Redis. The cache catches only `RedisException` and `RedisTimeoutException`, so this one escapes and the request fails. An early version forgot to divide the percent by 100, cut up to 36,000 s from 3,600 s, and broke every test that used the app's default 10%. Catching \"Redis errors\" is not the same as making the cache unable to fail a request: the values passed to the client need their own guarantee. With the percent capped at 50 the cut can't reach zero, but a link that expires between the store read and the `SET` gives a remaining lifetime of zero or less (open in `PLAN.md`)."
+          ]
+        }
+      ]
     }
   ]
 }
